@@ -46,6 +46,11 @@ Brief description of the plugin.
         tenantUtils(TenantUtils) {
             currentTenant = ref("currentTenant")
         }
+        
+        hibernateSessionConsumer(HibernateSessionConsumer) {
+            eventBroker = ref("eventBroker")
+            currentTenant = ref("currentTenant")
+        }
 
         preInsertListener(HibernateInsertConsumer) {
             currentTenant = ref("currentTenant")

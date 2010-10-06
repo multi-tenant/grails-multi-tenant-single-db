@@ -1,20 +1,16 @@
 package grails.plugin.multitenant.core;
 
 import grails.plugin.multitenant.core.annotation.MultiTenant;
-import grails.plugin.multitenant.core.CurrentTenant;
-
 import grails.plugin.multitenant.core.hibernate.HibernateFilterConfiguration;
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass;
-import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import groovy.lang.Closure;
 
 import java.lang.annotation.Annotation;
+
+import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass;
+import org.hibernate.SessionFactory;
+import org.hibernate.classic.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TenantUtils {
 	
@@ -37,8 +33,6 @@ public class TenantUtils {
 	}
 	
 	public static void enableHibernateFilter(Session session, int tenantId) {
-		log.warn("Does not enable Hibernate filter");
-		log.info("Activating filter " + HibernateFilterConfiguration.TENANT_FILTER_NAME + " with tenantId " + tenantId);
 		session.enableFilter(HibernateFilterConfiguration.TENANT_FILTER_NAME)
         	.setParameter(HibernateFilterConfiguration.TENANT_ID_PARAM_NAME, tenantId);
 	}
