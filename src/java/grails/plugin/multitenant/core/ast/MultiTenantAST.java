@@ -1,4 +1,4 @@
-package grails.plugin.multitenant.core.annotation;
+package grails.plugin.multitenant.core.ast;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;

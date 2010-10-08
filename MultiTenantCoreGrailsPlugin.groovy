@@ -1,19 +1,19 @@
-import org.codehaus.groovy.grails.orm.hibernate.HibernateEventListeners
 import grails.util.Environment
 
 import grails.plugin.multitenant.core.*
+import grails.plugin.multitenant.core.util.TenantUtils
 import grails.plugin.multitenant.core.filter.CurrentTenantFilter
-import grails.plugin.multitenant.core.event.*
+import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
+import grails.plugin.multitenant.core.hibernate.event.TenantHibernateFilterEnabler
 import grails.plugin.multitenant.core.hibernate.*
 
 class MultiTenantCoreGrailsPlugin {
     
-    // the plugin version
     def version = "0.1"
-    // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.3.5 > *"
     
     // the other plugins this plugin depends on
+    // This caused random problems with Grails, looks like a concurrency issue
 //    def dependsOn = [
 //        'eventing': '0 > *',
 //        'hibernate-hijacker': '0 > *'    
@@ -45,19 +45,25 @@ Brief description of the plugin.
         
         tenantUtils(TenantUtils) {
             currentTenant = ref("currentTenant")
+            sessionFactory = ref("sessionFactory")
         }
         
-        hibernateSessionConsumer(HibernateSessionConsumer) {
+        tenantHibernateFilterEnabler(TenantHibernateFilterEnabler) {
             eventBroker = ref("eventBroker")
             currentTenant = ref("currentTenant")
         }
 
-        preInsertListener(HibernateInsertConsumer) {
+        // Inserts tenantId, makes sure that we're not 
+        // loading other tenant's data and so on
+        tenantHibernateEventListener(TenantHibernateEventListener) {
             currentTenant = ref("currentTenant")
         }
         
-        hibernateEventListeners(HibernateEventListeners) {
-            listenerMap = [ 'pre-insert': preInsertListener ]
+        // Enables the tenant filter for our domain classes
+        tenantFilterConfigurator(TenantFilterConfigurator) {
+            eventBroker = ref("eventBroker")
+            grailsApplication = ref("grailsApplication")
+            tenantHibernateEventListener = ref("tenantHibernateEventListener")
         }
         
     }
@@ -78,8 +84,6 @@ Brief description of the plugin.
                 'url-pattern'('/*')
             }
         }
-        
-    
     }
 
     def doWithDynamicMethods = { ctx -> }

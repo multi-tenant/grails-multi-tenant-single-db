@@ -1,7 +1,8 @@
-package grails.plugin.multitenant.core;
+package grails.plugin.multitenant.core.util;
 
+import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.annotation.MultiTenant;
-import grails.plugin.multitenant.core.hibernate.HibernateFilterConfiguration;
+import grails.plugin.multitenant.core.hibernate.TenantFilterCfg;
 import groovy.lang.Closure;
 
 import java.lang.annotation.Annotation;
@@ -23,7 +24,7 @@ public class TenantUtils {
 		return hasMultiTenantAnnotation(domainClass.getClazz());
 	}
 	
-	public static boolean hasMultiTenantAnnotation(Class clazz) {
+	public static boolean hasMultiTenantAnnotation(Class<?> clazz) {
 	    Annotation[] annotations = clazz.getAnnotations();
         for (Annotation annotation : annotations)
             if (annotation instanceof MultiTenant)
@@ -33,12 +34,12 @@ public class TenantUtils {
 	}
 	
 	public static void enableHibernateFilter(Session session, int tenantId) {
-		session.enableFilter(HibernateFilterConfiguration.TENANT_FILTER_NAME)
-        	.setParameter(HibernateFilterConfiguration.TENANT_ID_PARAM_NAME, tenantId);
+		session.enableFilter(TenantFilterCfg.TENANT_FILTER_NAME)
+        	.setParameter(TenantFilterCfg.TENANT_ID_PARAM_NAME, tenantId);
 	}
-	
+		
 	public void withTenantId(Integer temporaryTenantId, Closure closure) {
-        int previousId = currentTenant.get();
+        Integer previousId = currentTenant.get();
         Session currentSession = sessionFactory.getCurrentSession();
         try {
             enableHibernateFilter(currentSession, temporaryTenantId);

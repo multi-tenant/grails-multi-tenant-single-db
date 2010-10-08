@@ -22,7 +22,6 @@ environments {
         dataSource {
             dbCreate = "update"
             url = "jdbc:hsqldb:mem:testDb"
-            configClass = grails.plugin.hibernate.HibernateFilterConfiguration.class
         }
     }
     production {

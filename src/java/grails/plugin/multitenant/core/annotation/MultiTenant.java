@@ -13,6 +13,6 @@ import org.codehaus.groovy.transform.GroovyASTTransformationClass;
 */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@GroovyASTTransformationClass("grails.plugin.multitenant.core.annotation.MultiTenantAST")
+@GroovyASTTransformationClass("grails.plugin.multitenant.core.ast.MultiTenantAST")
 public @interface MultiTenant {
 }
