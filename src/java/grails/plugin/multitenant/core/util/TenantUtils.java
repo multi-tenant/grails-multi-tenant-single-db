@@ -39,16 +39,16 @@ public class TenantUtils {
 	}
 		
 	public void withTenantId(Integer temporaryTenantId, Closure closure) {
-        Integer previousId = currentTenant.get();
+	    Integer previousTenantId = currentTenant.get();
         Session currentSession = sessionFactory.getCurrentSession();
         try {
             enableHibernateFilter(currentSession, temporaryTenantId);
             currentTenant.set(temporaryTenantId);
             closure.call();
-            sessionFactory.getCurrentSession().flush(); // Force events to happen with the expected id
+            currentSession.flush(); // Force events to happen with the expected id
         } finally {
-            enableHibernateFilter(currentSession, previousId);
-            currentTenant.set(previousId);
+            enableHibernateFilter(currentSession, previousTenantId);
+            currentTenant.set(previousTenantId);
         }
     }
 	

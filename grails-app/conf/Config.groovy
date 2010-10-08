@@ -21,6 +21,10 @@ log4j = {
            'net.sf.ehcache.hibernate'
 
     warn   'org.mortbay.log'
+    
+    info   'grails.app'
+    
+    debug  'grails.plugin.multitenant.core'
 }
 
 // The following properties have been added by the Upgrade process...

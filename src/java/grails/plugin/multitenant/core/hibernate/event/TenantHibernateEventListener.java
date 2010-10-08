@@ -14,6 +14,15 @@ import org.hibernate.tuple.StandardProperty;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.event.*;
 
+/**
+ * TODO: Think error handling all the way through. 
+ * The original multi-tenant plugin deals with error handling
+ * by returning 'false' from the callback methods where this is possible.
+ * I think throwing an exception is more informative, but there might be 
+ * reasons why logging the error and returning false is a better idea?
+ * 
+ * @author Kim A. Betti
+ */
 @SuppressWarnings("serial")
 public class TenantHibernateEventListener implements PreInsertEventListener, PreUpdateEventListener, PostLoadEventListener {
 
@@ -41,17 +50,18 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
                         + event.getEntity() + "', but no tenant is set");
                 
             MtDomainClassUtil.setTenantIdOnEntity(event.getEntity(), currentTenantId);
-            updateState(event, currentTenantId);
+            updateTenantIdOnEvent(event, currentTenantId);
         }
         
         return false;
     }
     
-    private void updateState(PreInsertEvent event, Integer currentTenantId) {
+    private void updateTenantIdOnEvent(PreInsertEvent event, Integer currentTenantId) {
         int paramIndex = getParamIndex(event);
         event.getState()[paramIndex] = currentTenantId;
     }
 
+    // TODO: Is it worth caching this? 
     private int getParamIndex(PreInsertEvent event) {
         int i = 0;
         StandardProperty[] properties = event.getPersister().getEntityMetamodel().getProperties();
