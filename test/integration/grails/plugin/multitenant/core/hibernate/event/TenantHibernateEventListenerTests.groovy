@@ -1,6 +1,6 @@
 package grails.plugin.multitenant.core.hibernate.event
 
-import demo.Product
+import demo.DemoProduct
 import org.junit.Test;
 
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
@@ -18,8 +18,8 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     @Test
     void tenantIdShouldBeInjected() {
         tenantUtils.withTenantId(2) {
-            new Product(name: "iPhone").save(flush: true, failOnError: true)
-            Product.findByName("iPhone").properties['tenantId'] == 2
+            new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
+            DemoProduct.findByName("iPhone").properties['tenantId'] == 2
         }
     }
     
@@ -27,13 +27,13 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     void shouldNotBeAllowedToLoadOtherTenantsEntities() {
         int iPhoneId = -1
         tenantUtils.withTenantId(2) {
-            def iPhone = new Product(name: "iPhone").save(flush: true, failOnError: true)
+            def iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
             iPhoneId = iPhone.id
         }
         
         tenantUtils.withTenantId(1) {
-            Product.withNewSession {
-                def product = Product.get(iPhoneId);
+            DemoProduct.withNewSession {
+                def product = DemoProduct.get(iPhoneId);
                 fail "We should not be allowed to load this entity"
             }
         }
@@ -43,13 +43,13 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     void shouldBeAllowedToLoadOwnEntities() {
         int iPhoneId = -1
         tenantUtils.withTenantId(2) {
-            def iPhone = new Product(name: "iPhone").save(flush: true, failOnError: true)
+            def iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
             iPhoneId = iPhone.id
         }
         
         tenantUtils.withTenantId(2) {
-            Product.withNewSession {
-                def product = Product.get(iPhoneId);
+            DemoProduct.withNewSession {
+                def product = DemoProduct.get(iPhoneId);
             }
         }
     }
@@ -58,7 +58,7 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     void shouldNotBeAbleToChangeTenantId() {
         def iPhone = null
         tenantUtils.withTenantId(2) {
-            iPhone = new Product(name: "iPhone").save(flush: true, failOnError: true)
+            iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
         }
         
         tenantUtils.withTenantId(3) {
@@ -72,7 +72,7 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     void shouldBeAbleToUpdateWithCurrentId() {
         def iPhone = null
         tenantUtils.withTenantId(2) {
-            iPhone = new Product(name: "iPhone").save(flush: true, failOnError: true)
+            iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
         }
         
         tenantUtils.withTenantId(2) {

@@ -45,6 +45,7 @@ public class TenantUtils {
             enableHibernateFilter(currentSession, temporaryTenantId);
             currentTenant.set(temporaryTenantId);
             closure.call();
+            sessionFactory.getCurrentSession().flush(); // Force events to happen with the expected id
         } finally {
             enableHibernateFilter(currentSession, previousId);
             currentTenant.set(previousId);

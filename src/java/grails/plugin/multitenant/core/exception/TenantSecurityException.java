@@ -1,7 +1,7 @@
 package grails.plugin.multitenant.core.exception;
 
 @SuppressWarnings("serial")
-public class TenantSecurityException extends RuntimeException {
+public class TenantSecurityException extends TenantException {
     
     private Integer currentTenantId, loadedTenantId;
 

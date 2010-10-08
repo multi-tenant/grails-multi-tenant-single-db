@@ -2,12 +2,15 @@ package grails.plugin.multitenant.core.hibernate.event;
 
 import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
 import grails.plugin.multitenant.core.CurrentTenant;
+import grails.plugin.multitenant.core.exception.TenantException;
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
+import grails.plugin.multitenant.core.hibernate.TenantFilterCfg;
 import grails.plugin.multitenant.core.util.MtDomainClassUtil;
 import grails.plugin.multitenant.core.util.TenantUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.tuple.StandardProperty;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.event.*;
 
@@ -33,10 +36,33 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     public boolean onPreInsert(PreInsertEvent event) {
         if (isMultiTenantEntity(event.getEntity())) {
             Integer currentTenantId = currentTenant.get();
+            if (currentTenantId <= 0) 
+                throw new TenantException("Tried to save multi-tenant domain class '"
+                        + event.getEntity() + "', but no tenant is set");
+                
             MtDomainClassUtil.setTenantIdOnEntity(event.getEntity(), currentTenantId);
+            updateState(event, currentTenantId);
         }
         
         return false;
+    }
+    
+    private void updateState(PreInsertEvent event, Integer currentTenantId) {
+        int paramIndex = getParamIndex(event);
+        event.getState()[paramIndex] = currentTenantId;
+    }
+
+    private int getParamIndex(PreInsertEvent event) {
+        int i = 0;
+        StandardProperty[] properties = event.getPersister().getEntityMetamodel().getProperties();
+        for (StandardProperty p : properties) {
+            if (p.getName().equals(TenantFilterCfg.TENANT_ID_FIELD_NAME))
+                return i;
+            
+            i++;
+        }
+        
+        throw new TenantException("Unable to find tenantId index for entity: " + event.getEntity());
     }
     
     @Override
@@ -45,7 +71,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
             Integer currentTenantId = currentTenant.get();
             Integer entityTenantId = MtDomainClassUtil.getTenantIdFromEntity(event.getEntity());
             if (!currentTenantId.equals(entityTenantId)) 
-                throw new TenantSecurityException("Tried to update entity with another tenant id. Expected " 
+                throw new TenantSecurityException("Tried to update '"+event.getEntity()+"' with another tenant id. Expected " 
                         + currentTenantId + ", found " + entityTenantId, currentTenantId, entityTenantId);
         }
         
@@ -59,8 +85,8 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
             Integer loadedTenantId = MtDomainClassUtil.getTenantIdFromEntity(event.getEntity());
 
             if (!currentTenantId.equals(loadedTenantId)) 
-                throw new TenantSecurityException("Tried to load entity from other tenant, expected " 
-                        + currentTenantId + ", found " + loadedTenantId, currentTenantId, loadedTenantId);
+                throw new TenantSecurityException("Tried to load entity '" + event.getEntity() 
+                        + "' from other tenant, expected " + currentTenantId + ", found " + loadedTenantId, currentTenantId, loadedTenantId);
         }
     }
     

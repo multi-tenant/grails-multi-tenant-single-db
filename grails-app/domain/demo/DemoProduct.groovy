@@ -3,7 +3,7 @@ package demo
 import grails.plugin.multitenant.core.annotation.MultiTenant
 
 @MultiTenant
-class Product {
+class DemoProduct {
 	
 	String name
 
