@@ -9,11 +9,13 @@ import grails.plugin.multitenant.core.event.*;
 import grails.plugin.eventing.EventBroker;
 import grails.plugin.hibernatehijacker.hibernate.HibernateConfigPostProcessor
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
+import org.codehaus.groovy.grails.orm.hibernate.validation.UniqueConstraint;
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import org.codehaus.groovy.grails.validation.Constraint;
 import org.codehaus.groovy.grails.commons.*
 import org.hibernate.engine.FilterDefinition
 import org.hibernate.Hibernate
@@ -50,6 +52,7 @@ class TenantFilterConfigurator implements HibernateConfigPostProcessor {
 	private void enrichMultiTenantDomainClasses(Configuration configuration) {
 		findMultiTenantDomainClasses().each { GrailsClass domainClass ->
 			addDomainFilter(domainClass, configuration)
+			//fixUniqueConstraints(domainClass)
 			addTenantIdConstraints(domainClass)
 		}
 	}
@@ -66,9 +69,33 @@ class TenantFilterConfigurator implements HibernateConfigPostProcessor {
         entity.addFilter(TenantFilterCfg.TENANT_FILTER_NAME, TenantFilterCfg.FILTER_CONDITION);
     }
 
+	private void fixUniqueConstraints(DefaultGrailsDomainClass domainClass) {
+		getUniqueConstraint(domainClass).each { UniqueConstraint constraint ->
+			if (!isUniquePerTenant(constraint)) 
+				constraint.setParameter(TenantFilterCfg.TENANT_ID_FIELD_NAME)
+		}
+	}
+	
+	private List getUniqueConstraint(DefaultGrailsDomainClass domainClass) {
+		List uniqueConstraits = []
+		domainClass.constraints?.each { String name, ConstrainedProperty prop ->
+			prop.appliedConstraints.each { Constraint constraint ->
+				if (constraint instanceof UniqueConstraint) {
+					uniqueConstraits << constraint
+				}
+			}
+		}
+		
+		return uniqueConstraits
+	}
+	
+	private boolean isUniquePerTenant(UniqueConstraint constraint) {
+		return constraint.getUniquenessGroup().contains(TenantFilterCfg.TENANT_ID_FIELD_NAME)
+	}
+	
     private void addTenantIdConstraints(DefaultGrailsDomainClass domainClass) {
         (domainClass.constraints?.get(TenantFilterCfg.TENANT_ID_FIELD_NAME)
             ?.applyConstraint(ConstrainedProperty.NULLABLE_CONSTRAINT, false))
     }
-  
+	
 }

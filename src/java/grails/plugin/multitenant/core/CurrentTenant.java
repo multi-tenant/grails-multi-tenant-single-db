@@ -1,6 +1,9 @@
 package grails.plugin.multitenant.core;
 
 public interface CurrentTenant {
-	int get();
-    void set(int tenantId);
+	
+	Integer get();
+	
+    void set(Integer tenantId);
+    
 }

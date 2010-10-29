@@ -3,12 +3,12 @@ import grails.util.Environment
 import grails.plugin.multitenant.core.*
 import grails.plugin.multitenant.core.util.TenantUtils
 import grails.plugin.multitenant.core.filter.CurrentTenantFilter
-import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
-import grails.plugin.multitenant.core.hibernate.event.TenantHibernateFilterEnabler
+import grails.plugin.multitenant.core.hibernate.event.*
 import grails.plugin.multitenant.core.hibernate.*
 
 class MultiTenantCoreGrailsPlugin {
-    
+
+    def groupId = "plugins.multitenant"    
     def version = "0.1"
     def grailsVersion = "1.3.5 > *"
     
@@ -27,17 +27,14 @@ class MultiTenantCoreGrailsPlugin {
             "**/demo/**"
     ]
 
-    def author = "Your name"
+    def author = "Kim A. Betti"
     def authorEmail = ""
     def title = "Plugin summary/headline"
     def description = '''\\
 Brief description of the plugin.
 '''
 
-    // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/multi-tenant-core"
-
-    
 
     def doWithSpring = {
         
@@ -65,6 +62,12 @@ Brief description of the plugin.
             grailsApplication = ref("grailsApplication")
             tenantHibernateEventListener = ref("tenantHibernateEventListener")
         }
+		
+		// Listens for new / removed tenants
+		tenantDomainClassListener(TenantDomainClassListener) {
+			eventBroker = ref("eventBroker")
+			grailsApplication = ref("grailsApplication")
+		}
         
     }
     

@@ -1,5 +1,8 @@
 package grails.plugin.multitenant.core.hibernate.event;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.exception.TenantException;
@@ -10,6 +13,7 @@ import grails.plugin.multitenant.core.util.TenantUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
 import org.hibernate.tuple.StandardProperty;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.event.*;
@@ -24,15 +28,19 @@ import org.hibernate.event.*;
  * @author Kim A. Betti
  */
 @SuppressWarnings("serial")
-public class TenantHibernateEventListener implements PreInsertEventListener, PreUpdateEventListener, PostLoadEventListener {
+public class TenantHibernateEventListener implements PreInsertEventListener, PreUpdateEventListener, LoadEventListener {
 
     private static Log log = LogFactory.getLog(TenantHibernateEventListener.class);
     private CurrentTenant currentTenant;
     
+    // The PostLoad event only contains the class name so reflection is used to
+    // load the corresponding class. This is obviously expensive so we cache the result. 
+    private Map<String, Class<?>> reflectedCache = new HashMap<String, Class<?>>();
+    
     public void activate(Configuration configuration) {
         log.debug("Subscribing to preInsert, preUpdate and postLoad");
         EventListeners eventListeners = configuration.getEventListeners();
-        HibernateEventUtil.addListener(eventListeners, "postLoad", this);
+        HibernateEventUtil.addListener(eventListeners, "load", this);
         HibernateEventUtil.addListener(eventListeners, "preInsert", this);
         HibernateEventUtil.addListener(eventListeners, "preUpdate", this);
     }
@@ -89,16 +97,31 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     }
 
     @Override
-    public void onPostLoad(PostLoadEvent event) {
-        if (isMultiTenantEntity(event.getEntity())) {
-            Integer currentTenantId = currentTenant.get();
-            Integer loadedTenantId = MtDomainClassUtil.getTenantIdFromEntity(event.getEntity());
-
-            if (!currentTenantId.equals(loadedTenantId)) 
-                throw new TenantSecurityException("Tried to load entity '" + event.getEntity() 
-                        + "' from other tenant, expected " + currentTenantId + ", found " + loadedTenantId, currentTenantId, loadedTenantId);
-        }
+    public void onLoad(LoadEvent event, LoadType type) throws HibernateException {
+    	Class<?> entityClass = getClassFromName(event.getEntityClassName());
+    	Object result = event.getResult();
+    	if (result != null && isMultiTenantEntity(result)) {
+    		Integer currentTenantId = currentTenant.get();
+    		Integer loadedTenantId = MtDomainClassUtil.getTenantIdFromEntity(result);
+    		if (!currentTenantId.equals(loadedTenantId) && !event.isAssociationFetch()) 
+    			throw new TenantSecurityException("Tried to load entity '" + entityClass.getSimpleName()
+    				+ "' from other tenant, expected " + currentTenantId + ", found " + loadedTenantId, currentTenantId, loadedTenantId);
+    	}
     }
+    
+    private Class<?> getClassFromName(String className) {
+    	if (!reflectedCache.containsKey(className)) {
+    		try {
+	    		Class<?> aClass = getClass().getClassLoader().loadClass(className);
+	    		reflectedCache.put(className, aClass);
+    		} catch (ClassNotFoundException ex) {
+    			String message = "Could not find class " + className;
+    			throw new TenantException(message, ex);
+    		}
+    	}
+    	
+    	return reflectedCache.get(className);
+  }
     
     private boolean isMultiTenantEntity(Object entity) {
         return TenantUtils.hasMultiTenantAnnotation(entity.getClass());

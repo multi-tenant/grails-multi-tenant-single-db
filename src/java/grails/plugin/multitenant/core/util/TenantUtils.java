@@ -20,6 +20,8 @@ public class TenantUtils {
 	private static CurrentTenant currentTenant;
 	private static SessionFactory sessionFactory;
 	
+	public static Class<?> TENANT_DOMAIN_CLASS;
+		
 	public static boolean hasMultiTenantAnnotation(DefaultGrailsDomainClass domainClass) {
 		return hasMultiTenantAnnotation(domainClass.getClazz());
 	}
@@ -33,14 +35,11 @@ public class TenantUtils {
         return false;
 	}
 	
-	public static void enableHibernateFilter(Session session, int tenantId) {
-		session.enableFilter(TenantFilterCfg.TENANT_FILTER_NAME)
-        	.setParameter(TenantFilterCfg.TENANT_ID_PARAM_NAME, tenantId);
-	}
-		
 	public void withTenantId(Integer temporaryTenantId, Closure closure) {
 	    Integer previousTenantId = currentTenant.get();
         Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.flush();
+        
         try {
             enableHibernateFilter(currentSession, temporaryTenantId);
             currentTenant.set(temporaryTenantId);
@@ -51,6 +50,11 @@ public class TenantUtils {
             currentTenant.set(previousTenantId);
         }
     }
+	
+	public static void enableHibernateFilter(Session session, Integer tenantId) {
+		session.enableFilter(TenantFilterCfg.TENANT_FILTER_NAME)
+        	.setParameter(TenantFilterCfg.TENANT_ID_PARAM_NAME, tenantId);
+	}
 	
 	public void setCurrentTenant(CurrentTenant currentTenant) {
 		TenantUtils.currentTenant = currentTenant;
