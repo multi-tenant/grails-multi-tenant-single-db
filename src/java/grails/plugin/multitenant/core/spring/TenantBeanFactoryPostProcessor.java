@@ -26,23 +26,21 @@ public class TenantBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		BeanDefinitionRegistry appCtx = (DefaultListableBeanFactory) beanFactory;
-		RuntimeSpringConfiguration springConfig = new DefaultRuntimeSpringConfiguration(); 
 		
 		for (String beanName : getPerTenantBeanNames(appCtx)) {
 			log.debug("Setting tenant scope for: " + beanName);
-			
 			BeanDefinition beanDef = appCtx.getBeanDefinition(beanName);
-			processBean(beanName, beanDef, appCtx, springConfig);
+			processBean(beanName, beanDef, appCtx);
 		}
 	}
 	
-	private void processBean(String beanName, BeanDefinition beanDef, BeanDefinitionRegistry appCtx, RuntimeSpringConfiguration springConfig) {
+	private void processBean(String beanName, BeanDefinition beanDef, BeanDefinitionRegistry appCtx) {
 		final String tenantScopedBeanName = "_" + beanName;
 		final String prototypeBeanName = tenantScopedBeanName + "_prototype";
 		
 		makeTenantScopedCopy(appCtx, beanDef, tenantScopedBeanName);
 		makePrototypeScopedCopy(appCtx, beanDef, prototypeBeanName);
-		replaceWithScopedProxy(appCtx, springConfig, beanName, tenantScopedBeanName);
+		replaceWithScopedProxy(appCtx, beanName, tenantScopedBeanName);
 	}
 	
 	private List<String> getPerTenantBeanNames(BeanDefinitionRegistry beanFactory) {
@@ -73,8 +71,8 @@ public class TenantBeanFactoryPostProcessor implements BeanFactoryPostProcessor,
         return copiedBeanDefinition;
 	}
 	
-	private void replaceWithScopedProxy(BeanDefinitionRegistry appCtx, RuntimeSpringConfiguration springConfig, String beanName, String targetBeanName) {
-		BeanConfiguration scopedProxy = springConfig.createSingletonBean(ScopedProxyFactoryBean.class);
+	private void replaceWithScopedProxy(BeanDefinitionRegistry appCtx, String beanName, String targetBeanName) {
+		BeanConfiguration scopedProxy = new DefaultBeanConfiguration(ScopedProxyFactoryBean.class);
 		scopedProxy.addProperty("targetBeanName", targetBeanName);
 		
 		BeanDefinition scopedBeanDefinition = scopedProxy.getBeanDefinition();
