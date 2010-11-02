@@ -10,8 +10,11 @@ import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
+/**
+ * 
+ * @author Kim A. Betti
+ */
 class TenantDomainClassListener {
 	
 	private final static Logger log = LoggerFactory.getLogger(TenantDomainClassListener);

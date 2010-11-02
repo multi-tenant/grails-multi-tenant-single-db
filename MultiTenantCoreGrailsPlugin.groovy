@@ -1,25 +1,23 @@
 import grails.util.Environment
 
 import grails.plugin.multitenant.core.*
-import grails.plugin.multitenant.core.util.TenantUtils
+import grails.plugin.multitenant.core.util.*
 import grails.plugin.multitenant.core.filter.CurrentTenantFilter
 import grails.plugin.multitenant.core.hibernate.event.*
 import grails.plugin.multitenant.core.hibernate.*
+import grails.plugin.multitenant.core.spring.*
+
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class MultiTenantCoreGrailsPlugin {
 
     def groupId = "plugins.multitenant"    
-    def version = "0.1"
+    def version = "0.2.1"
     def grailsVersion = "1.3.5 > *"
     
-    // the other plugins this plugin depends on
-    // This caused random problems with Grails, looks like a concurrency issue
-//    def dependsOn = [
-//        'eventing': '0 > *',
-//        'hibernate-hijacker': '0 > *'    
-//    ]
+    def dependsOn = [:]
     
-    def loadAfter = [ 'eventing', 'hibernate-hijacker' ]
+    def loadAfter = [ 'hawk-eventing', 'hibernate-hijacker' ]
     
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
@@ -39,6 +37,11 @@ Brief description of the plugin.
     def doWithSpring = {
         
         currentTenant(CurrentTenantThreadLocal)
+		
+		// Tenant scope
+		tenantScopeConfigurator(TenantScopeConfigurator) {
+			currentTenant = ref("currentTenant")
+		}
         
         tenantUtils(TenantUtils) {
             currentTenant = ref("currentTenant")
@@ -68,7 +71,12 @@ Brief description of the plugin.
 			eventBroker = ref("eventBroker")
 			grailsApplication = ref("grailsApplication")
 		}
-        
+		
+		// Set per-tenant beans up in the custom tenant scope 
+		tenantBeanFactoryPostProcessor(TenantBeanFactoryPostProcessor) {
+			perTenantBeans = ConfigurationHolder.config?.multiTenant?.perTenantBeans ?: []
+		}
+		
     }
     
     def doWithWebDescriptor = { xml ->

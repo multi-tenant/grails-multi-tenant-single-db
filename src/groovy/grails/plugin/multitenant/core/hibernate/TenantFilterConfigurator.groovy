@@ -41,6 +41,7 @@ class TenantFilterConfigurator implements HibernateConfigPostProcessor {
     }
     
     private void addFilterDefinition(Configuration configuration) {
+		println " -> Defining Hibernate filer: " + TenantFilterCfg.TENANT_FILTER_NAME
         final Map filterParams = new HashMap();
         filterParams.put(TenantFilterCfg.TENANT_ID_PARAM_NAME, Hibernate.INTEGER)
         FilterDefinition filterDefinition = new FilterDefinition (
@@ -50,25 +51,33 @@ class TenantFilterConfigurator implements HibernateConfigPostProcessor {
     }
     
 	private void enrichMultiTenantDomainClasses(Configuration configuration) {
-		findMultiTenantDomainClasses().each { GrailsClass domainClass ->
+		def classNames = []
+		multiTenantDomainClasses.each { GrailsClass domainClass ->
+			classNames << domainClass.clazz.simpleName
 			addDomainFilter(domainClass, configuration)
-			//fixUniqueConstraints(domainClass)
 			addTenantIdConstraints(domainClass)
+			//fixUniqueConstraints(domainClass)
 		}
+				
+		log.debug "Added multi tenant functionality to: " + classNames.sort()
 	}
     
-	private List findMultiTenantDomainClasses() {
-		return grailsApplication.domainClasses.findAll { GrailsClass domainClass ->
+	private List<GrailsClass> getMultiTenantDomainClasses() {
+		grailsApplication.domainClasses.findAll { GrailsClass domainClass ->
 			TenantUtils.hasMultiTenantAnnotation(domainClass)
 		}
 	}
 
     private void addDomainFilter(DefaultGrailsDomainClass domainClass, Configuration configuration) {
-        log.debug "Adding multi tenant Hibernate filter to: " + domainClass.getName()
         def entity = configuration.getClassMapping(domainClass.fullName)
         entity.addFilter(TenantFilterCfg.TENANT_FILTER_NAME, TenantFilterCfg.FILTER_CONDITION);
     }
 
+	/**
+	 * Can inject unique: 'tenantId' in all fields with a unique constraint,
+	 * the problem is this might not be what we want to do in all cases. 
+	 * @param domainClass
+	 */
 	private void fixUniqueConstraints(DefaultGrailsDomainClass domainClass) {
 		getUniqueConstraint(domainClass).each { UniqueConstraint constraint ->
 			if (!isUniquePerTenant(constraint)) 

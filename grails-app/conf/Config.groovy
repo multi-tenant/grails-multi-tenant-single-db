@@ -1,5 +1,9 @@
 // configuration for plugin testing - will not be included in the plugin zip
  
+multiTenant {
+	perTenantBeans = [ 'demoService' ]
+}
+
 log4j = {
     // Example of changing the log pattern for the default console
     // appender:
@@ -24,7 +28,8 @@ log4j = {
     
     info   'grails.app'
     
-    debug  'grails.plugin.multitenant.core'
+    debug  'grails.plugin.multitenant.core',
+		   'grails.plugin.multitenant.core.spring'
 }
 
 // The following properties have been added by the Upgrade process...
