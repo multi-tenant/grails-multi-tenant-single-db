@@ -12,11 +12,10 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 class MultiTenantCoreGrailsPlugin {
 
     def groupId = "plugins.multitenant"    
-    def version = "0.2.1"
+    def version = "0.2.2"
     def grailsVersion = "1.3.5 > *"
     
     def dependsOn = [
-		'hawk-eventing': '0.3 > *'
 	]
     
     def loadAfter = [ 'hawk-eventing', 'hibernate-hijacker' ]

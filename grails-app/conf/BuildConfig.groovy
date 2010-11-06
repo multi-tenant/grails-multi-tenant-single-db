@@ -29,8 +29,8 @@ grails.project.dependency.resolution = {
     
     dependencies {
 		plugins {
-			compile "plugins.utilities:hawk-eventing:0.2"
-			compile "plugins.multitenant:hibernate-hijacker:0.2.3"
+			compile "plugins.utilities:hawk-eventing:0.3"
+			compile "plugins.multitenant:hibernate-hijacker:0.2.4"
 		}
     }
     
