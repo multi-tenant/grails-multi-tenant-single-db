@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.classic.Session;
 import org.springframework.beans.factory.InitializingBean;
 
+import grails.plugin.eventing.Event;
 import grails.plugin.eventing.EventBroker;
 import grails.plugin.eventing.EventConsumer;
 import grails.plugin.multitenant.core.CurrentTenant;
@@ -30,8 +31,8 @@ public class TenantHibernateFilterEnabler implements EventConsumer, Initializing
     }
     
     @Override
-    public void consume(Object event, EventBroker broker) {
-        Session session = (Session) event;
+    public void consume(Event event) {
+        Session session = (Session) event.getPayload();
         Integer currentTenantId = currentTenant.get();
         if (currentTenantId >= 0)
             TenantUtils.enableHibernateFilter(session, currentTenantId);
@@ -43,11 +44,6 @@ public class TenantHibernateFilterEnabler implements EventConsumer, Initializing
     
     public void setEventBroker(EventBroker eventBroker) {
         this.eventBroker = eventBroker;
-    }
-
-    @Override
-    public String getName() {
-        return "Hibernate tenant filter activator";
     }
 
 }

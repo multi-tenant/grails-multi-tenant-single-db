@@ -1,6 +1,7 @@
 package demo
 
 import spock.lang.*
+import grails.plugin.eventing.Event;
 import grails.plugin.eventing.EventConsumer;
 import grails.plugin.multitenant.core.annotation.TenantDomainClass;
 import grails.plugin.multitenant.core.util.TenantUtils;
@@ -21,7 +22,7 @@ class DemoTenantSpec extends IntegrationSpec {
 			.save(failOnError: true, flush: true)
 		
 		then: "One event has occured"
-		1 * newTenantConsumer.consume(_ as DemoTenant, _)
+		1 * newTenantConsumer.consume(_ as Event)
 	}
 	
 	def "Changes to a tenant triggers event" () {
@@ -38,7 +39,7 @@ class DemoTenantSpec extends IntegrationSpec {
 		james.save(flush: true, failOnError: true)
 			
 		then: "One event has occured"
-		1 * updatedTenantConsumer.consume(_ as DemoTenant, _)
+		1 * updatedTenantConsumer.consume(_ as Event)
 	}
 	
 	def "Deleting a tenant triggers event" () {
@@ -54,7 +55,7 @@ class DemoTenantSpec extends IntegrationSpec {
 		james.delete(flush: true, failOnError: true)
 			
 		then: "One event has occured"
-		1 * deletedTenantConsumer.consume(_ as DemoTenant, _)
+		1 * deletedTenantConsumer.consume(_ as Event)
 	}
 	
 }

@@ -2,6 +2,8 @@ package grails.plugin.multitenant.core.hibernate.event
 
 import java.lang.annotation.Annotation;
 
+import grails.plugin.eventing.Event;
+
 import grails.plugin.multitenant.core.annotation.TenantDomainClass;
 import grails.plugin.multitenant.core.util.TenantUtils;
 import grails.util.GrailsNameUtils;
@@ -48,16 +50,18 @@ class TenantDomainClassListener {
 	private void registerTenantListeners(Class<?> tenantDomainClass) {
 		String tenantClassPropertyName = GrailsNameUtils.getPropertyName(tenantDomainClass)
 		
-		eventBroker.subscribe("hibernate.postInsert." + tenantClassPropertyName) { event ->
-			eventBroker.publish("tenant.created", event.entity)
+		eventBroker.subscribe("hibernate.postInsert." + tenantClassPropertyName) { Event event ->
+			System.out.println("Got post insert event: " + event);
+			eventBroker.publish("tenant.created", event.payload)
 		}
 		
-		eventBroker.subscribe("hibernate.postDelete." + tenantClassPropertyName) { event ->
-			eventBroker.publish("tenant.deleted", event.entity)
+		eventBroker.subscribe("hibernate.postDelete." + tenantClassPropertyName) { Event event ->
+			System.out.println("Got post delete event: " + event);
+			eventBroker.publish("tenant.deleted", event.payload)
 		}
 		
-		eventBroker.subscribe("hibernate.postUpdate." + tenantClassPropertyName) { event ->
-			eventBroker.publish("tenant.updated", event.entity)
+		eventBroker.subscribe("hibernate.postUpdate." + tenantClassPropertyName) { Event event ->
+			eventBroker.publish("tenant.updated", event.payload)
 		}
 		
 	}

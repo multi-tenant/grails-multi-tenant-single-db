@@ -15,7 +15,9 @@ class MultiTenantCoreGrailsPlugin {
     def version = "0.2.1"
     def grailsVersion = "1.3.5 > *"
     
-    def dependsOn = [:]
+    def dependsOn = [
+		'hawk-eventing': '0.3 > *'
+	]
     
     def loadAfter = [ 'hawk-eventing', 'hibernate-hijacker' ]
     
