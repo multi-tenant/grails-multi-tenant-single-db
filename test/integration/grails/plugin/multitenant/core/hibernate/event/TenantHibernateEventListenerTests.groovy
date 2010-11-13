@@ -23,7 +23,6 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
         }
     }
     
-    @Test(expected=TenantSecurityException.class)
     void shouldNotBeAllowedToLoadOtherTenantsEntities() {
         int iPhoneId = -1
         tenantUtils.withTenantId(2) {
@@ -34,7 +33,7 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
         tenantUtils.withTenantId(1) {
             DemoProduct.withNewSession {
                 def product = DemoProduct.get(iPhoneId);
-                fail "We should not be allowed to load this entity"
+                assertNull product
             }
         }
     }

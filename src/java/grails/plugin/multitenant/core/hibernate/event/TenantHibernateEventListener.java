@@ -103,9 +103,12 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     	if (result != null && isMultiTenantEntity(result)) {
     		Integer currentTenantId = currentTenant.get();
     		Integer loadedTenantId = MtDomainClassUtil.getTenantIdFromEntity(result);
-    		if (!currentTenantId.equals(loadedTenantId) && !event.isAssociationFetch()) 
-    			throw new TenantSecurityException("Tried to load entity '" + entityClass.getSimpleName()
-    				+ "' from other tenant, expected " + currentTenantId + ", found " + loadedTenantId, currentTenantId, loadedTenantId);
+    		if (!currentTenantId.equals(loadedTenantId) && !event.isAssociationFetch()) {
+    			log.warn("Tried to load entity '" + entityClass.getSimpleName()
+    				+ "' from other tenant, expected " + currentTenantId + ", found " + loadedTenantId);
+    			
+    			event.setResult(null);
+    		}
     	}
     }
     
