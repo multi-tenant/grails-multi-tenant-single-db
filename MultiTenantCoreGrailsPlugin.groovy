@@ -15,8 +15,9 @@ class MultiTenantCoreGrailsPlugin {
     def version = "0.2.2"
     def grailsVersion = "1.3.5 > *"
     
-    def dependsOn = [
-	]
+	// I would like to specify hawk-eventing and hibernate-hijacker
+	// here, but they have a group id which Grails fails to look up. 
+    def dependsOn = [:]
     
     def loadAfter = [ 'hawk-eventing', 'hibernate-hijacker' ]
     

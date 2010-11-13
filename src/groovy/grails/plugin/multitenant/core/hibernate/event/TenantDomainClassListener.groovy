@@ -46,24 +46,29 @@ class TenantDomainClassListener {
 		return null;
 	}
 	
-	
 	private void registerTenantListeners(Class<?> tenantDomainClass) {
 		String tenantClassPropertyName = GrailsNameUtils.getPropertyName(tenantDomainClass)
-		
+		registerForPostInsertEvents tenantClassPropertyName
+		registerForPostDeleteEvents tenantClassPropertyName
+		registerForPostUpdateEvents tenantClassPropertyName
+	}
+	
+	private void registerForPostInsertEvents(String tenantClassPropertyName) {
 		eventBroker.subscribe("hibernate.postInsert." + tenantClassPropertyName) { Event event ->
-			System.out.println("Got post insert event: " + event);
 			eventBroker.publish("tenant.created", event.payload)
 		}
-		
+	}
+	
+	private void registerForPostDeleteEvents(String tenantClassPropertyName) {
 		eventBroker.subscribe("hibernate.postDelete." + tenantClassPropertyName) { Event event ->
-			System.out.println("Got post delete event: " + event);
 			eventBroker.publish("tenant.deleted", event.payload)
 		}
-		
+	}
+	
+	private void registerForPostUpdateEvents(String tenantClassPropertyName) {
 		eventBroker.subscribe("hibernate.postUpdate." + tenantClassPropertyName) { Event event ->
 			eventBroker.publish("tenant.updated", event.payload)
 		}
-		
 	}
 	
 }
