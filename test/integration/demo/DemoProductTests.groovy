@@ -32,4 +32,19 @@ class DemoProductTests extends GrailsUnitTestCase {
 		}
 	}
 	
+	
+	@Test
+	void filtersWorksForHql() {
+		String hql = "from DemoProduct as p where p.name = 'Flying car'"
+		
+		tenantUtils.withTenantId(1) {
+			new DemoProduct(name: 'Flying car').save(flush: true, failOnError: true)
+			assertEquals 1, DemoProduct.findAll(hql).size()
+		}
+		
+		tenantUtils.withTenantId(2) {
+			assertEquals 0, DemoProduct.findAll(hql).size()
+		}
+	}
+	
 }
