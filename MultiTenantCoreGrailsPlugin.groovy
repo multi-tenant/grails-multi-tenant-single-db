@@ -12,7 +12,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 class MultiTenantCoreGrailsPlugin {
 
     def groupId = "plugins.multitenant"    
-    def version = "0.2.2"
+    def version = "0.2.3"
     def grailsVersion = "1.3.5 > *"
     
 	// I would like to specify hawk-eventing and hibernate-hijacker
@@ -95,6 +95,8 @@ Brief description of the plugin.
             'filter-mapping' {
                 'filter-name'('tenantFilter')
                 'url-pattern'('/*')
+				'dispatcher' 'REQUEST'
+				'dispatcher' 'ERROR'
             }
         }
     }
