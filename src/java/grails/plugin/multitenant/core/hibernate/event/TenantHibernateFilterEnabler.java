@@ -5,9 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.classic.Session;
 import org.springframework.beans.factory.InitializingBean;
 
-import grails.plugin.eventing.Event;
-import grails.plugin.eventing.EventBroker;
-import grails.plugin.eventing.EventConsumer;
+import grails.plugins.hawkeventing.Event;
+import grails.plugins.hawkeventing.EventBroker;
+import grails.plugins.hawkeventing.EventConsumer;
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.util.TenantUtils;
 

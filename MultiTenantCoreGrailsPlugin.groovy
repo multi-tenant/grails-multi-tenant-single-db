@@ -11,12 +11,9 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class MultiTenantCoreGrailsPlugin {
 
-    def groupId = "plugins.multitenant"    
-    def version = "0.2.3"
+    def version = "0.2.5"
     def grailsVersion = "1.3.5 > *"
-    
-	// I would like to specify hawk-eventing and hibernate-hijacker
-	// here, but they have a group id which Grails fails to look up. 
+     
     def dependsOn = [:]
     
     def loadAfter = [ 'hawk-eventing', 'hibernate-hijacker' ]
@@ -28,8 +25,8 @@ class MultiTenantCoreGrailsPlugin {
     ]
 
     def author = "Kim A. Betti"
-    def authorEmail = ""
-    def title = "Plugin summary/headline"
+    def authorEmail = "kim@developer-b.com"
+    def title = "MultiTenantCore - DEMO"
     def description = '''\\
 Brief description of the plugin.
 '''

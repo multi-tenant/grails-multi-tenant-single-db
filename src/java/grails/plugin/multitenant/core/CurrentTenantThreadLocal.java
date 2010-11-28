@@ -1,6 +1,6 @@
 package grails.plugin.multitenant.core;
 
-import grails.plugin.eventing.EventBroker;
+import grails.plugins.hawkeventing.EventBroker;
 
 public class CurrentTenantThreadLocal implements CurrentTenant {
 

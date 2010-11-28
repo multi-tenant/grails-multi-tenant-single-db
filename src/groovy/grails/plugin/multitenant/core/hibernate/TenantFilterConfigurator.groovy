@@ -3,10 +3,13 @@ package grails.plugin.multitenant.core.hibernate
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Configuration;
 import grails.util.GrailsNameUtils;
-import grails.plugin.eventing.EventConsumer;
+
+import grails.plugins.hawkeventing.EventBroker;
+import grails.plugins.hawkeventing.EventConsumer;
+
 import grails.plugin.multitenant.core.util.TenantUtils
 import grails.plugin.multitenant.core.event.*;
-import grails.plugin.eventing.EventBroker;
+
 import grails.plugin.hibernatehijacker.hibernate.HibernateConfigPostProcessor
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
 import org.codehaus.groovy.grails.orm.hibernate.validation.UniqueConstraint;

@@ -1,8 +1,8 @@
 package demo
 
 import spock.lang.*
-import grails.plugin.eventing.Event;
-import grails.plugin.eventing.EventConsumer;
+import grails.plugins.hawkeventing.Event;
+import grails.plugins.hawkeventing.EventConsumer;
 import grails.plugin.multitenant.core.annotation.TenantDomainClass;
 import grails.plugin.multitenant.core.util.TenantUtils;
 import grails.plugin.spock.*

@@ -2,7 +2,7 @@ package grails.plugin.multitenant.core.hibernate.event
 
 import java.lang.annotation.Annotation;
 
-import grails.plugin.eventing.Event;
+import grails.plugins.hawkeventing.Event;
 
 import grails.plugin.multitenant.core.annotation.TenantDomainClass;
 import grails.plugin.multitenant.core.util.TenantUtils;
