@@ -44,7 +44,7 @@ class TenantFilterConfigurator implements HibernateConfigPostProcessor {
     }
     
     private void addFilterDefinition(Configuration configuration) {
-		log.debug "Defining Hibernate filer: " + TenantFilterCfg.TENANT_FILTER_NAME
+		log.info "Defining Hibernate filer: " + TenantFilterCfg.TENANT_FILTER_NAME
         final Map filterParams = new HashMap();
         filterParams.put(TenantFilterCfg.TENANT_ID_PARAM_NAME, Hibernate.INTEGER)
         FilterDefinition filterDefinition = new FilterDefinition (
