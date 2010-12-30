@@ -15,7 +15,8 @@ import org.springframework.beans.factory.support.*;
 import org.springframework.aop.scope.ScopedProxyFactoryBean;
 
 /**
- * 
+ * Creates a tenant scoped proxy around beans 
+ * configured to be unique per tenant. 
  * @author Kim A. Betti
  */
 public class TenantBeanFactoryPostProcessor implements BeanFactoryPostProcessor, Ordered {

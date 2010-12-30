@@ -10,13 +10,13 @@ import java.lang.annotation.Annotation;
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author Kim A. Betti <kim@developer-b.com>
+ */
 public class TenantUtils {
 	
-	private final static Logger log = LoggerFactory.getLogger(TenantUtils.class);
-
 	private static CurrentTenant currentTenant;
 	private static SessionFactory sessionFactory;
 	
@@ -33,6 +33,18 @@ public class TenantUtils {
                 return true;
         
         return false;
+	}
+	
+	public static boolean isMultiTenantClass(Class<?> clazz) {
+		if (hasMultiTenantAnnotation(clazz)) {
+			return true;
+		} else {
+			Class<?> superclass = clazz.getSuperclass();
+			if (superclass != null && superclass != Object.class) 
+				return isMultiTenantClass(superclass);
+		}
+		
+		return false;
 	}
 	
 	public void withTenantId(Integer temporaryTenantId, Closure closure) {

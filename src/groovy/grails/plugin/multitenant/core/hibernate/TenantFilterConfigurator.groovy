@@ -24,7 +24,13 @@ import org.hibernate.engine.FilterDefinition
 import org.hibernate.Hibernate
 
 /**
- * Defines the Hibernate filter
+ * Defines the Hibernate filter.
+ * 
+ * The Hibernate Hijacker detects beans implementing HibernateConfigPostProcessor
+ * and will make sure that the Configuration instances is passed through this instance
+ * when the application is starting.
+ * 
+ * @author Kim A. Betti <kim@developer-b.com>
  */
 class TenantFilterConfigurator implements HibernateConfigPostProcessor {
     
@@ -67,7 +73,7 @@ class TenantFilterConfigurator implements HibernateConfigPostProcessor {
     
 	private List<GrailsClass> getMultiTenantDomainClasses() {
 		grailsApplication.domainClasses.findAll { GrailsClass domainClass ->
-			TenantUtils.hasMultiTenantAnnotation(domainClass)
+			TenantUtils.isMultiTenantClass(domainClass.getClazz())
 		}
 	}
 

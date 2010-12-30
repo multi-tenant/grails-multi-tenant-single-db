@@ -13,6 +13,7 @@ class DemoProductTests extends GrailsUnitTestCase {
     void differentTenantsCanUseSameValueForUniqueProperty() {
 		tenantUtils.withTenantId(1) {
 			new DemoProduct(name: 'bPhone').save(flush: true, failOnError: true)
+			assertEquals 1, DemoProduct.findAllByName("bPhone").size()
 		}
 		
 		tenantUtils.withTenantId(2) {

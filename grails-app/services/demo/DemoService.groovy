@@ -1,14 +1,14 @@
 package demo
 
-import org.springframework.beans.factory.InitializingBean;
-
-class DemoService implements InitializingBean {
+/**
+ * This Spring bean is configured as per-tenant and used to 
+ * verify that each tenant will see a different instance.
+ * @author Kim A. Betti <kim@developer-b.com>
+ */
+class DemoService {
 
     static transactional = false
-	
-	public void afterPropertiesSet() {
-	}
 
 	def touchedByTenant = "none"
-		
+
 }
