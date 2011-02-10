@@ -9,9 +9,9 @@ import grails.plugin.multitenant.core.spring.*
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
-class MultiTenantCoreGrailsPlugin {
+class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.2.6"
+    def version = "0.3"
     def grailsVersion = "1.3.5 > *"
      
     def dependsOn = [
@@ -29,12 +29,12 @@ class MultiTenantCoreGrailsPlugin {
 
     def author = "Kim A. Betti"
     def authorEmail = "kim@developer-b.com"
-    def title = "MultiTenantCore - DEMO"
+    def title = "MultiTenant - SingleDB"
     def description = '''\\
-Brief description of the plugin.
+Multi tenant setup focused on single db mode
 '''
 
-    def documentation = "http://grails.org/plugin/multi-tenant-core"
+    def documentation = "https://github.com/multi-tenant/grails-multi-tenant-single-db"
 
     def doWithSpring = {
         
