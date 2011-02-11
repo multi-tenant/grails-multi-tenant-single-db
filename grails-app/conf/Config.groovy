@@ -28,8 +28,8 @@ log4j = {
     
     info   'grails.app'
     
-    debug  'grails.plugin.multitenant.core',
-		   'grails.plugin.multitenant.core.spring'
+    debug  'grails.plugin.multitenant.singledb',
+		   'grails.plugin.multitenant.singledb.spring'
 }
 
 // The following properties have been added by the Upgrade process...

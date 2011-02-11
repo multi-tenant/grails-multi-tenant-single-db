@@ -1,6 +1,6 @@
 package demo
 
-import grails.plugin.multitenant.core.annotation.MultiTenant;
+import grails.plugin.multitenant.singledb.annotation.MultiTenant;
 
 /**
  * So far classes inheriting from a @MultiTenant annotated

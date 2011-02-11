@@ -2,7 +2,7 @@ package demo
 
 import org.junit.Test;
 
-import grails.plugin.multitenant.core.util.TenantUtils
+import grails.plugin.multitenant.singledb.util.TenantUtils
 import grails.test.*
 
 /**

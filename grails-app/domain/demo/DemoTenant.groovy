@@ -1,6 +1,6 @@
 package demo
 
-import grails.plugin.multitenant.core.annotation.TenantDomainClass
+import grails.plugin.multitenant.singledb.annotation.TenantDomainClass
 
 @TenantDomainClass
 class DemoTenant {

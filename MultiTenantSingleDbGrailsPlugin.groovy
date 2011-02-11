@@ -1,11 +1,11 @@
 import grails.util.Environment
 
-import grails.plugin.multitenant.core.*
-import grails.plugin.multitenant.core.util.*
-import grails.plugin.multitenant.core.filter.CurrentTenantFilter
-import grails.plugin.multitenant.core.hibernate.event.*
-import grails.plugin.multitenant.core.hibernate.*
-import grails.plugin.multitenant.core.spring.*
+import grails.plugin.multitenant.singledb.*
+import grails.plugin.multitenant.singledb.util.*
+import grails.plugin.multitenant.singledb.filter.CurrentTenantFilter
+import grails.plugin.multitenant.singledb.hibernate.event.*
+import grails.plugin.multitenant.singledb.hibernate.*
+import grails.plugin.multitenant.singledb.spring.*
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 

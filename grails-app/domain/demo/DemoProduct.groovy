@@ -1,6 +1,6 @@
 package demo
 
-import grails.plugin.multitenant.core.annotation.MultiTenant
+import grails.plugin.multitenant.singledb.annotation.MultiTenant
 
 @MultiTenant
 class DemoProduct {

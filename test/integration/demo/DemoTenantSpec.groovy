@@ -3,8 +3,8 @@ package demo
 import spock.lang.*
 import grails.plugins.hawkeventing.Event;
 import grails.plugins.hawkeventing.EventConsumer;
-import grails.plugin.multitenant.core.annotation.TenantDomainClass;
-import grails.plugin.multitenant.core.util.TenantUtils;
+import grails.plugin.multitenant.singledb.annotation.TenantDomainClass;
+import grails.plugin.multitenant.singledb.util.TenantUtils;
 import grails.plugin.spock.*
 
 class DemoTenantSpec extends IntegrationSpec {
