@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * Subscribes itself to hibernate.sessionCreated events.
@@ -34,9 +35,11 @@ public class TenantHibernateFilterEnabler {
 
     @Consuming(CurrentTenant.TENANT_CHANGE_EVENT)
     public void currentTenantUpdated(Event event) {
-        Integer updatedTenantId = (Integer) event.getPayload();
-        Session currentSession = sessionFactory.getCurrentSession();
-        enableHibernateFilter(currentSession, updatedTenantId);
+        if (TransactionSynchronizationManager.hasResource(sessionFactory)) {
+            Integer updatedTenantId = (Integer) event.getPayload();
+            Session currentSession = sessionFactory.getCurrentSession();
+            enableHibernateFilter(currentSession, updatedTenantId);
+        }
     }
 
     public void enableHibernateFilter(Session session, Integer tenantId) {
