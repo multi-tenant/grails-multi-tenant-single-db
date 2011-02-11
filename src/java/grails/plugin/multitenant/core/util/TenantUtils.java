@@ -1,7 +1,7 @@
-package grails.plugin.multitenant.singledb.util;
+package grails.plugin.multitenant.core.util;
 
-import grails.plugin.multitenant.singledb.CurrentTenant;
-import grails.plugin.multitenant.singledb.annotation.MultiTenant;
+import grails.plugin.multitenant.core.CurrentTenant;
+import grails.plugin.multitenant.core.annotation.MultiTenant;
 import grails.plugin.multitenant.singledb.hibernate.TenantFilterCfg;
 import groovy.lang.Closure;
 
@@ -12,11 +12,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 
 /**
- * TODO: This class needs some refactoring. Having all these
- * different responsibilities in the same class smells a bit. 
- * 
+ * @deprecated
  * @author Kim A. Betti <kim@developer-b.com>
  */
+@Deprecated
 public class TenantUtils {
 
     private static CurrentTenant currentTenant;

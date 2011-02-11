@@ -1,10 +1,11 @@
 package grails.plugin.multitenant.singledb.hibernate.event
 
-import demo.DemoProduct
-import org.junit.Test;
-
-import grails.plugin.multitenant.singledb.exception.TenantSecurityException;
+import grails.plugin.multitenant.core.exception.TenantSecurityException
 import grails.test.GrailsUnitTestCase
+
+import org.junit.Test
+
+import demo.DemoProduct
 
 class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
  

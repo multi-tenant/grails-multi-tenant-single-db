@@ -1,6 +1,6 @@
-package grails.plugin.multitenant.singledb.util
+package grails.plugin.multitenant.core.util
 
-import grails.plugin.multitenant.singledb.hibernate.TenantFilterCfg;
+import grails.plugin.multitenant.singledb.hibernate.TenantFilterCfg
 
 /**
  * Helper methods for setting and getting tenantId on entities. 

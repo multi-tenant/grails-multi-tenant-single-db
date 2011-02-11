@@ -1,6 +1,9 @@
-package grails.plugin.multitenant.singledb.annotation;
+package grails.plugin.multitenant.core.annotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Annotate the class containing tenant information with this.

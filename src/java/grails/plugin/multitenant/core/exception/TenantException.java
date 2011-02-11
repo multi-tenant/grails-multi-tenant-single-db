@@ -1,4 +1,4 @@
-package grails.plugin.multitenant.singledb.exception;
+package grails.plugin.multitenant.core.exception;
 
 @SuppressWarnings("serial")
 public class TenantException extends RuntimeException {
@@ -7,8 +7,8 @@ public class TenantException extends RuntimeException {
         super(message);
     }
 
-	public TenantException(String message, Throwable cause) {
-		super(message, cause);
-	}
-    
+    public TenantException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

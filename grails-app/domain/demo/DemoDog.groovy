@@ -1,6 +1,8 @@
 package demo
 
-import grails.plugin.multitenant.singledb.annotation.MultiTenant;
+import grails.plugin.multitenant.core.annotation.MultiTenant
+
+
 
 /**
  * So far classes inheriting from a @MultiTenant annotated
@@ -9,10 +11,10 @@ import grails.plugin.multitenant.singledb.annotation.MultiTenant;
  */
 @MultiTenant
 class DemoDog extends DemoAnimal {
-	
-	int catsKilled = 0
+
+    int catsKilled = 0
 
     static constraints = {
     }
-	
+    
 }

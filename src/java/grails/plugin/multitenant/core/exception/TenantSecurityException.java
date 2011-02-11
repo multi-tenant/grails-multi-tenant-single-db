@@ -1,8 +1,8 @@
-package grails.plugin.multitenant.singledb.exception;
+package grails.plugin.multitenant.core.exception;
 
 @SuppressWarnings("serial")
 public class TenantSecurityException extends TenantException {
-    
+
     private Integer currentTenantId, loadedTenantId;
 
     public TenantSecurityException(String message, Integer currentTenantId, Integer loadedTenantId) {
@@ -18,5 +18,5 @@ public class TenantSecurityException extends TenantException {
     public Integer getLoadedTenantId() {
         return loadedTenantId;
     }
-    
+
 }

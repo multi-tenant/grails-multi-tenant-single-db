@@ -1,4 +1,4 @@
-package grails.plugin.multitenant.singledb.ast;
+package grails.plugin.multitenant.core.ast;
 
 import grails.plugin.multitenant.singledb.hibernate.TenantFilterCfg;
 

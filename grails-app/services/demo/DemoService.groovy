@@ -9,6 +9,6 @@ class DemoService {
 
     static transactional = false
 
-	def touchedByTenant = "none"
-
+    def touchedByTenant = "none"
+    
 }

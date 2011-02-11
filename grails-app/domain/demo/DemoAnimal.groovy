@@ -1,17 +1,17 @@
 package demo
 
-import grails.plugin.multitenant.singledb.annotation.MultiTenant;
+import grails.plugin.multitenant.core.annotation.MultiTenant
+
 
 @MultiTenant
 class DemoAnimal {
-	
-	String name
+
+    String name
 
     static constraints = {
     }
-	
-	String toString() {
-		"Animal[name: $name]"
-	}
-	
+
+    String toString() {
+        "Animal[name: $name]"
+    }
 }
