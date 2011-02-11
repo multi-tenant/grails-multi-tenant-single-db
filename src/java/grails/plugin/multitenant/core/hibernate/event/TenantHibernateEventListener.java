@@ -2,10 +2,10 @@ package grails.plugin.multitenant.core.hibernate.event;
 
 import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
 import grails.plugin.multitenant.core.CurrentTenant;
+import grails.plugin.multitenant.core.MultiTenantContext;
 import grails.plugin.multitenant.core.exception.TenantException;
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
 import grails.plugin.multitenant.core.util.MtDomainClassUtil;
-import grails.plugin.multitenant.core.util.TenantUtils;
 import grails.plugin.multitenant.singledb.hibernate.TenantFilterCfg;
 
 import java.util.HashMap;
@@ -37,7 +37,9 @@ import org.hibernate.tuple.StandardProperty;
 public class TenantHibernateEventListener implements PreInsertEventListener, PreUpdateEventListener, LoadEventListener {
 
     private static Log log = LogFactory.getLog(TenantHibernateEventListener.class);
+
     private CurrentTenant currentTenant;
+    private MultiTenantContext multiTenantContext;
 
     // The PostLoad event only contains the class name so reflection is used to
     // load the corresponding class. This is obviously expensive so we cache the
@@ -54,6 +56,10 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
 
     public void setCurrentTenant(CurrentTenant currentTenant) {
         this.currentTenant = currentTenant;
+    }
+
+    public void setMultiTenantContext(MultiTenantContext multiTenantContext) {
+        this.multiTenantContext = multiTenantContext;
     }
 
     @Override
@@ -135,7 +141,8 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     }
 
     private boolean isMultiTenantEntity(Object entity) {
-        return TenantUtils.hasMultiTenantAnnotation(entity.getClass());
+        Class<?> entityClass = entity.getClass();
+        return multiTenantContext.isMultiTenantDomainClass(entityClass);
     }
 
 }

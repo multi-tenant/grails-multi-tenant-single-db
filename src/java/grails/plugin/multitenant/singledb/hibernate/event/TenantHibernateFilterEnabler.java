@@ -10,7 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * Subscribes itself to hibernate.sessionCreated events.
@@ -19,17 +18,12 @@ import org.springframework.beans.factory.InitializingBean;
  * @author Kim A. Betti
  */
 @HawkEventConsumer
-public class TenantHibernateFilterEnabler implements InitializingBean {
+public class TenantHibernateFilterEnabler {
 
     private static Log log = LogFactory.getLog(TenantHibernateFilterEnabler.class);
 
     private SessionFactory sessionFactory;
     private CurrentTenant currentTenant;
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        log.debug("Subscribing to hibernate.sessionCreated");
-    }
 
     @Consuming("hibernate.sessionCreated")
     public void newHibernateSessionCreated(Event event) {

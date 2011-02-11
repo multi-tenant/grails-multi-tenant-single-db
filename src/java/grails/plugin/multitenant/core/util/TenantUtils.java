@@ -1,12 +1,8 @@
 package grails.plugin.multitenant.core.util;
 
 import grails.plugin.multitenant.core.CurrentTenant;
-import grails.plugin.multitenant.core.annotation.MultiTenant;
 import groovy.lang.Closure;
 
-import java.lang.annotation.Annotation;
-
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 
@@ -19,37 +15,6 @@ public class TenantUtils {
 
     private static CurrentTenant currentTenant;
     private static SessionFactory sessionFactory;
-
-    public static Class<?> TENANT_DOMAIN_CLASS;
-
-    public static boolean hasMultiTenantAnnotation(
-            DefaultGrailsDomainClass domainClass) {
-        return hasMultiTenantAnnotation(domainClass.getClazz());
-    }
-
-    public static boolean hasMultiTenantAnnotation(Class<?> clazz) {
-        Annotation[] annotations = clazz.getAnnotations();
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof MultiTenant) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static boolean isMultiTenantClass(Class<?> clazz) {
-        if (hasMultiTenantAnnotation(clazz)) {
-            return true;
-        } else {
-            Class<?> superclass = clazz.getSuperclass();
-            if (superclass != null && superclass != Object.class) {
-                return isMultiTenantClass(superclass);
-            }
-        }
-
-        return false;
-    }
 
     public void withTenantId(Integer temporaryTenantId, Closure closure) {
         Integer previousTenantId = currentTenant.get();

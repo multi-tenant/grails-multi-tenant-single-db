@@ -1,6 +1,7 @@
 import grails.plugin.multitenant.core.CurrentTenantThreadLocal;
+import grails.plugin.multitenant.core.MultiTenantContext;
 import grails.plugin.multitenant.core.filter.CurrentTenantFilter;
-import grails.plugin.multitenant.singledb.hibernate.TenantFilterConfigurator;
+import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
 import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener;
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener;
 import grails.plugin.multitenant.singledb.hibernate.event.TenantHibernateFilterEnabler;
@@ -62,16 +63,21 @@ Multi tenant setup focused on single db mode
             sessionFactory = ref("sessionFactory")
         }
 
+        multiTenantContext(MultiTenantContext) {
+            grailsApplication = ref("grailsApplication")
+        }
+        
         // Inserts tenantId, makes sure that we're not
         // loading other tenant's data and so on
         tenantHibernateEventListener(TenantHibernateEventListener) {
             currentTenant = ref("currentTenant")
+            multiTenantContext = ref("multiTenantContext")
         }
 
         // Enables the tenant filter for our domain classes
-        tenantFilterConfigurator(TenantFilterConfigurator) {
+        tenantFilterConfigurator(TenantHibernateFilterConfigurator) {
             eventBroker = ref("eventBroker")
-            grailsApplication = ref("grailsApplication")
+            multiTenantContext = ref("multiTenantContext")
             tenantHibernateEventListener = ref("tenantHibernateEventListener")
         }
 
@@ -85,6 +91,7 @@ Multi tenant setup focused on single db mode
         tenantBeanFactoryPostProcessor(TenantBeanFactoryPostProcessor) {
             perTenantBeans = ConfigurationHolder.config?.multiTenant?.perTenantBeans ?: []
         }
+        
     }
 
     def doWithWebDescriptor = { xml ->

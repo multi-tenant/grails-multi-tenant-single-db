@@ -1,8 +1,8 @@
 package grails.plugin.multitenant.singledb.hibernate
 
 import grails.plugin.hibernatehijacker.hibernate.HibernateConfigPostProcessor
+import grails.plugin.multitenant.core.MultiTenantContext
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
-import grails.plugin.multitenant.core.util.TenantUtils
 import grails.plugin.multitenant.singledb.event.*
 import grails.plugins.hawkeventing.EventBroker
 
@@ -26,12 +26,12 @@ import org.hibernate.engine.FilterDefinition
  * 
  * @author Kim A. Betti <kim@developer-b.com>
  */
-class TenantFilterConfigurator implements HibernateConfigPostProcessor {
+class TenantHibernateFilterConfigurator implements HibernateConfigPostProcessor {
 
     private static Log log = LogFactory.getLog(this)
 
     TenantHibernateEventListener tenantHibernateEventListener
-    GrailsApplication grailsApplication
+    MultiTenantContext multiTenantContext
     EventBroker eventBroker
 
     @Override
@@ -44,7 +44,7 @@ class TenantFilterConfigurator implements HibernateConfigPostProcessor {
     }
 
     private void addFilterDefinition(Configuration configuration) {
-        log.info "Defining Hibernate filer: " + TenantFilterCfg.TENANT_FILTER_NAME
+        log.debug "Defining Hibernate filer: " + TenantFilterCfg.TENANT_FILTER_NAME
         final Map filterParams = new HashMap();
         filterParams.put(TenantFilterCfg.TENANT_ID_PARAM_NAME, Hibernate.INTEGER)
         FilterDefinition filterDefinition = new FilterDefinition (
@@ -54,8 +54,9 @@ class TenantFilterConfigurator implements HibernateConfigPostProcessor {
     }
 
     private void enrichMultiTenantDomainClasses(Configuration configuration) {
-        def classNames = []
-        multiTenantDomainClasses.each { GrailsClass domainClass ->
+        List classNames = []
+        List multiTenantDomainClasses = multiTenantContext.getMultiTenantDomainClasses()
+        multiTenantDomainClasses.each { GrailsDomainClass domainClass ->
             classNames << domainClass.clazz.simpleName
             addDomainFilter(domainClass, configuration)
             addTenantIdConstraints(domainClass)
@@ -63,12 +64,6 @@ class TenantFilterConfigurator implements HibernateConfigPostProcessor {
         }
 
         log.debug "Added multi tenant functionality to: " + classNames.sort()
-    }
-
-    private List<GrailsClass> getMultiTenantDomainClasses() {
-        grailsApplication.domainClasses.findAll { GrailsClass domainClass ->
-            TenantUtils.isMultiTenantClass(domainClass.getClazz())
-        }
     }
 
     private void addDomainFilter(DefaultGrailsDomainClass domainClass, Configuration configuration) {
