@@ -8,13 +8,13 @@ grails.project.dependency.resolution = {
     inherits("global") {
         // excludes 'ehcache'
     }
-    
+
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
-        
-		mavenLocal()
+
+        mavenLocal()
         mavenCentral()
-		
+
         grailsPlugins()
         grailsHome()
         grailsCentral()
@@ -24,9 +24,7 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
-    
+
     dependencies {
-		
     }
-    
 }

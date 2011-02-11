@@ -2,7 +2,6 @@ package grails.plugin.multitenant.core.util;
 
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.annotation.MultiTenant;
-import grails.plugin.multitenant.singledb.hibernate.TenantFilterCfg;
 import groovy.lang.Closure;
 
 import java.lang.annotation.Annotation;
@@ -58,19 +57,12 @@ public class TenantUtils {
         currentSession.flush();
 
         try {
-            enableHibernateFilter(currentSession, temporaryTenantId);
             currentTenant.set(temporaryTenantId);
             closure.call();
             currentSession.flush(); // Force events to happen with the expected id
         } finally {
-            enableHibernateFilter(currentSession, previousTenantId);
             currentTenant.set(previousTenantId);
         }
-    }
-
-    public static void enableHibernateFilter(Session session, Integer tenantId) {
-        session.enableFilter(TenantFilterCfg.TENANT_FILTER_NAME).setParameter (
-                TenantFilterCfg.TENANT_ID_PARAM_NAME, tenantId);
     }
 
     public void setCurrentTenant(CurrentTenant currentTenant) {

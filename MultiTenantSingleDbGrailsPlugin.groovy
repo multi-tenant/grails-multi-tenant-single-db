@@ -43,7 +43,9 @@ Multi tenant setup focused on single db mode
 
     def doWithSpring = {
 
-        currentTenant(CurrentTenantThreadLocal)
+        currentTenant(CurrentTenantThreadLocal) {
+            eventBroker = ref("eventBroker")
+        }
 
         // Tenant scope
         tenantScopeConfigurator(TenantScopeConfigurator) { 
@@ -56,8 +58,8 @@ Multi tenant setup focused on single db mode
         }
 
         tenantHibernateFilterEnabler(TenantHibernateFilterEnabler) {
-            eventBroker = ref("eventBroker")
             currentTenant = ref("currentTenant")
+            sessionFactory = ref("sessionFactory")
         }
 
         // Inserts tenantId, makes sure that we're not

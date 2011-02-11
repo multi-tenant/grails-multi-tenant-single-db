@@ -20,8 +20,8 @@ public class CurrentTenantThreadLocal implements CurrentTenant {
 
     @Override
     public void set(Integer tenantId) {
+        eventBroker.publish(CurrentTenant.TENANT_CHANGE_EVENT, tenantId);
         currentTenant.set(tenantId);
-        // TODO: Send a message if the id changes
     }
 
     public void setEventBroker(EventBroker broker) {
