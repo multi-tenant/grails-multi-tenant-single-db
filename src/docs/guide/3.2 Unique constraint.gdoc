@@ -1,0 +1,15 @@
+You must take some extra care with the unique constraint as all tenants will share the same database. 
+In the future we might add this automatically during application startup. 
+
+{code:java}
+@MultiTenant
+class Animal {
+    
+    String name
+    
+    static constraints = {
+        name unique: 'tenantId'
+    }
+    
+}
+{code}

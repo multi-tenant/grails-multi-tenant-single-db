@@ -27,4 +27,9 @@ grails.project.dependency.resolution = {
 
     dependencies {
     }
+    
+    plugins {
+        compile ':hibernate-hijacker:0.4'
+    }
+    
 }

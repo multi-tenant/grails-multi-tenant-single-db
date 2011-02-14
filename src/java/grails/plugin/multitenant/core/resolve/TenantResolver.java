@@ -15,6 +15,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface TenantResolver {
 
-    int resolve(HttpServletRequest request);
+    Integer resolve(HttpServletRequest request);
 
 }

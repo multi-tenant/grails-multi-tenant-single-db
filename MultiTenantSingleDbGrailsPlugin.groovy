@@ -14,13 +14,10 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.3"
+    def version = "0.4"
     def grailsVersion = "1.3.5 > *"
 
-    def dependsOn = [
-        hawkEventing: '0.4.1 > *',
-        hibernateHijacker: '0.2.6 > *'
-    ]
+    def dependsOn = [:]
 
     def loadAfter = [
         'hawk-eventing',
@@ -37,7 +34,7 @@ class MultiTenantSingleDbGrailsPlugin {
     def authorEmail = "kim@developer-b.com"
     def title = "MultiTenant - SingleDB"
     def description = '''\\
-Multi tenant setup focused on single db mode
+Multi tenant setup focused on single database mode
 '''
 
     def documentation = "https://github.com/multi-tenant/grails-multi-tenant-single-db"
@@ -84,7 +81,7 @@ Multi tenant setup focused on single db mode
         // Listens for new / removed tenants
         tenantDomainClassListener(TenantDomainClassListener) {
             eventBroker = ref("eventBroker")
-            grailsApplication = ref("grailsApplication")
+            multiTenantContext = ref("multiTenantContext")
         }
 
         // Set per-tenant beans up in the custom tenant scope

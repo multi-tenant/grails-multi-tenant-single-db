@@ -5,10 +5,13 @@ import grails.plugins.hawkeventing.Event
 import grails.plugins.hawkeventing.EventConsumer
 import spock.lang.*
 
+/**
+ * 
+ * @author Kim A. Betti
+ */
 class DemoTenantSpec extends IntegrationSpec {
 
     def eventBroker
-
 
     def "New tenants triggers events" () {
         given: "Subscription to the expected event"
@@ -55,5 +58,5 @@ class DemoTenantSpec extends IntegrationSpec {
         then: "One event has occured"
         1 * deletedTenantConsumer.consume(_ as Event)
     }
-    
+
 }

@@ -1,50 +1,39 @@
 package grails.plugin.multitenant.core.hibernate.event
 
-import grails.plugin.multitenant.core.annotation.TenantDomainClass
+import grails.plugin.multitenant.core.Tenant
 import grails.plugins.hawkeventing.Event
 import grails.util.GrailsNameUtils
 
-import java.lang.annotation.Annotation
-
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.GrailsClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.InitializingBean
 
 /**
+ * Finds the Tenant class and adds Hibernate event listeners. 
+ * Works as proxy translating Hibernate events to non-Hibernate
+ * specific events. This class will have to be moved if we want
+ * to make a -core plugin completely independent of Hibernate.  
  * 
  * @author Kim A. Betti
  */
-class TenantDomainClassListener {
+class TenantDomainClassListener implements InitializingBean {
 
     private final static Logger log = LoggerFactory.getLogger(TenantDomainClassListener);
 
     def eventBroker
+    def multiTenantContext
 
-    public void setGrailsApplication(GrailsApplication grailsApplication) {
-        Class<?> tenantDomainClass = getTenantDomainClass(grailsApplication);
+    public void afterPropertiesSet() {
+        Class<? extends Tenant> tenantDomainClass = multiTenantContext.getTenantClass()
         if (!tenantDomainClass) {
-            log.warn "Unable to find any domain classes annotated with @TenantDomainClass, tenant events will not be published."
+            log.warn "Unable to find any domain classes implementing the Tenant interface, tenant events will not be published."
         } else {
             log.info "Registering tenant event listeners for " + tenantDomainClass.simpleName
             registerTenantListeners(tenantDomainClass)
         }
     }
 
-    private Class<?> getTenantDomainClass(GrailsApplication grailsApplication) {
-        GrailsClass[] artefacts = grailsApplication.getArtefacts("Domain");
-        for (GrailsClass artefact : artefacts) {
-            Annotation[] annotations = artefact.getClazz().getAnnotations();
-            for (Annotation annotation : annotations)
-                if (annotation instanceof TenantDomainClass)
-                    return artefact.getClazz();
-        }
-
-        log.debug("Unable to find any domain classes annotated with @TenantDomainClass");
-        return null;
-    }
-
-    private void registerTenantListeners(Class<?> tenantDomainClass) {
+    private void registerTenantListeners(Class<? extends Tenant> tenantDomainClass) {
         String tenantClassPropertyName = GrailsNameUtils.getPropertyName(tenantDomainClass)
         registerForPostInsertEvents tenantClassPropertyName
         registerForPostDeleteEvents tenantClassPropertyName

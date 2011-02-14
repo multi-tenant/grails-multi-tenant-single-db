@@ -1,10 +1,11 @@
-Naive implementation. 
+You can see a naive implementation of this interface below. 
+Your application will probably look this information up from a database.
 
 {code:java}
 class CachingTenantDomainResolver implements TenantResolver {
 
     @Override
-    public int resolve(final HttpServletRequest request) {
+    public int resolve(HttpServletRequest request) {
         String host = request.getServerName();
         switch (host) {
             case "customer-a.com":
@@ -14,9 +15,13 @@ class CachingTenantDomainResolver implements TenantResolver {
                 return 2
                 
             default:
-                throw new Exception("No tenant associated with" + host)
+                return null
         }
     }
     
 }
 {code}
+
+{note}
+Error handling is subject to change. We're still looking for a "best practice". 
+{note}

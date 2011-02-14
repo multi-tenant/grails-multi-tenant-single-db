@@ -15,7 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.event.EventListeners;
 import org.hibernate.event.LoadEvent;
 import org.hibernate.event.LoadEventListener;
 import org.hibernate.event.PreInsertEvent;
@@ -48,10 +47,9 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
 
     public void activate(Configuration configuration) {
         log.debug("Subscribing to preInsert, preUpdate and postLoad");
-        EventListeners eventListeners = configuration.getEventListeners();
-        HibernateEventUtil.addListener(eventListeners, "load", this);
-        HibernateEventUtil.addListener(eventListeners, "preInsert", this);
-        HibernateEventUtil.addListener(eventListeners, "preUpdate", this);
+        HibernateEventUtil.addListener(configuration, "load", this);
+        HibernateEventUtil.addListener(configuration, "pre-insert", this);
+        HibernateEventUtil.addListener(configuration, "pre-update", this);
     }
 
     public void setCurrentTenant(CurrentTenant currentTenant) {
@@ -120,7 +118,6 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
             Integer loadedTenantId = MtDomainClassUtil.getTenantIdFromEntity(result);
             if (!currentTenantId.equals(loadedTenantId) && !event.isAssociationFetch()) {
                 log.warn("Tried to load entity '" + entityClass.getSimpleName() + "' from other tenant, expected " + currentTenantId + ", found " + loadedTenantId);
-
                 event.setResult(null);
             }
         }

@@ -1,10 +1,15 @@
 package demo
 
-import grails.plugin.multitenant.core.annotation.TenantDomainClass
+import grails.plugin.multitenant.core.Tenant
 
-@TenantDomainClass
-class DemoTenant {
+/**
+ * 
+ * @author Kim A. Betti
+ */
+class DemoTenant implements Tenant {
 
+    static transients = [ "tenantId" ]
+    
     String name
     String domain
     Integer mappedTenantId
@@ -14,4 +19,9 @@ class DemoTenant {
         domain blank: false, unique: true
         mappedTenantId unique: true, min: 0
     }
+    
+    Integer getTenantId() {
+        return this.id;
+    }
+    
 }
