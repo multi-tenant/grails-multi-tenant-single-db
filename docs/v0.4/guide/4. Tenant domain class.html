@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>4. Tenant domain class</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    <h1><a name="4. Tenant domain class">4. Tenant domain class</a></h1>Most applications will have a domain class where you store tenant data. This will probably be named something like <code>User</code>, <code>Customer</code> or <code>Tenant</code>.
+By implementing the interface <code>grails.plugin.multitenant.core.Tenant</code> the plugin will give you some benefits out of the box.  <h2><a name="4.1 Automatic tenant events">4.1 Automatic tenant events</a></h2>The plugin will trigger a few custom events when changes are made to your tenant domain class. 
+This can be very useful for things like maintaining a cache for fast lookups.<p class="paragraph"/>The following events are published when a tenant has been added, updated or deleted: <code>tenant.created</code>, <code>tenant.updated</code> and <code>tenant.deleted</code>.
+Have a look at the <a href="http://multi-tenant.github.com/grails-hawk-eventing/" target="blank">documentation for Hawk Eventing</a> for information on how to subscribe to these events.
+    </body>
+</html>

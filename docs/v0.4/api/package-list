@@ -1,0 +1,11 @@
+grails.plugin.multitenant.core
+grails.plugin.multitenant.core.annotation
+grails.plugin.multitenant.core.ast
+grails.plugin.multitenant.core.exception
+grails.plugin.multitenant.core.filter
+grails.plugin.multitenant.core.hibernate.event
+grails.plugin.multitenant.core.resolve
+grails.plugin.multitenant.core.spring
+grails.plugin.multitenant.core.util
+grails.plugin.multitenant.singledb.hibernate
+grails.plugin.multitenant.singledb.hibernate.event

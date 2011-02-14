@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>3. Domain classes</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    <h1><a name="3. Domain classes">3. Domain classes</a></h1><h2><a name="3.1 Annotation">3.1 Annotation</a></h2>The &#64;MultiTenant annotation is a central part of this plugin. This annotation causes two things to happen.<p class="paragraph"/><h3>During compilation</h3><p class="paragraph"/>The annotation hooks into the compilation process and adds a <code>Integer tenantId</code> field to all annotated domain classes.<p class="paragraph"/><h3>During application startup</h3><p class="paragraph"/>The application will look for Hibernate domain classes annotated with &#64;MultiTenant during application startup. 
+Hibernate operations against these domain classes will be filtered to only affect data belonging to the current tenant.<p class="paragraph"/><div class="code"><pre>@MultiTenant
+class Animal &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>&#125;</pre></div><h2><a name="3.2 Unique constraint">3.2 Unique constraint</a></h2>You must take some extra care with the unique constraint as all tenants will share the same database. 
+In the future we might add this automatically during application startup.<p class="paragraph"/><div class="code"><pre>@MultiTenant
+class Animal &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>    <span class="java&#45;keyword">static</span> constraints = &#123;
+        name unique: 'tenantId'
+    &#125;<p class="paragraph"/>&#125;</pre></div>
+    </body>
+</html>

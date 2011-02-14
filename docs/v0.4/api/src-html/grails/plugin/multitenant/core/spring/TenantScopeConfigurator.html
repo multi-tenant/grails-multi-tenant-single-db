@@ -1,0 +1,115 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package grails.plugin.multitenant.core.spring;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import grails.plugin.multitenant.core.CurrentTenant;<a name="line.3"></a>
+<FONT color="green">004</FONT>    <a name="line.4"></a>
+<FONT color="green">005</FONT>    import org.apache.commons.logging.Log;<a name="line.5"></a>
+<FONT color="green">006</FONT>    import org.apache.commons.logging.LogFactory;<a name="line.6"></a>
+<FONT color="green">007</FONT>    import org.springframework.beans.BeansException;<a name="line.7"></a>
+<FONT color="green">008</FONT>    import org.springframework.beans.factory.config.BeanFactoryPostProcessor;<a name="line.8"></a>
+<FONT color="green">009</FONT>    import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;<a name="line.9"></a>
+<FONT color="green">010</FONT>    import org.springframework.context.ApplicationContext;<a name="line.10"></a>
+<FONT color="green">011</FONT>    import org.springframework.context.ApplicationContextAware;<a name="line.11"></a>
+<FONT color="green">012</FONT>    import org.springframework.core.Ordered;<a name="line.12"></a>
+<FONT color="green">013</FONT>    <a name="line.13"></a>
+<FONT color="green">014</FONT>    /**<a name="line.14"></a>
+<FONT color="green">015</FONT>     * <a name="line.15"></a>
+<FONT color="green">016</FONT>     * @author Kim A. Betti<a name="line.16"></a>
+<FONT color="green">017</FONT>     */<a name="line.17"></a>
+<FONT color="green">018</FONT>    public class TenantScopeConfigurator implements BeanFactoryPostProcessor, Ordered, ApplicationContextAware {<a name="line.18"></a>
+<FONT color="green">019</FONT>    <a name="line.19"></a>
+<FONT color="green">020</FONT>        private static final Log log = LogFactory.getLog(TenantScopeConfigurator.class);<a name="line.20"></a>
+<FONT color="green">021</FONT>    <a name="line.21"></a>
+<FONT color="green">022</FONT>        private CurrentTenant currentTenant;<a name="line.22"></a>
+<FONT color="green">023</FONT>        private ApplicationContext applicationContext;<a name="line.23"></a>
+<FONT color="green">024</FONT>    <a name="line.24"></a>
+<FONT color="green">025</FONT>        @Override<a name="line.25"></a>
+<FONT color="green">026</FONT>        public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {<a name="line.26"></a>
+<FONT color="green">027</FONT>            log.debug("Creating tenant scope");<a name="line.27"></a>
+<FONT color="green">028</FONT>    <a name="line.28"></a>
+<FONT color="green">029</FONT>            TenantScope tenantScope = new TenantScope();<a name="line.29"></a>
+<FONT color="green">030</FONT>            tenantScope.setCurrentTenant(currentTenant);<a name="line.30"></a>
+<FONT color="green">031</FONT>            tenantScope.setApplicationContext(applicationContext);<a name="line.31"></a>
+<FONT color="green">032</FONT>            beanFactory.registerScope("tenant", tenantScope);<a name="line.32"></a>
+<FONT color="green">033</FONT>        }<a name="line.33"></a>
+<FONT color="green">034</FONT>    <a name="line.34"></a>
+<FONT color="green">035</FONT>        public void setCurrentTenant(CurrentTenant currentTenant) {<a name="line.35"></a>
+<FONT color="green">036</FONT>            this.currentTenant = currentTenant;<a name="line.36"></a>
+<FONT color="green">037</FONT>        }<a name="line.37"></a>
+<FONT color="green">038</FONT>    <a name="line.38"></a>
+<FONT color="green">039</FONT>        @Override<a name="line.39"></a>
+<FONT color="green">040</FONT>        public int getOrder() {<a name="line.40"></a>
+<FONT color="green">041</FONT>            return Ordered.HIGHEST_PRECEDENCE;<a name="line.41"></a>
+<FONT color="green">042</FONT>        }<a name="line.42"></a>
+<FONT color="green">043</FONT>    <a name="line.43"></a>
+<FONT color="green">044</FONT>        @Override<a name="line.44"></a>
+<FONT color="green">045</FONT>        public void setApplicationContext(ApplicationContext ctx) throws BeansException {<a name="line.45"></a>
+<FONT color="green">046</FONT>            this.applicationContext = ctx;<a name="line.46"></a>
+<FONT color="green">047</FONT>        }<a name="line.47"></a>
+<FONT color="green">048</FONT>    <a name="line.48"></a>
+<FONT color="green">049</FONT>    }<a name="line.49"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>
