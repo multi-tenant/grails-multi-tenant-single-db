@@ -1,0 +1,22 @@
+Naive implementation. 
+
+{code:java}
+class CachingTenantDomainResolver implements TenantResolver {
+
+    @Override
+    public int resolve(final HttpServletRequest request) {
+        String host = request.getServerName();
+        switch (host) {
+            case "customer-a.com":
+                return 1
+            
+            case "customer-b.com":
+                return 2
+                
+            default:
+                throw new Exception("No tenant associated with" + host)
+        }
+    }
+    
+}
+{code}
