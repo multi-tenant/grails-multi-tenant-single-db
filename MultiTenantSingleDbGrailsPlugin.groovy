@@ -3,7 +3,7 @@ import grails.plugin.multitenant.core.CurrentTenantThreadLocal;
 import grails.plugin.multitenant.core.MultiTenantContext;
 import grails.plugin.multitenant.core.MultiTenantService;
 import grails.plugin.multitenant.core.Tenant;
-import grails.plugin.multitenant.core.filter.CurrentTenantFilter;
+import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter;
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
 import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener;
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener;
@@ -121,7 +121,7 @@ Multi tenant setup focused on single database mode
         contextParam[contextParam.size() - 1] + {
             'filter' {
                 'filter-name'('tenantFilter')
-                'filter-class'(CurrentTenantFilter.name)
+                'filter-class'(CurrentTenantServletFilter.name)
             }
         }
 

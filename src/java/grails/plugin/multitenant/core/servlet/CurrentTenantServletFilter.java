@@ -1,4 +1,4 @@
-package grails.plugin.multitenant.core.filter;
+package grails.plugin.multitenant.core.servlet;
 
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.resolve.TenantResolver;
@@ -24,11 +24,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * 
  * The thread local storage is nulled out when other filters
  * and servlet has processed the request.
- * 
- * TODO: Rename package to servletfilters (or similar) to avoid confusion with Hibernate filters
  * @author Kim A. Betti
  */
-public class CurrentTenantFilter implements Filter {
+public class CurrentTenantServletFilter implements Filter {
 
     private CurrentTenant currentTenant; // thread local storage
     private TenantResolver tenantResolver; // provided by implementation
