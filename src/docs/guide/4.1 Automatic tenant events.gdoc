@@ -3,3 +3,17 @@ This can be very useful for things like maintaining a cache for fast lookups.
 
 The following events are published when a tenant has been added, updated or deleted: @tenant.created@, @tenant.updated@ and @tenant.deleted@.
 Have a look at the [documentation for Hawk Eventing|http://multi-tenant.github.com/grails-hawk-eventing/] for information on how to subscribe to these events.
+
+{code:java}
+class MyTenantService implements InitializingBean { 
+
+    def eventBroker
+
+    void afterPropertiesSet() {
+        eventBroker.subscribe("tenant.createed") { evt ->
+            println "New tenant created: " + evt.payload
+        }    
+    }
+
+}
+{code}
