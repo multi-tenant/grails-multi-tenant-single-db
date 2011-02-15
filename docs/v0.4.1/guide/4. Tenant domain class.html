@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>4. Tenant domain class</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    <h1><a name="4. Tenant domain class">4. Tenant domain class</a></h1>Most applications will have a domain class where you store tenant data. This will probably be named something like <code>User</code>, <code>Customer</code> or <code>Tenant</code>.
+By implementing the interface <code>grails.plugin.multitenant.core.Tenant</code> the plugin will give you some benefits out of the box.  <h2><a name="4.1 Automatic tenant events">4.1 Automatic tenant events</a></h2>The plugin will trigger a few custom events when changes are made to your tenant domain class. 
+This can be very useful for things like maintaining a cache for fast lookups.<p class="paragraph"/>The following events are published when a tenant has been added, updated or deleted: <code>tenant.created</code>, <code>tenant.updated</code> and <code>tenant.deleted</code>.
+Have a look at the <a href="http://multi-tenant.github.com/grails-hawk-eventing/" target="blank">documentation for Hawk Eventing</a> for information on how to subscribe to these events.<p class="paragraph"/><div class="code"><pre>class MyTenantService <span class="java&#45;keyword">implements</span> InitializingBean &#123;<p class="paragraph"/>    def eventBroker<p class="paragraph"/>    void afterPropertiesSet() &#123;
+        eventBroker.subscribe(<span class="java&#45;quote">"tenant.createed"</span>) &#123; evt &#45;&#62;
+            println <span class="java&#45;quote">"New tenant created: "</span> + evt.payload
+        &#125;    
+    &#125;<p class="paragraph"/>&#125;</pre></div><h2><a name="4.2 Dynnamic methods">4.2 Dynnamic methods</a></h2>The plugin adds a few methods to your <code>Tenant</code> class.<p class="paragraph"/>The examples below assumes that you have a tenant class similar to this.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.Tenant<p class="paragraph"/>class Customer <span class="java&#45;keyword">implements</span> Tenant &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>    <span class="java&#45;object">Integer</span> getTenantId() &#123;
+        <span class="java&#45;keyword">return</span> <span class="java&#45;keyword">this</span>.id
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/>
+<h3>withThisTenant</h3><p class="paragraph"/>Normally you want as much as possible of the multi-tenant stuff to happen transparently behind the scenes, but there are cases where it's useful to be able to 
+run operations on a specific tenant. This is often useful during testing and bootstrapping of the application during development.<p class="paragraph"/><div class="code"><pre>def customerX = <span class="java&#45;keyword">new</span> Customer(name: <span class="java&#45;quote">"Customer X"</span>)<p class="paragraph"/>customerX.withThisTenant &#123;
+    // All Hibernate related operations executed here
+    // will happen with 'Customer X' as current tenant.<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/><h3>withTenantId</h3><p class="paragraph"/>This is method is similar to <code>withThisTenant</code>, but is added to the static meta class. 
+It's useful when you don't have the tenant instance available, but you know the tenant-id.<p class="paragraph"/><div class="code"><pre>Customer.withTenantId(123) &#123;
+    // All Hibernate related operations executed here
+    // will be executed with tenant id 123. 
+&#125;</pre></div><p class="paragraph"/>
+    </body>
+</html>

@@ -1,0 +1,12 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>3.1 Annotation</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    The &#64;MultiTenant annotation is a central part of this plugin. This annotation causes two things to happen.<p class="paragraph"/><h3>During compilation</h3><p class="paragraph"/>The annotation hooks into the compilation process and adds a <code>Integer tenantId</code> field to all annotated domain classes.<p class="paragraph"/><h3>During application startup</h3><p class="paragraph"/>The application will look for Hibernate domain classes annotated with &#64;MultiTenant during application startup. 
+Hibernate operations against these domain classes will be filtered to only affect data belonging to the current tenant.<p class="paragraph"/><div class="code"><pre>@MultiTenant
+class Animal &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>&#125;</pre></div>
+    </body>
+</html>
