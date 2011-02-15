@@ -94,10 +94,13 @@ Multi tenant setup focused on single database mode
         MultiTenantContext mtCtx = ctx.getBean("multiTenantContext")
         Class tenantClass = mtCtx.getTenantClass()
         
+        // TODO: Should we print a warning if we don't find a tenant class?
         if (tenantClass) {
             createDoWithTenant(tenantClass, mtService)
             createDoWithTenantIdMethod(tenantClass, mtService)
-        } // TODO: Should we print a warning if we don't find a tenant class?
+        } 
+        
+        createDoWithTenantIdMethod(Tenant, mtService)
     }
     
     protected createDoWithTenant(Class tenantClass, MultiTenantService mtService) {

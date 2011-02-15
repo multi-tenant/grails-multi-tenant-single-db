@@ -1,5 +1,6 @@
 package demo
 
+import grails.plugin.multitenant.core.Tenant;
 import grails.test.GrailsUnitTestCase
 
 import org.junit.Test
@@ -14,7 +15,7 @@ class DemoDogTests extends GrailsUnitTestCase {
     void shouldWorkWithInheritance() {
         int count = 0
         
-        DemoTenant.withTenantId(1) {
+        Tenant.withTenantId(1) {
             def pluto = new DemoDog(name: "Pluto")
             pluto.save(flush: true, failOnError: true)
             assertNotNull DemoDog.findByName("Pluto")
@@ -22,7 +23,7 @@ class DemoDogTests extends GrailsUnitTestCase {
             ++count
         }
 
-        DemoTenant.withTenantId(2) {
+        Tenant.withTenantId(2) {
             assertNull DemoDog.findByName("Pluto")
             ++count
         }
