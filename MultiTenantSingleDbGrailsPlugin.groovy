@@ -10,7 +10,6 @@ import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListen
 import grails.plugin.multitenant.singledb.hibernate.event.TenantHibernateFilterEnabler;
 import grails.plugin.multitenant.core.spring.TenantBeanFactoryPostProcessor;
 import grails.plugin.multitenant.core.spring.TenantScopeConfigurator;
-import grails.plugin.multitenant.core.util.TenantUtils;
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.spring.GrailsWebApplicationContext
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
