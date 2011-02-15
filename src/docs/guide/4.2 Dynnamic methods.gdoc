@@ -1,0 +1,46 @@
+The plugin adds a few methods to your @Tenant@ class. 
+
+The examples below assumes that you have a tenant class similar to this.
+
+{code:java}
+import grails.plugin.multitenant.core.Tenant
+
+class Customer implements Tenant {
+
+    String name
+
+    Integer getTenantId() {
+        return this.id
+    }
+
+}
+{code}
+
+
+h3. withThisTenant
+
+Normally you want as much as possible of the multi-tenant stuff to happen transparently behind the scenes, but there are cases where it's useful to be able to 
+run operations on a specific tenant. This is often useful during testing and bootstrapping of the application during development. 
+
+{code:java}
+def customerX = new Customer(name: "Customer X")
+
+customerX.withThisTenant {
+    // All Hibernate related operations executed here
+    // will happen with 'Customer X' as current tenant. 
+    
+}
+{code}
+
+h3. withTenantId
+
+This is method is similar to @withThisTenant@, but is added to the static meta class. 
+It's useful when you don't have the tenant instance available, but you know the tenant-id. 
+
+{code:java}
+Customer.withTenantId(123) {
+    // All Hibernate related operations executed here
+    // will be executed with tenant id 123. 
+}
+{code}
+

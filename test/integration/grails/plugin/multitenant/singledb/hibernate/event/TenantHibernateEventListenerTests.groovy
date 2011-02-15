@@ -6,19 +6,17 @@ import grails.test.GrailsUnitTestCase
 import org.junit.Test
 
 import demo.DemoProduct
+import demo.DemoTenant
 
+/**
+ * 
+ * @author Kim A. Betti
+ */
 class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
  
-    def tenantUtils
-    
-    protected void setUp() {
-        super.setUp()
-        assert tenantUtils
-    }
-
     @Test
     void tenantIdShouldBeInjected() {
-        tenantUtils.withTenantId(2) {
+        DemoTenant.withTenantId(2) {
             new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
             DemoProduct.findByName("iPhone").properties['tenantId'] == 2
         }
@@ -26,12 +24,12 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     
     void shouldNotBeAllowedToLoadOtherTenantsEntities() {
         int iPhoneId = -1
-        tenantUtils.withTenantId(2) {
+        DemoTenant.withTenantId(2) {
             def iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
             iPhoneId = iPhone.id
         }
         
-        tenantUtils.withTenantId(1) {
+        DemoTenant.withTenantId(1) {
             DemoProduct.withNewSession {
                 def product = DemoProduct.get(iPhoneId);
                 assertNull product
@@ -42,12 +40,12 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     @Test
     void shouldBeAllowedToLoadOwnEntities() {
         int iPhoneId = -1
-        tenantUtils.withTenantId(2) {
+        DemoTenant.withTenantId(2) {
             def iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
             iPhoneId = iPhone.id
         }
         
-        tenantUtils.withTenantId(2) {
+        DemoTenant.withTenantId(2) {
             DemoProduct.withNewSession {
                 def product = DemoProduct.get(iPhoneId);
             }
@@ -57,11 +55,11 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     @Test(expected=TenantSecurityException.class)
     void shouldNotBeAbleToChangeTenantId() {
         def iPhone = null
-        tenantUtils.withTenantId(2) {
+        DemoTenant.withTenantId(2) {
             iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
         }
         
-        tenantUtils.withTenantId(3) {
+        DemoTenant.withTenantId(3) {
             iPhone.name = "iPhone 2"
             iPhone.save(flush: true, failOnError: true)
             fail "Should not be able to do update entity with another tenant id"
@@ -71,11 +69,11 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     @Test
     void shouldBeAbleToUpdateWithCurrentId() {
         def iPhone = null
-        tenantUtils.withTenantId(2) {
+        DemoTenant.withTenantId(2) {
             iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
         }
         
-        tenantUtils.withTenantId(2) {
+        DemoTenant.withTenantId(2) {
             iPhone.name = "iPhone 2"
             iPhone.save(flush: true, failOnError: true)
         }

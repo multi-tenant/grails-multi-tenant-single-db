@@ -1,5 +1,8 @@
+import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.CurrentTenantThreadLocal;
 import grails.plugin.multitenant.core.MultiTenantContext;
+import grails.plugin.multitenant.core.MultiTenantService;
+import grails.plugin.multitenant.core.Tenant;
 import grails.plugin.multitenant.core.filter.CurrentTenantFilter;
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
 import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener;
@@ -9,12 +12,12 @@ import grails.plugin.multitenant.core.spring.TenantBeanFactoryPostProcessor;
 import grails.plugin.multitenant.core.spring.TenantScopeConfigurator;
 import grails.plugin.multitenant.core.util.TenantUtils;
 import grails.util.Environment
-
+import org.codehaus.groovy.grails.commons.spring.GrailsWebApplicationContext
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.4"
+    def version = "0.4.1"
     def grailsVersion = "1.3.5 > *"
 
     def dependsOn = [:]
@@ -48,11 +51,6 @@ Multi tenant setup focused on single database mode
         // Tenant scope
         tenantScopeConfigurator(TenantScopeConfigurator) { 
             currentTenant = ref("currentTenant")
-        }
-
-        tenantUtils(TenantUtils) {
-            currentTenant = ref("currentTenant")
-            sessionFactory = ref("sessionFactory")
         }
 
         tenantHibernateFilterEnabler(TenantHibernateFilterEnabler) {
@@ -91,6 +89,30 @@ Multi tenant setup focused on single database mode
         
     }
 
+    def doWithDynamicMethods = { ctx ->
+        MultiTenantService mtService = ctx.getBean("multiTenantService")
+        MultiTenantContext mtCtx = ctx.getBean("multiTenantContext")
+        Class tenantClass = mtCtx.getTenantClass()
+        
+        if (tenantClass) {
+            createDoWithTenant(tenantClass, mtService)
+            createDoWithTenantIdMethod(tenantClass, mtService)
+        } // TODO: Should we print a warning if we don't find a tenant class?
+    }
+    
+    protected createDoWithTenant(Class tenantClass, MultiTenantService mtService) {
+        tenantClass.metaClass.withThisTenant = { Closure closure ->
+            Integer tenantId = getTenantId()
+            mtService.doWithTenantId(tenantId, closure)
+        }
+    }
+    
+    protected createDoWithTenantIdMethod(Class tenantClass, MultiTenantService mtService) {
+        tenantClass.metaClass.'static'.withTenantId = { Integer tenantId, Closure closure ->
+            mtService.doWithTenantId(tenantId, closure)
+        }
+    }
+    
     def doWithWebDescriptor = { xml ->
         def contextParam = xml.'context-param'
         contextParam[contextParam.size() - 1] + {
@@ -111,7 +133,6 @@ Multi tenant setup focused on single database mode
         }
     }
 
-    def doWithDynamicMethods = { ctx -> }
     def doWithApplicationContext = { applicationContext -> }
     def onChange = { event -> }
     def onConfigChange = { event -> }

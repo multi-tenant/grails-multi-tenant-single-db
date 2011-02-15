@@ -25,6 +25,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * The thread local storage is nulled out when other filters
  * and servlet has processed the request.
  * 
+ * TODO: Rename package to servletfilters (or similar) to avoid confusion with Hibernate filters
  * @author Kim A. Betti
  */
 public class CurrentTenantFilter implements Filter {

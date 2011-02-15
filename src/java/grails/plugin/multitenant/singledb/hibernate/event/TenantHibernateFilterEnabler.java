@@ -33,13 +33,17 @@ public class TenantHibernateFilterEnabler {
         enableHibernateFilter(newSession, currentTenantId);
     }
 
-    @Consuming(CurrentTenant.TENANT_CHANGE_EVENT)
+    @Consuming(CurrentTenant.TENANT_AFTER_CHANGE_EVENT)
     public void currentTenantUpdated(Event event) {
-        if (TransactionSynchronizationManager.hasResource(sessionFactory)) {
+        if (hasSessionBoundToThread()) {
             Integer updatedTenantId = (Integer) event.getPayload();
             Session currentSession = sessionFactory.getCurrentSession();
             enableHibernateFilter(currentSession, updatedTenantId);
         }
+    }
+
+    private boolean hasSessionBoundToThread() {
+        return TransactionSynchronizationManager.hasResource(sessionFactory);
     }
 
     public void enableHibernateFilter(Session session, Integer tenantId) {

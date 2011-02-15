@@ -12,12 +12,10 @@ class DemoTenant implements Tenant {
     
     String name
     String domain
-    Integer mappedTenantId
 
     static constraints = {
         name blank: false, unique: true
         domain blank: false, unique: true
-        mappedTenantId unique: true, min: 0
     }
     
     Integer getTenantId() {
