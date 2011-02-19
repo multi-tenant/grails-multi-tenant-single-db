@@ -16,9 +16,19 @@ class MultiTenantASTSpec extends UnitSpec {
         sampleInstance instanceof MultiTenantDomainClass
     }
     
+    def "non domain classes should not be equiped with this interface"() {
+        expect:
+        def sampleInstance = new NotADomainClass(name: "test")
+        !(sampleInstance instanceof MultiTenantDomainClass)
+    }
+    
 }
 
 @MultiTenant
 class SampleDomainClass {
+    String name
+}
+
+class NotADomainClass {
     String name
 }

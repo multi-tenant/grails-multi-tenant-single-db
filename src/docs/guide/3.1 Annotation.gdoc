@@ -2,7 +2,8 @@ The \@MultiTenant annotation is a central part of this plugin. This annotation c
 
 h3. During compilation
 
-The annotation hooks into the compilation process and adds a @Integer tenantId@ field to all annotated domain classes.  
+The annotation hooks into the compilation process and adds a @Integer tenantId@ field to all annotated domain classes.
+If the domain class isn't implementing the @MultiTenantDomainClass@ interface this will be added as well.   
 
 h3. During application startup
 

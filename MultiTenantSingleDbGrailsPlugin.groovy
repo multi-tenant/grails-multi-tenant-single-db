@@ -16,7 +16,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.4.1"
+    def version = "0.4.2"
     def grailsVersion = "1.3.5 > *"
 
     def dependsOn = [:]

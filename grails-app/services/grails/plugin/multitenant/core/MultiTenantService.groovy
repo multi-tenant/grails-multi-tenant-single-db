@@ -19,7 +19,16 @@ class MultiTenantService {
     CurrentTenant currentTenant
     TransactionTemplate transactionTemplate
     
-    void doWithTenantId(Integer tenantId, Closure closure) {
+    /**
+     * Execute some code in the 'namespace' of the given tenant id. 
+     * The code will be executed in a new transaction to avoid other tenants 
+     * entities laying in the first level cache to leak in. 
+     * 
+     * @param tenantId
+     * @param closure
+     * @return
+     */
+    def doWithTenantId(Integer tenantId, Closure closure) {
         Integer oldTenantId = currentTenant.get()
         try {
             currentTenant.set(tenantId)
