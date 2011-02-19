@@ -11,6 +11,8 @@ import org.springframework.dao.DataIntegrityViolationException
  */
 class DemoProductTests extends GrailsUnitTestCase {
 
+    static transactional = false
+    
     @Test
     void differentTenantsCanUseSameValueForUniqueProperty() {
         DemoTenant.withTenantId(1) {
@@ -26,11 +28,11 @@ class DemoProductTests extends GrailsUnitTestCase {
     @Test(expected=DataIntegrityViolationException.class)
     void singleTenantCanOnlyUseOneValueForUniqueProperty() {
         DemoTenant.withTenantId(1) {
-            new DemoProduct(name: 'bPhone').save(flush: true, failOnError: true)
+            new DemoProduct(name: 'bPad').save(flush: true, failOnError: true)
         }
 
         DemoTenant.withTenantId(1) {
-            new DemoProduct(name: 'bPhone').save(flush: true, failOnError: true)
+            new DemoProduct(name: 'bPad').save(flush: true, failOnError: true)
             fail "This should not be allowed"
         }
     }

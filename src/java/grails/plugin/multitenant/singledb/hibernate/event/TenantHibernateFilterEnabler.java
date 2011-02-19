@@ -13,8 +13,8 @@ import org.hibernate.classic.Session;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
- * Subscribes itself to hibernate.sessionCreated events.
- * Enables the tenant Hibernate filter with the current tenant id (if any)
+ * Subscribes itself to hibernate.sessionCreated events. Enables the tenant
+ * Hibernate filter with the current tenant id (if any)
  * 
  * @author Kim A. Betti
  */
@@ -47,8 +47,7 @@ public class TenantHibernateFilterEnabler {
     }
 
     public void enableHibernateFilter(Session session, Integer tenantId) {
-        session.enableFilter(TenantFilterCfg.TENANT_FILTER_NAME).setParameter (
-                TenantFilterCfg.TENANT_ID_PARAM_NAME, tenantId);
+        session.enableFilter(TenantFilterCfg.TENANT_FILTER_NAME).setParameter(TenantFilterCfg.TENANT_ID_PARAM_NAME, tenantId);
     }
 
     public void setCurrentTenant(CurrentTenant currentTenant) {
