@@ -6,8 +6,6 @@ import grails.plugins.hawkeventing.Event;
 import grails.plugins.hawkeventing.annotation.Consuming;
 import grails.plugins.hawkeventing.annotation.HawkEventConsumer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
@@ -20,8 +18,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  */
 @HawkEventConsumer
 public class TenantHibernateFilterEnabler {
-
-    private static Log log = LogFactory.getLog(TenantHibernateFilterEnabler.class);
 
     private SessionFactory sessionFactory;
     private CurrentTenant currentTenant;

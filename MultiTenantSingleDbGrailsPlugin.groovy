@@ -65,7 +65,6 @@ Multi tenant setup focused on single database mode
         // loading other tenant's data and so on
         tenantHibernateEventListener(TenantHibernateEventListener) {
             currentTenant = ref("currentTenant")
-            multiTenantContext = ref("multiTenantContext")
         }
 
         // Enables the tenant filter for our domain classes
