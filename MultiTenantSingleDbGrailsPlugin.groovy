@@ -89,21 +89,17 @@ Multi tenant setup focused on single database mode
     }
 
     def doWithDynamicMethods = { ctx ->
-        try {
-            MultiTenantService mtService = ctx.getBean("multiTenantService")
-            MultiTenantContext mtCtx = ctx.getBean("multiTenantContext")
-            Class tenantClass = mtCtx.getTenantClass()
-            
-            // TODO: Should we print a warning if we don't find a tenant class?
-            if (tenantClass) {
-                createDoWithTenant(tenantClass, mtService)
-                createDoWithTenantIdMethod(tenantClass, mtService)
-            } 
-            
-            createDoWithTenantIdMethod(Tenant, mtService)
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        MultiTenantService mtService = ctx.getBean("multiTenantService")
+        MultiTenantContext mtCtx = ctx.getBean("multiTenantContext")
+        Class tenantClass = mtCtx.getTenantClass()
+        
+        // TODO: Should we print a warning if we don't find a tenant class?
+        if (tenantClass) {
+            createDoWithTenant(tenantClass, mtService)
+            createDoWithTenantIdMethod(tenantClass, mtService)
+        } 
+        
+        createDoWithTenantIdMethod(Tenant, mtService)
     }
     
     protected createDoWithTenant(Class tenantClass, MultiTenantService mtService) {

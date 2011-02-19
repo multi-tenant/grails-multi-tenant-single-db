@@ -23,11 +23,8 @@ class MultiTenantService {
         Integer oldTenantId = currentTenant.get()
         try {
             currentTenant.set(tenantId)
-            transactionTemplate.execute(new TransactionCallback() {
-                public Object doInTransaction(TransactionStatus status) {
-                    closure.call()
-                }
-            })
+            TransactionCallback doWithTenantCallback = new DoWithTenantCallback(closure)
+            transactionTemplate.execute doWithTenantCallback
         } finally {
             currentTenant.set(oldTenantId)
         }
@@ -36,6 +33,19 @@ class MultiTenantService {
     void setTransactionManager(PlatformTransactionManager transactionManager) {
         transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
+    }
+    
+    private class DoWithTenantCallback implements TransactionCallback {
+        
+        private Closure closure
+        
+        public DoWithTenantCallback(Closure closure) {
+            this.closure = closure
+        }
+        
+        public Object doInTransaction(TransactionStatus status) {
+            closure.call()
+        }
     }
 
 }
