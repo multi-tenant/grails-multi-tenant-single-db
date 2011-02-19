@@ -1,6 +1,5 @@
 package grails.plugin.multitenant.core.hibernate.event;
 
-import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.MultiTenantContext;
 import grails.plugin.multitenant.core.exception.TenantException;
@@ -15,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.event.EventListeners;
 import org.hibernate.event.LoadEvent;
 import org.hibernate.event.LoadEventListener;
 import org.hibernate.event.PreInsertEvent;
@@ -41,24 +41,8 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     private MultiTenantContext multiTenantContext;
 
     // The PostLoad event only contains the class name so reflection is used to
-    // load the corresponding class. This is obviously expensive so we cache the
-    // result.
+    // load the corresponding class. This is obviously expensive so we cache the result.
     private Map<String, Class<?>> reflectedCache = new HashMap<String, Class<?>>();
-
-    public void activate(Configuration configuration) {
-        log.debug("Subscribing to preInsert, preUpdate and postLoad");
-        HibernateEventUtil.addListener(configuration, "load", this);
-        HibernateEventUtil.addListener(configuration, "pre-insert", this);
-        HibernateEventUtil.addListener(configuration, "pre-update", this);
-    }
-
-    public void setCurrentTenant(CurrentTenant currentTenant) {
-        this.currentTenant = currentTenant;
-    }
-
-    public void setMultiTenantContext(MultiTenantContext multiTenantContext) {
-        this.multiTenantContext = multiTenantContext;
-    }
 
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
@@ -140,6 +124,14 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     private boolean isMultiTenantEntity(Object entity) {
         Class<?> entityClass = entity.getClass();
         return multiTenantContext.isMultiTenantDomainClass(entityClass);
+    }
+
+    public void setCurrentTenant(CurrentTenant currentTenant) {
+        this.currentTenant = currentTenant;
+    }
+
+    public void setMultiTenantContext(MultiTenantContext multiTenantContext) {
+        this.multiTenantContext = multiTenantContext;
     }
 
 }

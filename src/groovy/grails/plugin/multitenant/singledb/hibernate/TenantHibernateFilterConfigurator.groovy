@@ -1,6 +1,7 @@
 package grails.plugin.multitenant.singledb.hibernate
 
 import grails.plugin.hibernatehijacker.hibernate.HibernateConfigPostProcessor
+import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
 import grails.plugin.multitenant.core.MultiTenantContext
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
 import grails.plugin.multitenant.singledb.event.*
@@ -16,6 +17,7 @@ import org.hibernate.Hibernate
 import org.hibernate.HibernateException
 import org.hibernate.cfg.Configuration
 import org.hibernate.engine.FilterDefinition
+import org.hibernate.event.EventListeners;
 
 /**
  * Defines the Hibernate filter.
@@ -38,12 +40,12 @@ class TenantHibernateFilterConfigurator implements HibernateConfigPostProcessor 
     public void doPostProcessing(Configuration configuration) throws HibernateException {
         log.debug "Configuring multi-tenant Hibernate filter"
 
-        addFilterDefinition(configuration)
+        createFilterDefinition(configuration)
         enrichMultiTenantDomainClasses(configuration)
-        tenantHibernateEventListener.activate(configuration)
+        activateTenantEventListener(configuration)
     }
 
-    private void addFilterDefinition(Configuration configuration) {
+    private void createFilterDefinition(Configuration configuration) {
         log.debug "Defining Hibernate filer: " + TenantFilterCfg.TENANT_FILTER_NAME
         final Map filterParams = new HashMap();
         filterParams.put(TenantFilterCfg.TENANT_ID_PARAM_NAME, Hibernate.INTEGER)
@@ -78,8 +80,9 @@ class TenantHibernateFilterConfigurator implements HibernateConfigPostProcessor 
      */
     private void fixUniqueConstraints(DefaultGrailsDomainClass domainClass) {
         getUniqueConstraint(domainClass).each { UniqueConstraint constraint ->
-            if (!isUniquePerTenant(constraint))
+            if (!isUniquePerTenant(constraint)) {
                 constraint.setParameter(TenantFilterCfg.TENANT_ID_FIELD_NAME)
+            }
         }
     }
 
@@ -104,4 +107,10 @@ class TenantHibernateFilterConfigurator implements HibernateConfigPostProcessor 
         (domainClass.constraints?.get(TenantFilterCfg.TENANT_ID_FIELD_NAME)
                 ?.applyConstraint(ConstrainedProperty.NULLABLE_CONSTRAINT, false))
     }
+    
+    private void activateTenantEventListener(Configuration configuration) {
+        EventListeners eventListeners = configuration.getEventListeners()
+        HibernateEventUtil.addListener(eventListeners, tenantHibernateEventListener)
+    }
+    
 }
