@@ -12,7 +12,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 /**
  * Subscribes itself to hibernate.sessionCreated events. Enables the tenant
- * Hibernate filter with the current tenant id (if any)
+ * Hibernate filter with the current tenant id (if any).
  * 
  * @author Kim A. Betti
  */

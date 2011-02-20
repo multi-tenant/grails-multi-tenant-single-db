@@ -21,7 +21,7 @@ class MultiTenantSingleDbGrailsPlugin {
     def version = "0.4.3"
     def grailsVersion = "1.3.5 > *"
 
-    def dependsOn = [:]
+    def dependsOn = [:] // does not play well with Maven repositories
 
     def loadAfter = [
         'hawk-eventing',
@@ -38,17 +38,20 @@ class MultiTenantSingleDbGrailsPlugin {
     def authorEmail = "kim@developer-b.com"
     def title = "MultiTenant - SingleDB"
     def description = '''\\
-Multi tenant setup focused on single database mode
+Multi tenant setup focused on single database mode.
 '''
 
     def documentation = "https://github.com/multi-tenant/grails-multi-tenant-single-db"
 
     def doWithSpring = {
 
+        // Default CurrentTenant implementation storing
+        // the current tenant id in a ThreadLocal variable. 
         currentTenant(CurrentTenantThreadLocal) {
             eventBroker = ref("eventBroker")
         }
 
+        // A custom Spring scope for beans. 
         tenantScope(TenantScope) {
             currentTenant = ref("currentTenant")
         }
@@ -63,11 +66,16 @@ Multi tenant setup focused on single database mode
             scopes = [ tenant: ref("tenantScope") ]
         }
         
+        // Listens for new Hibernate sessions and enables the 
+        // multi-tenant filter with the current tenant id.  
         tenantHibernateFilterEnabler(TenantHibernateFilterEnabler) {
             currentTenant = ref("currentTenant")
             sessionFactory = ref("sessionFactory")
         }
 
+        // Keeps track of multi-tenant related classes. 
+        // Was originally introduced to deprecate TenantUtils and
+        // make other beans independent of grailsApplication. 
         multiTenantContext(MultiTenantContext) {
             grailsApplication = ref("grailsApplication")
         }
@@ -85,14 +93,14 @@ Multi tenant setup focused on single database mode
             tenantHibernateEventListener = ref("tenantHibernateEventListener")
         }
 
-        // Listens for new / removed tenants
+        // Listens for new, removed and updated tenants and broadcasts
+        // the information using Hawk Eventing making it easier to
+        // listen in on these events. 
         tenantDomainClassListener(TenantDomainClassListener) {
             eventBroker = ref("eventBroker")
             multiTenantContext = ref("multiTenantContext")
         }
 
-        
-        
     }
 
     def doWithDynamicMethods = { ctx ->
