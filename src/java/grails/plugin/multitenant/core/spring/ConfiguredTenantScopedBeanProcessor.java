@@ -49,7 +49,11 @@ public class ConfiguredTenantScopedBeanProcessor implements BeanFactoryPostProce
     private List<String> getPerTenantBeanNames(BeanDefinitionRegistry beanFactory) {
         List<String> perTenantBeanNames = new ArrayList<String>();
         for (String beanName : beanFactory.getBeanDefinitionNames()) {
+            BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
+            
             if (perTenantBeans.contains(beanName)) {
+                perTenantBeanNames.add(beanName);
+            } else if (beanDefinition.getScope() == TenantScope.NAME) {
                 perTenantBeanNames.add(beanName);
             }
         }
