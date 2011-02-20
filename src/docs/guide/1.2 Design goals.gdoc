@@ -2,10 +2,11 @@ h3. Main focus
 
 # Focus on single-database mode, while trying to keep the door open for later support for database per tenant as long as it doesn't add too much complexity. 
 # Make sure that the webflow plugin is supported. Without forcing anyone to install it into their projects. 
+# Leverage existing Spring and Hibernate solutions where possible. 
 # Re-think some design decisions and add more support for the most common use cases.
 
 h3. Very long term, possibly never (depending on interest and patches)
 
 # Create a separate core plugin independent of Hibernate.
-# Support multiple-database mode? Hibernate Shards?
+# Support multiple-database mode? Hibernate Shards? There are rumors on the street talking about Multi Tenant support in Hibernate 4. 
 # Implement support for [name-of-latest-and-greatest-nosql-hype-here]

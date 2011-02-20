@@ -5,7 +5,7 @@ Your application will probably look this information up from a database.
 class CachingTenantDomainResolver implements TenantResolver {
 
     @Override
-    public int resolve(HttpServletRequest request) {
+    public Integer resolve(HttpServletRequest request) {
         String host = request.getServerName();
         switch (host) {
             case "customer-a.com":

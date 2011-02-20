@@ -1,14 +1,10 @@
 The \@MultiTenant annotation is a central part of this plugin. This annotation causes two things to happen.
 
-h3. During compilation
-
-The annotation hooks into the compilation process and adds a @Integer tenantId@ field to all annotated domain classes.
-If the domain class isn't implementing the @MultiTenantDomainClass@ interface this will be added as well.   
-
-h3. During application startup
+The annotation is part of a AST transformation hooking into the compilation process adding a @Integer tenantId@ field to all annotated domain classes.
+The transformation also adds the @MultiTenantDomainClass@ interface if the domain class isn't already implementing it. 
 
 The application will look for Hibernate domain classes annotated with \@MultiTenant during application startup. 
-Hibernate operations against these domain classes will be filtered to only affect data belonging to the current tenant. 
+Hibernate operations against these domain classes will be filtered to only affect data belonging to the current tenant.
 
 {code:java}
 @MultiTenant

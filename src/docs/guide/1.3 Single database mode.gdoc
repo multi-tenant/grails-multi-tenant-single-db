@@ -13,8 +13,8 @@ h4. Pros
 
 h4. Cons
 
-* Backup can be more difficult. In a multi database environment you can backup and restore individual tenants. This is obviously a lot more tricky if all tenants share one database.
-* You might run into database scaling challenges if your tenants produce a lot of data. You might look into key based partitioning.
+* Some backup scenarios are actually more difficult. In a multi database environment you can backup and restore individual tenants. This is obviously a lot more tricky if all tenants share one database.
+* You might run into database scaling challenges if your tenants produce a lot of data. You might look into key based partitioning in your database.
 
 This is by no means a complete list, it's just a couple of points from the top
 of my head to give you an idea of what you're buying into, feel free to suggest more pros'n'cons.  

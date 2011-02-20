@@ -28,7 +28,6 @@ def customerX = new Customer(name: "Customer X")
 customerX.withThisTenant {
     // All Hibernate related operations executed here
     // will happen with 'Customer X' as current tenant. 
-    
 }
 {code}
 
