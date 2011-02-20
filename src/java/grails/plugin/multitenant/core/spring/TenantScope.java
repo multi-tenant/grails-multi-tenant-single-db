@@ -8,19 +8,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.Scope;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
- * 
+ * Custom Spring scope for per-tenant Spring beans. 
+ * Important: This class is expected to be thread-safe!
  * @author Kim A. Betti
  */
-public class TenantScope implements Scope {
+public class TenantScope implements Scope, ApplicationContextAware {
 
     public static final String NAME = "tenant";
 
     private CurrentTenant currentTenant;
     private ApplicationContext applicationContext;
 
-    private ConcurrentHashMap<Integer, Map<String, Object>> tenantBeanCache = new ConcurrentHashMap<Integer, Map<String, Object>>(100);
+    private ConcurrentHashMap<Integer, Map<String, Object>> tenantBeanCache = new ConcurrentHashMap<Integer, Map<String, Object>>(50);
 
     /**
      * Return the object with the given name from the underlying scope, creating
@@ -39,18 +41,15 @@ public class TenantScope implements Scope {
 
     private Map<String, Object> getBeanCacheForTenant(Integer tenantId) {
         if (!tenantBeanCache.containsKey(tenantId)) {
-            tenantBeanCache.put(tenantId, new ConcurrentHashMap<String, Object>(100));
+            tenantBeanCache.put(tenantId, new ConcurrentHashMap<String, Object>(10));
         }
 
         return tenantBeanCache.get(tenantId);
     }
 
-    /**
-     * Return the conversation ID for the current underlying scope, if any.
-     */
     @Override
     public String getConversationId() {
-        throw new RuntimeException("getConversationId is not implemented");
+        return "tenant-scope-" + currentTenant.get();
     }
 
     /**

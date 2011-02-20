@@ -8,15 +8,17 @@ import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigu
 import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener;
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener;
 import grails.plugin.multitenant.singledb.hibernate.event.TenantHibernateFilterEnabler;
-import grails.plugin.multitenant.core.spring.TenantBeanFactoryPostProcessor;
+import grails.plugin.multitenant.core.spring.ConfiguredTenantScopedBeanProcessor;
 import grails.plugin.multitenant.core.spring.TenantScopeConfigurator;
+import grails.plugin.multitenant.core.spring.TenantScope
+import org.springframework.beans.factory.config.CustomScopeConfigurer
 import grails.util.Environment
 import org.codehaus.groovy.grails.commons.spring.GrailsWebApplicationContext
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.4.2"
+    def version = "0.4.3"
     def grailsVersion = "1.3.5 > *"
 
     def dependsOn = [:]
@@ -47,11 +49,20 @@ Multi tenant setup focused on single database mode
             eventBroker = ref("eventBroker")
         }
 
-        // Tenant scope
-        tenantScopeConfigurator(TenantScopeConfigurator) { 
+        tenantScope(TenantScope) {
             currentTenant = ref("currentTenant")
         }
 
+        // Set per-tenant beans up in the custom tenant scope
+        configuredTenantBeanProcessor(ConfiguredTenantScopedBeanProcessor) {
+            perTenantBeans = ConfigurationHolder.config?.multiTenant?.perTenantBeans ?: []
+        }
+        
+        // Responsible for registering the custom 'tenant' scope with Spring.
+        tenantScopeConfigurer(CustomScopeConfigurer) {
+            scopes = [ tenant: ref("tenantScope") ]
+        }
+        
         tenantHibernateFilterEnabler(TenantHibernateFilterEnabler) {
             currentTenant = ref("currentTenant")
             sessionFactory = ref("sessionFactory")
@@ -80,10 +91,7 @@ Multi tenant setup focused on single database mode
             multiTenantContext = ref("multiTenantContext")
         }
 
-        // Set per-tenant beans up in the custom tenant scope
-        tenantBeanFactoryPostProcessor(TenantBeanFactoryPostProcessor) {
-            perTenantBeans = ConfigurationHolder.config?.multiTenant?.perTenantBeans ?: []
-        }
+        
         
     }
 
