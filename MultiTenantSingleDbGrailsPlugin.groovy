@@ -9,7 +9,6 @@ import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener;
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener;
 import grails.plugin.multitenant.singledb.hibernate.event.TenantHibernateFilterEnabler;
 import grails.plugin.multitenant.core.spring.ConfiguredTenantScopedBeanProcessor;
-import grails.plugin.multitenant.core.spring.TenantScopeConfigurator;
 import grails.plugin.multitenant.core.spring.TenantScope
 import org.springframework.beans.factory.config.CustomScopeConfigurer
 import grails.util.Environment
