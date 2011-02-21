@@ -1,5 +1,7 @@
 package grails.plugin.multitenant.core.resolve;
 
+import grails.plugin.multitenant.core.exception.TenantResolveException;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -15,6 +17,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface TenantResolver {
 
-    Integer resolve(HttpServletRequest request);
+    Integer resolve(HttpServletRequest request) throws TenantResolveException;
 
 }

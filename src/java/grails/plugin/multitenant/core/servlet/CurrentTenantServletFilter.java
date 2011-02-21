@@ -1,6 +1,7 @@
 package grails.plugin.multitenant.core.servlet;
 
 import grails.plugin.multitenant.core.CurrentTenant;
+import grails.plugin.multitenant.core.exception.TenantResolveException;
 import grails.plugin.multitenant.core.resolve.TenantResolver;
 
 import java.io.IOException;
@@ -46,7 +47,7 @@ public class CurrentTenantServletFilter implements Filter {
         try {
             if (request instanceof HttpServletRequest) {
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
-                int currentTenantId = tenantResolver.resolve(httpRequest);
+                Integer currentTenantId = tenantResolver.resolve(httpRequest);
                 currentTenant.set(currentTenantId);
             }
 
