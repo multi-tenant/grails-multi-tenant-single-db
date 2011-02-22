@@ -1,6 +1,7 @@
-package grails.plugin.multitenant.core.filter;
+package grails.plugin.multitenant.core.servlet;
 
 import grails.plugin.multitenant.core.CurrentTenant;
+import grails.plugin.multitenant.core.exception.TenantResolveException;
 import grails.plugin.multitenant.core.resolve.TenantResolver;
 
 import java.io.IOException;
@@ -24,10 +25,9 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * 
  * The thread local storage is nulled out when other filters
  * and servlet has processed the request.
- * 
  * @author Kim A. Betti
  */
-public class CurrentTenantFilter implements Filter {
+public class CurrentTenantServletFilter implements Filter {
 
     private CurrentTenant currentTenant; // thread local storage
     private TenantResolver tenantResolver; // provided by implementation
@@ -47,7 +47,7 @@ public class CurrentTenantFilter implements Filter {
         try {
             if (request instanceof HttpServletRequest) {
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
-                int currentTenantId = tenantResolver.resolve(httpRequest);
+                Integer currentTenantId = tenantResolver.resolve(httpRequest);
                 currentTenant.set(currentTenantId);
             }
 

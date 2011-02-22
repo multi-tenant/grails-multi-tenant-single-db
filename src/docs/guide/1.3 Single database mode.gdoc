@@ -1,0 +1,20 @@
+This plugin is (at least for the time being) focusing solely on single database mode. 
+What this means is that every tenant (user, customer..) shares that same database. 
+Hibernate will filter all queries targeting multi-tenant domain classes before they hit the database.
+
+With a multi database approach tenant data will be stored in separate databases. 
+This is often a requirement from 'enterprise' customers like banks, governments 
+and companies with more lawyers than developers. 
+
+h4. Pros
+ 
+* Tenants can be created and deleted without any maintenance overhead. 
+* You can backup and restore everything in one operation. 
+
+h4. Cons
+
+* Some backup scenarios are actually more difficult. In a multi database environment you can backup and restore individual tenants. This is obviously a lot more tricky if all tenants share one database.
+* You might run into database scaling challenges if your tenants produce a lot of data. You might look into key based partitioning in your database.
+
+This is by no means a complete list, it's just a couple of points from the top
+of my head to give you an idea of what you're buying into, feel free to suggest more pros'n'cons.  

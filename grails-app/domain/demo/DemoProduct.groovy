@@ -8,7 +8,7 @@ class DemoProduct {
     String name
 
     static constraints = {
-        name unique: 'tenantId', blank: false
+        name unique: 'tenantId', nullable: false, blank: false
     }
     
 }

@@ -1,0 +1,4 @@
+The original plan was to merge at least some of the solutions in this plugin back into [multi-tenant-core|http://github.com/multi-tenant/grails-multi-tenant-core], but.. 
+
+# That would introduce two unnecessary dependencies (Hawk Eventing and Hibernate Hijacker) for those using the multi-database mode.
+# Some of the changes in this plugin would break existing applications. 

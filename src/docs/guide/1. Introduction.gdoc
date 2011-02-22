@@ -1,0 +1,6 @@
+The Multi Tenant plugin aims to make it easy to set up and develop a multi-tenant application based on Hibernate. 
+A multi tenant application will let you run multiple users or customers in the same application instance without them 
+being able to see or modify each others data. 
+
+So far this plugin works in "single database" mode. This means that all your tenants will share the same database and tables. 
+Hibernate will re-write queries before they hit the database so only data belonging to the _current_ tenant will be fetched. 

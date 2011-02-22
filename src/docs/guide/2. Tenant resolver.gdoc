@@ -1,0 +1,27 @@
+You can see a naive implementation of this interface below. 
+Your application will probably look this information up from a database.
+
+{code:java}
+class CachingTenantDomainResolver implements TenantResolver {
+
+    @Override
+    public Integer resolve(HttpServletRequest request) {
+        String host = request.getServerName();
+        switch (host) {
+            case "customer-a.com":
+                return 1
+            
+            case "customer-b.com":
+                return 2
+                
+            default:
+                return null
+        }
+    }
+    
+}
+{code}
+
+{note}
+Error handling is subject to change. We're still looking for a "best practice". 
+{note}

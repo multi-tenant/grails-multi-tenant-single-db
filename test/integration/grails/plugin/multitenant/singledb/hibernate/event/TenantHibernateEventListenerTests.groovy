@@ -6,19 +6,19 @@ import grails.test.GrailsUnitTestCase
 import org.junit.Test
 
 import demo.DemoProduct
+import demo.DemoTenant
 
+/**
+ * 
+ * @author Kim A. Betti
+ */
 class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
- 
-    def tenantUtils
     
-    protected void setUp() {
-        super.setUp()
-        assert tenantUtils
-    }
-
+    static transactional = false
+ 
     @Test
     void tenantIdShouldBeInjected() {
-        tenantUtils.withTenantId(2) {
+        DemoTenant.withTenantId(2) {
             new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
             DemoProduct.findByName("iPhone").properties['tenantId'] == 2
         }
@@ -26,14 +26,14 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     
     void shouldNotBeAllowedToLoadOtherTenantsEntities() {
         int iPhoneId = -1
-        tenantUtils.withTenantId(2) {
-            def iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
-            iPhoneId = iPhone.id
+        DemoTenant.withTenantId(2) {
+            def iBone = new DemoProduct(name: "iBone").save(flush: true, failOnError: true)
+            iBoneId = iBone.id
         }
         
-        tenantUtils.withTenantId(1) {
+        DemoTenant.withTenantId(1) {
             DemoProduct.withNewSession {
-                def product = DemoProduct.get(iPhoneId);
+                def product = DemoProduct.get(iBoneId);
                 assertNull product
             }
         }
@@ -41,43 +41,43 @@ class TenantHibernateEventListenerTests extends GrailsUnitTestCase {
     
     @Test
     void shouldBeAllowedToLoadOwnEntities() {
-        int iPhoneId = -1
-        tenantUtils.withTenantId(2) {
-            def iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
-            iPhoneId = iPhone.id
+        int entityId = -1
+        DemoTenant.withTenantId(2) {
+            def productInstance = new DemoProduct(name: "product-name-goes-here").save(flush: true, failOnError: true)
+            entityId = productInstance.id
         }
         
-        tenantUtils.withTenantId(2) {
+        DemoTenant.withTenantId(2) {
             DemoProduct.withNewSession {
-                def product = DemoProduct.get(iPhoneId);
+                def product = DemoProduct.get(entityId);
             }
         }
     }
     
     @Test(expected=TenantSecurityException.class)
     void shouldNotBeAbleToChangeTenantId() {
-        def iPhone = null
-        tenantUtils.withTenantId(2) {
-            iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
+        def productInstance = null
+        DemoTenant.withTenantId(2) {
+            productInstance = new DemoProduct(name: "another-product-name").save(flush: true, failOnError: true)
         }
         
-        tenantUtils.withTenantId(3) {
-            iPhone.name = "iPhone 2"
-            iPhone.save(flush: true, failOnError: true)
+        DemoTenant.withTenantId(3) {
+            productInstance.name = "another-product-name-version-2"
+            productInstance.save(flush: true, failOnError: true)
             fail "Should not be able to do update entity with another tenant id"
         }
     }
     
     @Test
     void shouldBeAbleToUpdateWithCurrentId() {
-        def iPhone = null
-        tenantUtils.withTenantId(2) {
-            iPhone = new DemoProduct(name: "iPhone").save(flush: true, failOnError: true)
+        def productInstance = null
+        DemoTenant.withTenantId(2) {
+            productInstance = new DemoProduct(name: "yet-another-product-name").save(flush: true, failOnError: true)
         }
         
-        tenantUtils.withTenantId(2) {
-            iPhone.name = "iPhone 2"
-            iPhone.save(flush: true, failOnError: true)
+        DemoTenant.withTenantId(2) {
+            productInstance.name = "yet-another-product-name-version-2"
+            productInstance.save(flush: true, failOnError: true)
         }
     }
     

@@ -11,23 +11,22 @@ import org.junit.Test
  */
 class DemoServiceTests extends GrailsUnitTestCase {
 
-    def tenantUtils
     def demoService
 
     @Test
     void shouldCreateProxyForPerTenantBeans() {
 
-        tenantUtils.withTenantId 1, {
+        DemoTenant.withTenantId 1, {
             assertEquals "none", demoService.touchedByTenant
             demoService.touchedByTenant = "Tenant-1"
         }
 
-        tenantUtils.withTenantId 2, {
+        DemoTenant.withTenantId 2, {
             assertEquals "none", demoService.touchedByTenant
             demoService.touchedByTenant = "Tenant-2"
         }
 
-        tenantUtils.withTenantId 1, { 
+        DemoTenant.withTenantId 1, { 
             assertEquals "Tenant-1", demoService.touchedByTenant
         }
     }

@@ -17,15 +17,18 @@ import org.springframework.beans.factory.InitializingBean;
  * 
  * @author Kim A. Betti
  */
-public class MultiTenantContext implements InitializingBean{
+public class MultiTenantContext implements InitializingBean {
 
     private GrailsApplication grailsApplication;
 
     private List<GrailsDomainClass> multiTenantDomainClasses;
 
+    private Class<? extends Tenant> tenantClass;
+
     @Override
     public void afterPropertiesSet() {
         this.multiTenantDomainClasses = findMultiTenantDomainClasses();
+        this.tenantClass = findTenantClass();
     }
 
     public List<GrailsDomainClass> findMultiTenantDomainClasses() {
@@ -51,8 +54,24 @@ public class MultiTenantContext implements InitializingBean{
         return false;
     }
 
+    @SuppressWarnings("unchecked")
+    public Class<? extends Tenant> findTenantClass() {
+        for (GrailsClass grailsClass : grailsApplication.getArtefacts("Domain")) {
+            Class<?> realDomainClass = grailsClass.getClazz();
+            if (Tenant.class.isAssignableFrom(realDomainClass)) {
+                return (Class<? extends Tenant>) realDomainClass;
+            }
+        }
+
+        return null;
+    }
+
     public List<GrailsDomainClass> getMultiTenantDomainClasses() {
         return multiTenantDomainClasses;
+    }
+
+    public Class<? extends Tenant> getTenantClass() {
+        return this.tenantClass;
     }
 
     public boolean isMultiTenantDomainClass(Class<?> clazz) {
