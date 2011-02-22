@@ -40,17 +40,17 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     // The PostLoad event only contains the class name so reflection is used to
     // load the corresponding class. This is obviously expensive so we cache the result.
     private Map<String, Class<?>> reflectedCache = new HashMap<String, Class<?>>();
-    
-    // We need to get the index of the tenantId property. 
-    // This is another expensive operation so the result is cached here. 
+
+    // We need to get the index of the tenantId property.
+    // This is another expensive operation so the result is cached here.
     private Map<Class<?>, Integer> entityParamIndexCache = new HashMap<Class<?>, Integer>();
 
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
         if (isMultiTenantEntity(event.getEntity())) {
             Integer currentTenantId = currentTenant.get();
-            if (currentTenantId <= 0) {
-                throw new TenantException("Tried to save multi-tenant domain class '" 
+            if (currentTenantId == null) {
+                throw new TenantException("Tried to save multi-tenant domain class '"
                         + event.getEntity().getClass().getSimpleName() + "', but no tenant is set");
             }
 
@@ -74,7 +74,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
             int propertyIndex = getPropertyIndex(metaModel, TenantFilterCfg.TENANT_ID_FIELD_NAME);
             entityParamIndexCache.put(entityClass, propertyIndex);
         }
-        
+
         return entityParamIndexCache.get(entityClass);
     }
 
@@ -88,10 +88,10 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
 
             i++;
         }
-        
+
         throw new TenantException("Unable to find property index for: " + propertyName);
     }
-    
+
     @Override
     public boolean onPreUpdate(PreUpdateEvent event) {
         if (isMultiTenantEntity(event.getEntity())) {
@@ -99,7 +99,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
             MultiTenantDomainClass entity = (MultiTenantDomainClass) event.getEntity();
             Integer entityTenantId = entity.getTenantId();
             if (!currentTenantId.equals(entityTenantId)) {
-                throw new TenantSecurityException("Tried to update '" + event.getEntity() + "' with another tenant id. Expected " 
+                throw new TenantSecurityException("Tried to update '" + event.getEntity() + "' with another tenant id. Expected "
                         + currentTenantId + ", found " + entityTenantId, currentTenantId, entityTenantId);
             }
         }

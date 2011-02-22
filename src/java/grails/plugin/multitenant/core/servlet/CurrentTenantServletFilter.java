@@ -1,7 +1,6 @@
 package grails.plugin.multitenant.core.servlet;
 
 import grails.plugin.multitenant.core.CurrentTenant;
-import grails.plugin.multitenant.core.exception.TenantResolveException;
 import grails.plugin.multitenant.core.resolve.TenantResolver;
 
 import java.io.IOException;

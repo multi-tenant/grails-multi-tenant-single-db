@@ -17,6 +17,12 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface TenantResolver {
 
+    /**
+     * 
+     * @param request
+     * @return tenant id, don't return 'null' unless you know what you're doing
+     * @throws TenantResolveException
+     */
     Integer resolve(HttpServletRequest request) throws TenantResolveException;
 
 }
