@@ -128,7 +128,6 @@ Multi tenant setup focused on single database mode.
     
     protected createWithTenantMethod(Class tenantClass, MultiTenantService mtService) {
         tenantClass.metaClass.withThisTenant = { Closure closure ->
-            println "tenantId: " + tenantId
             if (tenantId == null) {
                 String exMessage = ("Can't execute closure in tenent namespace without a tenant id. "
                     + "Make sure that the domain instance has been saved to database "
