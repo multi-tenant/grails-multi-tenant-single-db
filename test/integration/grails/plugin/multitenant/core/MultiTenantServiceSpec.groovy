@@ -1,5 +1,6 @@
 package grails.plugin.multitenant.core
 
+import grails.plugin.multitenant.core.exception.TenantException
 import grails.plugin.spock.IntegrationSpec
 import demo.DemoAnimal;
 import demo.DemoProduct
@@ -74,6 +75,19 @@ class MultiTenantServiceSpec extends IntegrationSpec {
         and:
         product.refresh()
         product.name == "Another product"
+    }
+    
+    def "calling withThisTenant on a transient tenant instance should trigger an exception"() {
+        given:
+        DemoTenant transientTenant = new DemoTenant(name: "Transient tenant")
+        
+        when:
+        transientTenant.withThisTenant {
+            throw new Exception("This should never be executed")
+        }
+        
+        then:
+        TenantException tex = thrown()
     }
     
     def "do without tenant restrictions"() {

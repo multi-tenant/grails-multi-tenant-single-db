@@ -2,6 +2,7 @@ import grails.plugin.multitenant.core.CurrentTenantThreadLocal
 import grails.plugin.multitenant.core.MultiTenantContext
 import grails.plugin.multitenant.core.MultiTenantService
 import grails.plugin.multitenant.core.Tenant
+import grails.plugin.multitenant.core.exception.TenantException;
 import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
 import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter
@@ -127,8 +128,16 @@ Multi tenant setup focused on single database mode.
     
     protected createWithTenantMethod(Class tenantClass, MultiTenantService mtService) {
         tenantClass.metaClass.withThisTenant = { Closure closure ->
-            Integer tenantId = getTenantId()
-            mtService.doWithTenantId(tenantId, closure)
+            println "tenantId: " + tenantId
+            if (tenantId == null) {
+                String exMessage = ("Can't execute closure in tenent namespace without a tenant id. "
+                    + "Make sure that the domain instance has been saved to database "
+                    + "(if you're using Hibernate and primary key as tenant id)")
+                    
+                throw new TenantException(exMessage)
+            } else {
+                mtService.doWithTenantId(tenantId, closure)
+            }
         }
     }
     
