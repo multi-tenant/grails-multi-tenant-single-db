@@ -29,6 +29,7 @@ class MultiTenantService {
      * @return
      */
     def doWithTenantId(Integer tenantId, Closure closure) {
+        log.debug "Running closure with as tenant $tenantId"
         Integer oldTenantId = currentTenant.get()
         try {
             currentTenant.set(tenantId)
@@ -52,6 +53,7 @@ class MultiTenantService {
             this.closure = closure
         }
         
+        @Override
         public Object doInTransaction(TransactionStatus status) {
             closure.call()
         }

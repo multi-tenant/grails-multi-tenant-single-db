@@ -1,6 +1,7 @@
 package grails.plugin.multitenant.core
 
 import grails.plugin.spock.IntegrationSpec
+import demo.DemoAnimal;
 import demo.DemoProduct
 import demo.DemoTenant
 
@@ -73,6 +74,23 @@ class MultiTenantServiceSpec extends IntegrationSpec {
         and:
         product.refresh()
         product.name == "Another product"
+    }
+    
+    def "do without tenant restrictions"() {
+        given: "we create an animal"
+        Tenant.withTenantId(123) {
+            new DemoAnimal(name: "Pluto").save(failOnError: true)
+        }
+        
+        expect: "other tenants cant see it"
+        !Tenant.withTenantId(321) {
+            DemoAnimal.findByName("Pluto")
+        }
+    
+        and: "but it should be visible without tenant restrictions"
+        Tenant.withoutTenantRestriction {
+            DemoAnimal.findByName("Pluto")
+        }
     }
     
 }

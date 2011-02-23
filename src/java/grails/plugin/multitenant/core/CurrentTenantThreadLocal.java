@@ -14,8 +14,7 @@ public class CurrentTenantThreadLocal implements CurrentTenant {
 
     @Override
     public Integer get() {
-        Integer ct = currentTenant.get();
-        return ct != null ? ct : -1;
+        return currentTenant.get();
     }
 
     @Override

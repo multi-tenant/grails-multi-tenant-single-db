@@ -116,23 +116,31 @@ Multi tenant setup focused on single database mode.
         
         // TODO: Should we print a warning if we don't find a tenant class?
         if (tenantClass) {
-            createDoWithTenant(tenantClass, mtService)
-            createDoWithTenantIdMethod(tenantClass, mtService)
+            createWithTenantMethod(tenantClass, mtService)
+            createWithTenantIdMethod(tenantClass, mtService)
+            createwithoutTenantRestrictionMethod(tenantClass, mtService)
         } 
         
-        createDoWithTenantIdMethod(Tenant, mtService)
+        createWithTenantIdMethod(Tenant, mtService)
+        createwithoutTenantRestrictionMethod(Tenant, mtService)
     }
     
-    protected createDoWithTenant(Class tenantClass, MultiTenantService mtService) {
+    protected createWithTenantMethod(Class tenantClass, MultiTenantService mtService) {
         tenantClass.metaClass.withThisTenant = { Closure closure ->
             Integer tenantId = getTenantId()
             mtService.doWithTenantId(tenantId, closure)
         }
     }
     
-    protected createDoWithTenantIdMethod(Class tenantClass, MultiTenantService mtService) {
+    protected createWithTenantIdMethod(Class tenantClass, MultiTenantService mtService) {
         tenantClass.metaClass.'static'.withTenantId = { Integer tenantId, Closure closure ->
             mtService.doWithTenantId(tenantId, closure)
+        }
+    }
+    
+    protected createwithoutTenantRestrictionMethod(Class tenantClass, MultiTenantService mtService) {
+        tenantClass.metaClass.'static'.withoutTenantRestriction = { Closure closure ->
+            mtService.doWithTenantId(null, closure)
         }
     }
     

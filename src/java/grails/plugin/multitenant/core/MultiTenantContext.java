@@ -1,6 +1,7 @@
 package grails.plugin.multitenant.core;
 
 import grails.plugin.multitenant.core.annotation.MultiTenant;
+import grails.plugin.multitenant.core.exception.TenantException;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -56,14 +57,20 @@ public class MultiTenantContext implements InitializingBean {
 
     @SuppressWarnings("unchecked")
     public Class<? extends Tenant> findTenantClass() {
+        Class<? extends Tenant> tenantDomainClass = null;
         for (GrailsClass grailsClass : grailsApplication.getArtefacts("Domain")) {
             Class<?> realDomainClass = grailsClass.getClazz();
             if (Tenant.class.isAssignableFrom(realDomainClass)) {
-                return (Class<? extends Tenant>) realDomainClass;
+                if (tenantDomainClass != null) {
+                    throw new TenantException(String.format("Found multiple implementations of the Tenant interface (%s and %s)",
+                            tenantDomainClass.getName(), realDomainClass.getName()));
+                }
+
+                tenantDomainClass = (Class<? extends Tenant>) realDomainClass;
             }
         }
 
-        return null;
+        return tenantDomainClass;
     }
 
     public List<GrailsDomainClass> getMultiTenantDomainClasses() {
