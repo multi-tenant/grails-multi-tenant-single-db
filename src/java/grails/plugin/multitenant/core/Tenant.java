@@ -10,6 +10,12 @@ package grails.plugin.multitenant.core;
  */
 public interface Tenant {
 
-    Integer getTenantId();
+    /**
+     * This interface will often be implemented Grails domain classes.
+     * Naming this method by Java bean convention (getTenantId) will cause
+     * GORM to mistake it for a property and fail.
+     * @return tenant id, will often be a database PK
+     */
+    Integer tenantId();
 
 }

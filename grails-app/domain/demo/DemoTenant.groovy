@@ -18,7 +18,7 @@ class DemoTenant implements Tenant {
         domain blank: false, unique: true
     }
     
-    Integer getTenantId() {
+    Integer tenantId() {
         return this.id;
     }
     
