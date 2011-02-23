@@ -119,11 +119,11 @@ Multi tenant setup focused on single database mode.
         if (tenantClass) {
             createWithTenantMethod(tenantClass, mtService)
             createWithTenantIdMethod(tenantClass, mtService)
-            createwithoutTenantRestrictionMethod(tenantClass, mtService)
+            createWithoutTenantRestrictionMethod(tenantClass, mtService)
         } 
         
         createWithTenantIdMethod(Tenant, mtService)
-        createwithoutTenantRestrictionMethod(Tenant, mtService)
+        createWithoutTenantRestrictionMethod(Tenant, mtService)
     }
     
     protected createWithTenantMethod(Class tenantClass, MultiTenantService mtService) {
@@ -147,7 +147,7 @@ Multi tenant setup focused on single database mode.
         }
     }
     
-    protected createwithoutTenantRestrictionMethod(Class tenantClass, MultiTenantService mtService) {
+    protected createWithoutTenantRestrictionMethod(Class tenantClass, MultiTenantService mtService) {
         tenantClass.metaClass.'static'.withoutTenantRestriction = { Closure closure ->
             mtService.doWithTenantId(null, closure)
         }
