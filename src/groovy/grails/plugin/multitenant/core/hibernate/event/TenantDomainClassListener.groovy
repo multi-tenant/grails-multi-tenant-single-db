@@ -57,4 +57,5 @@ class TenantDomainClassListener implements InitializingBean {
             eventBroker.publish("tenant.updated", event.payload)
         }
     }
+    
 }

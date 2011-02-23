@@ -4,7 +4,7 @@ import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
 import grails.plugin.multitenant.core.exception.TenantException;
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
-import grails.plugin.multitenant.singledb.hibernate.TenantFilterCfg;
+import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,12 +22,9 @@ import org.hibernate.tuple.StandardProperty;
 import org.hibernate.tuple.entity.EntityMetamodel;
 
 /**
- * TODO: Think error handling all the way through. The original multi-tenant
- * plugin deals with error handling by returning 'false' from the callback
- * methods where this is possible. I think throwing an exception is more
- * informative, but there might be reasons why logging the error and returning
- * false is a better idea?
- * 
+ * Listens for pre-insert, pre-update and load / fetch Hibernate events.
+ * If the domain class related to the event is a multi-tenant class we apply
+ * the relevant constraints.
  * @author Kim A. Betti
  */
 @SuppressWarnings("serial")
@@ -71,7 +68,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         Class<?> entityClass = event.getEntity().getClass();
         if (!entityParamIndexCache.containsKey(entityClass)) {
             EntityMetamodel metaModel = event.getPersister().getEntityMetamodel();
-            int propertyIndex = getPropertyIndex(metaModel, TenantFilterCfg.TENANT_ID_FIELD_NAME);
+            int propertyIndex = getPropertyIndex(metaModel, TenantHibernateFilterConfigurator.TENANT_ID_FIELD_NAME);
             entityParamIndexCache.put(entityClass, propertyIndex);
         }
 

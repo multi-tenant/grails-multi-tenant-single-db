@@ -1,23 +1,23 @@
-import grails.plugin.multitenant.core.CurrentTenant;
-import grails.plugin.multitenant.core.CurrentTenantThreadLocal;
-import grails.plugin.multitenant.core.MultiTenantContext;
-import grails.plugin.multitenant.core.MultiTenantService;
-import grails.plugin.multitenant.core.Tenant;
-import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter;
-import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
-import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener;
-import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener;
-import grails.plugin.multitenant.singledb.hibernate.event.TenantHibernateFilterEnabler;
-import grails.plugin.multitenant.core.spring.ConfiguredTenantScopedBeanProcessor;
+import grails.plugin.multitenant.core.CurrentTenantThreadLocal
+import grails.plugin.multitenant.core.MultiTenantContext
+import grails.plugin.multitenant.core.MultiTenantService
+import grails.plugin.multitenant.core.Tenant
+import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener
+import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
+import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter
+import grails.plugin.multitenant.core.spring.ConfiguredTenantScopedBeanProcessor
 import grails.plugin.multitenant.core.spring.TenantScope
-import org.springframework.beans.factory.config.CustomScopeConfigurer
-import grails.util.Environment
-import org.codehaus.groovy.grails.commons.spring.GrailsWebApplicationContext
+import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator
+import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterEnabler
+
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.springframework.beans.factory.config.CustomScopeConfigurer
+import org.springframework.orm.hibernate3.FilterDefinitionFactoryBean
+
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.4.3"
+    def version = "0.5"
     def grailsVersion = "1.3.5 > *"
 
     def dependsOn = [:] // does not play well with Maven repositories
@@ -65,11 +65,18 @@ Multi tenant setup focused on single database mode.
             scopes = [ tenant: ref("tenantScope") ]
         }
         
+        multiTenantHibernateFilter(FilterDefinitionFactoryBean) {
+            defaultFilterCondition = ":tenantId = tenant_id"
+            parameterTypes = [ tenantId: "java.lang.Integer" ]
+            filterName = "onlyCurrentTenant"
+        }
+        
         // Listens for new Hibernate sessions and enables the 
         // multi-tenant filter with the current tenant id.  
         tenantHibernateFilterEnabler(TenantHibernateFilterEnabler) {
             currentTenant = ref("currentTenant")
             sessionFactory = ref("sessionFactory")
+            multiTenantHibernateFilter = ref("multiTenantHibernateFilter")
         }
 
         // Keeps track of multi-tenant related classes. 
@@ -87,9 +94,9 @@ Multi tenant setup focused on single database mode.
 
         // Enables the tenant filter for our domain classes
         tenantFilterConfigurator(TenantHibernateFilterConfigurator) {
-            eventBroker = ref("eventBroker")
             multiTenantContext = ref("multiTenantContext")
             tenantHibernateEventListener = ref("tenantHibernateEventListener")
+            multiTenantHibernateFilter = ref("multiTenantHibernateFilter")
         }
 
         // Listens for new, removed and updated tenants and broadcasts

@@ -1,19 +1,22 @@
-package grails.plugin.multitenant.singledb.hibernate.event;
+package grails.plugin.multitenant.singledb.hibernate;
+
+import java.util.Set;
 
 import grails.plugin.multitenant.core.CurrentTenant;
-import grails.plugin.multitenant.singledb.hibernate.TenantFilterCfg;
 import grails.plugins.hawkeventing.Event;
 import grails.plugins.hawkeventing.annotation.Consuming;
 import grails.plugins.hawkeventing.annotation.HawkEventConsumer;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
+import org.hibernate.engine.FilterDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * Subscribes itself to hibernate.sessionCreated events. Enables the tenant
  * Hibernate filter with the current tenant id (if any).
  * 
+ * Important: tenantId = null will disable the Hibernate filter!
  * @author Kim A. Betti
  */
 @HawkEventConsumer
@@ -21,12 +24,13 @@ public class TenantHibernateFilterEnabler {
 
     private SessionFactory sessionFactory;
     private CurrentTenant currentTenant;
+    private FilterDefinition multiTenantHibernateFilter;
 
     @Consuming("hibernate.sessionCreated")
     public void newHibernateSessionCreated(Event event) {
         Session newSession = (Session) event.getPayload();
         Integer currentTenantId = currentTenant.get();
-        enableHibernateFilter(newSession, currentTenantId);
+        updateFilterParameter(newSession, currentTenantId);
     }
 
     @Consuming(CurrentTenant.TENANT_AFTER_CHANGE_EVENT)
@@ -34,7 +38,7 @@ public class TenantHibernateFilterEnabler {
         if (hasSessionBoundToThread()) {
             Integer updatedTenantId = (Integer) event.getPayload();
             Session currentSession = sessionFactory.getCurrentSession();
-            enableHibernateFilter(currentSession, updatedTenantId);
+            updateFilterParameter(currentSession, updatedTenantId);
         }
     }
 
@@ -42,8 +46,25 @@ public class TenantHibernateFilterEnabler {
         return TransactionSynchronizationManager.hasResource(sessionFactory);
     }
 
-    public void enableHibernateFilter(Session session, Integer tenantId) {
-        session.enableFilter(TenantFilterCfg.TENANT_FILTER_NAME).setParameter(TenantFilterCfg.TENANT_ID_PARAM_NAME, tenantId);
+    private void updateFilterParameter(Session session, Integer tenantId) {
+        if (tenantId != null) {
+            enableHibernateFilterForTenant(session, tenantId);
+        } else {
+            disableHibernateFilter(session);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void enableHibernateFilterForTenant(Session session, Integer tenantId) {
+        String filterName = multiTenantHibernateFilter.getFilterName();
+        Set<String> paramNames = multiTenantHibernateFilter.getParameterNames();
+        String paramName = paramNames.iterator().next();
+        session.enableFilter(filterName).setParameter(paramName, tenantId);
+    }
+
+    private void disableHibernateFilter(Session session) {
+        String filterName = multiTenantHibernateFilter.getFilterName();
+        session.disableFilter(filterName);
     }
 
     public void setCurrentTenant(CurrentTenant currentTenant) {
@@ -52,6 +73,10 @@ public class TenantHibernateFilterEnabler {
 
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    public void setMultiTenantHibernateFilter(FilterDefinition multiTenantHibernateFilter) {
+        this.multiTenantHibernateFilter = multiTenantHibernateFilter;
     }
 
 }

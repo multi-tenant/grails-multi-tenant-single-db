@@ -1,7 +1,7 @@
 package grails.plugin.multitenant.core.ast;
 
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
-import grails.plugin.multitenant.singledb.hibernate.TenantFilterCfg;
+import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class MultiTenantAST implements ASTTransformation {
             implementInterface(classNode, MultiTenantDomainClass.class);
         }
     }
-    
+
     private void addTenantPropertyIfNecessary(ClassNode classNode) {
         if (!hasTenantIdProperty(classNode)) {
             addTenantProperty(classNode);
@@ -58,9 +58,10 @@ public class MultiTenantAST implements ASTTransformation {
         ConstantExpression defaultValue = new ConstantExpression(0);
         Statement getterBlock = null;
         Statement setterBlock = null;
-        node.addProperty(TenantFilterCfg.TENANT_ID_FIELD_NAME, Modifier.PUBLIC, integerType, defaultValue, getterBlock, setterBlock);
+        node.addProperty(TenantHibernateFilterConfigurator.TENANT_ID_FIELD_NAME, Modifier.PUBLIC,
+                integerType, defaultValue, getterBlock, setterBlock);
     }
-    
+
     private void implementInterface(ClassNode node, Class<?> interf) {
         ClassNode interfaceClassNode = new ClassNode(interf);
         if (!node.implementsInterface(interfaceClassNode)) {
