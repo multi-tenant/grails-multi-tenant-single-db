@@ -2,7 +2,7 @@ package grails.plugin.multitenant.core;
 
 /**
  * Most applications will have one domain class implementing
- * this interface and the getTenantId method will most likely
+ * this interface and the tenantId method will most likely
  * return the database generated id to allow for fast lookups
  * from second level cache.
  * 
