@@ -4,3 +4,10 @@ being able to see or modify each others data.
 
 So far this plugin works in "single database" mode. This means that all your tenants will share the same database and tables. 
 Hibernate will re-write queries before they hit the database so only data belonging to the _current_ tenant will be fetched. 
+
+This is usually used on SaaS applications, where you can sign-in to have one 'instance' of the offered application so you'll probably have your own URL (username.app.com).
+
+Check these links to read about Multi-Tenancy
+
+* [http://en.wikipedia.org/wiki/Multitenancy|http://en.wikipedia.org/wiki/Multitenancy]
+* [http://msdn.microsoft.com/en-us/library/aa479086.aspx|http://msdn.microsoft.com/en-us/library/aa479086.aspx]

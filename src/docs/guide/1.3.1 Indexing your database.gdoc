@@ -1,0 +1,25 @@
+There is a great post regarding how to do it with *grails* + *multi-tenant-single-db* + *mysql* here: [Grails: Multi tenant architecture and database indexes |http://www.developer-b.com/blog/entry/2014/2011/feb/23/grails-multi-tenant-and-database-indexes]
+
+h3. Trivial example
+
+If you just want to index your tenantId property to allow faster scans in your table, this would fit:
+
+{code:java}
+import grails.plugin.multitenant.core.annotation.MultiTenant
+
+@MultiTenant
+class Animal {
+    
+    String name
+
+    static mapping = {
+        tenantIdIndex indexColumn: [name: "tenantId", type:Integer]
+    }
+}
+{code}
+
+h3. Multi-column indexes
+
+Multi-column indexes are better to use when you know witch columns you have to index. Check the link above to understand how they work and how they can benefit your application.
+
+If you want to define multi-column indexes on your domain classes you may take a look into [grails-hibernate-hijacker docs|http://multi-tenant.github.com/grails-hibernate-hijacker/docs/v0.6/guide/2.%20Features.html#2.5.%20Composite%20index%20DSL] to understand how its DLS achieves it.

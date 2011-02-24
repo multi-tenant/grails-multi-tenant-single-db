@@ -16,14 +16,13 @@ class Customer implements Tenant {
 }
 {code}
 
-
 h3. withThisTenant
 
-Normally you want as much as possible of the multi-tenant stuff to happen transparently behind the scenes, but there are cases where it's useful to be able to 
-run operations on a specific tenant. This is often useful during testing and bootstrapping of the application during development. 
+Normally you want as much as possible of the multi-tenant stuff to happen transparently behind the scenes, but there are cases where it's useful to be able to run operations on a specific tenant. This is often useful during testing and bootstrapping of the application during development. 
 
 {code:java}
 def customerX = new Customer(name: "Customer X")
+customerX.save()
 
 customerX.withThisTenant {
     // All Hibernate related operations executed here
@@ -43,3 +42,37 @@ Customer.withTenantId(123) {
 }
 {code}
 
+This method is added to the Tenant interface either, so, whatever you Tenant class is named (@Customer@, @User@, etc), you can always use:
+
+{code:java}
+Tenant.withTenantId(123) {
+    // All Hibernate related operations executed here
+    // will be executed with tenant id 123. 
+}
+{code}
+
+h3. withoutTenantRestriction
+
+This method does the opposite of others. The plugin executes the closure passed as parameter without any tenant restrictions.
+For example, if you're running on tenant 1, and run the following code:
+
+{code:java}
+def messages = []
+
+Customer.withoutTenantRestriction {
+    // All Hibernate related operations executed here
+    // will be executed without any tenant restriction.
+    messages = Message.list()
+}
+{code}                     
+
+It will return all messages in the database, even @Message@ being a @\@MultiTenant@ annotated class.
+
+This method, as @withTenantId@, is added to the Tenant interface, so, whatever you can use:
+
+{code:java}
+Customer.withoutTenantRestriction {
+    // All Hibernate related operations executed here
+    // will be executed without any tenant restriction.
+}
+{code}
