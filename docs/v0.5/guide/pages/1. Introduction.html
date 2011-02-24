@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>1. Introduction</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    The Multi Tenant plugin aims to make it easy to set up and develop a multi-tenant application based on Hibernate. 
+A multi tenant application will let you run multiple users or customers in the same application instance without them 
+being able to see or modify each others data.<p class="paragraph"/>So far this plugin works in "single database" mode. This means that all your tenants will share the same database and tables. 
+Hibernate will re-write queries before they hit the database so only data belonging to the  <em class="italic">current</em>  tenant will be fetched.<p class="paragraph"/>This is usually used on SaaS applications, where you can sign-in to have one 'instance' of the offered application so you'll probably have your own URL (username.app.com).<p class="paragraph"/>Check these links to read about Multi-Tenancy
+<ul class="star">
+<li><a href="http://en.wikipedia.org/wiki/Multitenancy" target="blank">http://en.wikipedia.org/wiki/Multitenancy</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa479086.aspx" target="blank">http://msdn.microsoft.com/en-us/library/aa479086.aspx</a></li>
+</ul><p class="paragraph"/>
+    </body>
+</html>

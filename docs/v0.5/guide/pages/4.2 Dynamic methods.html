@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>4.2 Dynamic methods</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    The plugin adds a few methods to your <code>Tenant</code> class.<p class="paragraph"/>The examples below assumes that you have a tenant class similar to this.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.Tenant<p class="paragraph"/>class Customer <span class="java&#45;keyword">implements</span> Tenant &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>    <span class="java&#45;object">Integer</span> getTenantId() &#123;
+        <span class="java&#45;keyword">return</span> <span class="java&#45;keyword">this</span>.id
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/><h3>withThisTenant</h3><p class="paragraph"/>Normally you want as much as possible of the multi-tenant stuff to happen transparently behind the scenes, but there are cases where it's useful to be able to run operations on a specific tenant. This is often useful during testing and bootstrapping of the application during development.<p class="paragraph"/><div class="code"><pre>def customerX = <span class="java&#45;keyword">new</span> Customer(name: <span class="java&#45;quote">"Customer X"</span>)
+customerX.save()<p class="paragraph"/>customerX.withThisTenant &#123;
+    // All Hibernate related operations executed here
+    // will happen with 'Customer X' as current tenant. 
+&#125;</pre></div><p class="paragraph"/><h3>withTenantId</h3><p class="paragraph"/>This is method is similar to <code>withThisTenant</code>, but is added to the static meta class. 
+It's useful when you don't have the tenant instance available, but you know the tenant-id.<p class="paragraph"/><div class="code"><pre>Customer.withTenantId(123) &#123;
+    // All Hibernate related operations executed here
+    // will be executed with tenant id 123. 
+&#125;</pre></div><p class="paragraph"/>This method is added to the Tenant interface either, so, whatever you Tenant class is named (<code>Customer</code>, <code>User</code>, etc), you can always use:<p class="paragraph"/><div class="code"><pre>Tenant.withTenantId(123) &#123;
+    // All Hibernate related operations executed here
+    // will be executed with tenant id 123. 
+&#125;</pre></div><p class="paragraph"/><h3>withoutTenantRestriction</h3><p class="paragraph"/>This method does the opposite of others. The plugin executes the closure passed as parameter without any tenant restrictions.
+For example, if you're running on tenant 1, and run the following code:<p class="paragraph"/><div class="code"><pre>def messages = &#91;&#93;<p class="paragraph"/>Customer.withoutTenantRestriction &#123;
+    // All Hibernate related operations executed here
+    // will be executed without any tenant restriction.
+    messages = Message.list()
+&#125;</pre></div><p class="paragraph"/>It will return all messages in the database, even <code>Message</code> being a <code>&#64;MultiTenant</code> annotated class.<p class="paragraph"/>This method, as <code>withTenantId</code>, is added to the Tenant interface, so, whatever you can use:<p class="paragraph"/><div class="code"><pre>Customer.withoutTenantRestriction &#123;
+    // All Hibernate related operations executed here
+    // will be executed without any tenant restriction.
+&#125;</pre></div>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>5. Per tenant beans</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    The plugin ships with  <em class="italic">experimental</em>  support for per-tenant beans. 
+It's implemented using a custom tenant scope in combination with a scoped proxy.<p class="paragraph"/>This feature can be configured through config.groovy. See example below:<p class="paragraph"/><div class="code"><pre>multiTenant &#123;
+    perTenantBeans = &#91; <span class="java&#45;quote">"someSpringBean"</span> &#93;
+&#125;</pre></div><p class="paragraph"/><blockquote class="note">
+Spring 2.5 introduced a @Scope annotation, but this seems to be tied to component scanning 
+and will not work out of the box with the custom tenant scope introduced by this plugin.
+</blockquote>
+    </body>
+</html>

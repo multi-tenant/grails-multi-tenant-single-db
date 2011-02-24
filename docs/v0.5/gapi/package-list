@@ -1,0 +1,8 @@
+DefaultPackage
+demo
+grails.plugin.multitenant.core
+grails.plugin.multitenant.core.annotation
+grails.plugin.multitenant.core.ast
+grails.plugin.multitenant.core.exception
+grails.plugin.multitenant.core.spring
+grails.plugin.multitenant.singledb.hibernate

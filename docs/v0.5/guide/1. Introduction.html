@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>1. Introduction</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    <h1><a name="1. Introduction">1. Introduction</a></h1>The Multi Tenant plugin aims to make it easy to set up and develop a multi-tenant application based on Hibernate. 
+A multi tenant application will let you run multiple users or customers in the same application instance without them 
+being able to see or modify each others data.<p class="paragraph"/>So far this plugin works in "single database" mode. This means that all your tenants will share the same database and tables. 
+Hibernate will re-write queries before they hit the database so only data belonging to the  <em class="italic">current</em>  tenant will be fetched.<p class="paragraph"/>This is usually used on SaaS applications, where you can sign-in to have one 'instance' of the offered application so you'll probably have your own URL (username.app.com).<p class="paragraph"/>Check these links to read about Multi-Tenancy
+<ul class="star">
+<li><a href="http://en.wikipedia.org/wiki/Multitenancy" target="blank">http://en.wikipedia.org/wiki/Multitenancy</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa479086.aspx" target="blank">http://msdn.microsoft.com/en-us/library/aa479086.aspx</a></li>
+</ul><p class="paragraph"/><h2><a name="1.1 This plugin vs. multi-tenant-core">1.1 This plugin vs. multi-tenant-core</a></h2>The original plan was to merge at least some of the solutions in this plugin back into <a href="http://github.com/multi-tenant/grails-multi-tenant-core" target="blank">multi-tenant-core</a>, but.. 
+<ol>
+<li>That would introduce two unnecessary dependencies (Hawk Eventing and Hibernate Hijacker) for those using the multi-database mode.</li>
+<li>Some of the changes in this plugin would break existing applications.</li>
+</ol><p class="paragraph"/><h2><a name="1.2 Design goals">1.2 Design goals</a></h2><h3>Main focus</h3>
+<ol>
+<li>Focus on single-database mode, while trying to keep the door open for later support for database per tenant as long as it doesn't add too much complexity.</li>
+<li>Make sure that the webflow plugin is supported. Without forcing anyone to install it into their projects.</li>
+<li>Leverage existing Spring and Hibernate solutions where possible.</li>
+<li>Re-think some design decisions and add more support for the most common use cases.</li>
+</ol><p class="paragraph"/><h3>Very long term, possibly never (depending on interest and patches)</h3>
+<ol>
+<li>Create a separate core plugin independent of Hibernate.</li>
+<li>Support multiple-database mode? Hibernate Shards? There are rumors on the street talking about Multi Tenant support in Hibernate 4.</li>
+<li>Implement support for name-of-latest-and-greatest-nosql-hype-here</li>
+</ol><p class="paragraph"/><h2><a name="1.3 Single database mode">1.3 Single database mode</a></h2>This plugin is (at least for the time being) focusing solely on single database mode. 
+What this means is that every tenant (user, customer..) shares that same database. 
+Hibernate will filter all queries targeting multi-tenant domain classes before they hit the database.<p class="paragraph"/>With a multi database approach tenant data will be stored in separate databases. 
+This is often a requirement from 'enterprise' customers like banks, governments 
+and companies with more lawyers than developers.<p class="paragraph"/><h4>Pros</h4>
+<ul class="star">
+<li>Tenants can be created and deleted without any maintenance overhead.</li>
+<li>You can backup and restore everything in one operation.</li>
+</ul><p class="paragraph"/><h4>Cons</h4>
+<ul class="star">
+<li>Some backup scenarios are actually more difficult. In a multi database environment you can backup and restore individual tenants. This is obviously a lot more tricky if all tenants share one database.</li>
+<li>You might run into database scaling challenges if your tenants produce a lot of data. You might look into key based partitioning in your database.</li>
+</ul><p class="paragraph"/>This is by no means a complete list, it's just a couple of points from the top
+of my head to give you an idea of what you're buying into, feel free to suggest more pros'n'cons.<p class="paragraph"/><h2><a name="1.3.1 Indexing your database">1.3.1 Indexing your database</a></h2>There is a great post regarding how to do it with <strong class="bold">grails</strong> + <strong class="bold">multi-tenant-single-db</strong> + <strong class="bold">mysql</strong> here: <a href="http://www.developer-b.com/blog/entry/2014/2011/feb/23/grails-multi-tenant-and-database-indexes" target="blank">Grails: Multi tenant architecture and database indexes </a><p class="paragraph"/><h3>Trivial example</h3><p class="paragraph"/>If you just want to index your tenantId property to allow faster scans in your table, this would fit:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.annotation.MultiTenant<p class="paragraph"/>@MultiTenant
+class Animal &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>    <span class="java&#45;keyword">static</span> mapping = &#123;
+        tenantIdIndex indexColumn: &#91;name: <span class="java&#45;quote">"tenantId"</span>, type:<span class="java&#45;object">Integer</span>&#93;
+    &#125;
+&#125;</pre></div><p class="paragraph"/><h3>Multi-column indexes</h3><p class="paragraph"/>Multi-column indexes are better to use when you know witch columns you have to index. Check the link above to understand how they work and how they can benefit your application.<p class="paragraph"/>If you want to define multi-column indexes on your domain classes you may take a look into <a href="http://multi-tenant.github.com/grails-hibernate-hijacker/docs/v0.6/guide/2.%20Features.html#2.5.%20Composite%20index%20DSL" target="blank">grails-hibernate-hijacker docs</a> to understand how its DLS achieves it.
+    </body>
+</html>
