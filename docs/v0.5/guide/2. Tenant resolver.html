@@ -6,7 +6,7 @@
     </head>
     <body class="body">
     <h1><a name="2. Tenant resolver">2. Tenant resolver</a></h1>The <strong class="bold">tenant resolver</strong> is point on your application that will detect witch tenant will deal the current request that is made on your application.
-Most multi-tenant applications would define tenant based on the URL used to reach your application, but you can check for some user's session attribute, or any other think that you want.<p class="paragraph"/>When implementing your own tenant resolver, you'll have to implement the <code>grails.plugin.multitenant.core.resolve.TenantResolver</code> interface and override the <code>public Integer resolve(HttpServletRequest request)</code> method.<p class="paragraph"/>For example, imagine you have the '*.greatapp.com' hosting your application.
+Most multi-tenant applications would define tenant based on the URL used to reach your application, but you can check for some user's session attribute, or any other thing that you want.<p class="paragraph"/>When implementing your own tenant resolver, you'll have to implement the <code>grails.plugin.multitenant.core.resolve.TenantResolver</code> interface and override the <code>public Integer resolve(HttpServletRequest request)</code> method.<p class="paragraph"/>For example, imagine you have the '*.greatapp.com' hosting your application.
 <ul class="star">
 <li>Requests coming from 'john.greatapp.com' would resolve the tenant for user john, so tenant 1</li>
 <li>Requests coming from 'mary.greatapp.com' would resolve the tenant for user mary, so tenant 2</li>
@@ -20,6 +20,8 @@ Most multi-tenant applications would define tenant based on the URL used to reac
                 <span class="java&#45;keyword">return</span> 3<p class="paragraph"/>            <span class="java&#45;keyword">default</span>:
                 <span class="java&#45;keyword">return</span> <span class="java&#45;keyword">null</span>
         &#125;
-    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/>Of course, your application will probably look this information up from a database (and cache it).<p class="paragraph"/><h3>When Tenant has not been found</h3><p class="paragraph"/>In the example above, if the tenant has not been found, it would return null. <strong class="bold">Be careful with this approach</strong>, returning null, query restrictions will not be applied, so, data of all tenants will be returned when queried.<p class="paragraph"/>
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/>Of course, your application will probably look this information up from a database (and cache it).<p class="paragraph"/><blockquote class="warning">
+In the example above, if the tenant has not been found, it would return null. <strong class="bold">Be careful with this approach</strong>, returning null, query restrictions will not be applied, so, data of all tenants will be returned when queried.
+</blockquote>
     </body>
 </html>
