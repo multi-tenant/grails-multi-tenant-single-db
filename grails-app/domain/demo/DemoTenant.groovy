@@ -8,8 +8,6 @@ import grails.plugin.multitenant.core.Tenant
  */
 class DemoTenant implements Tenant {
 
-    static transients = [ "tenantId" ]
-    
     String name
     String domain
 
@@ -19,7 +17,7 @@ class DemoTenant implements Tenant {
     }
     
     Integer tenantId() {
-        return this.id;
+        return this.id
     }
     
 }
