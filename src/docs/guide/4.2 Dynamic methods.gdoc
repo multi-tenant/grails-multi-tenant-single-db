@@ -9,7 +9,7 @@ class Customer implements Tenant {
 
     String name
 
-    Integer getTenantId() {
+    Integer tenantId() {
         return this.id
     }
 
