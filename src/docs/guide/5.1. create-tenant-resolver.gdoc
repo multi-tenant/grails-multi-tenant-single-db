@@ -1,0 +1,6 @@
+This script will create add the skeleton of a @TenantResolver@ implementation to your project. 
+You will have to update @grails-app/conf/spring/resources.groovy@ after running this script. 
+
+{code}
+grails create-tenant-resolver com.myapp MyTenantResolver
+{code}

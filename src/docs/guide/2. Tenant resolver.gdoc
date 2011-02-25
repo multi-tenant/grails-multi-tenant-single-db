@@ -1,7 +1,9 @@
 The *tenant resolver* is point on your application that will detect witch tenant will deal the current request that is made on your application.
-Most multi-tenant applications would define tenant based on the URL used to reach your application, but you can check for some user's session attribute, or any other thing that you want. 
+Most multi-tenant applications would define tenant based on the URL used to reach your application, but you can check for some user's session attribute, 
+or any other thing that you want. 
 
-When implementing your own tenant resolver, you'll have to implement the @grails.plugin.multitenant.core.resolve.TenantResolver@ interface and override the @public Integer resolve(HttpServletRequest request)@ method.
+When implementing your own tenant resolver, you'll have to implement the @grails.plugin.multitenant.core.resolve.TenantResolver@ 
+interface and override the @public Integer resolve(HttpServletRequest request)@ method.
 
 For example, imagine you have the '*.greatapp.com' hosting your application.
 
@@ -38,8 +40,11 @@ class TenantDomainResolver implements TenantResolver {
 }
 {code}
 
-Of course, your application will probably look this information up from a database (and cache it).
+Of course, your application will probably look this information up from a database.
+Host names rarely change so if you resolve tenants based on the host http header you might want
+to implement a host => tenant-id cache here. 
 
 {warning}
-In the example above, if the tenant has not been found, it would return null. *Be careful with this approach*, returning null, query restrictions will not be applied, so, data of all tenants will be returned when queried.
+In the example above, if the tenant has not been found, it would return null. *Be careful with this approach*, 
+returning null, query restrictions will not be applied, so, data of all tenants will be returned when queried.
 {warning}

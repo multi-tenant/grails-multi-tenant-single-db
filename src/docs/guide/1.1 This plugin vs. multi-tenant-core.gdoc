@@ -1,4 +1,30 @@
-The original plan was to merge at least some of the solutions in this plugin back into [multi-tenant-core|http://github.com/multi-tenant/grails-multi-tenant-core], but.. 
+Those of you who has been using the multi-tenant plugin for a while are probably using multi-tenant-core. 
+This great plugin was unmaintained for a long time and suffered from a list of minor and major problems. 
+The plugin made use of some classes from the unofficial @sun.*@ package, had compatibility problems with recent 
+versions of Grails and used some intrusive means in order to intercepting Hibernate Sessions and criteria. 
+Another problem was that webflow support added a compile-time dependency to the webflow plugin. 
+This caused web flow support to be dropped from the multi-tenant-core plugin. 
 
-# That would introduce two unnecessary dependencies (Hawk Eventing and Hibernate Hijacker) for those using the multi-database mode.
+At some point Scott Ryan took over maintenance of the plugin. 
+A few months later the multi-tenant organization was formed on GitHub by a group of developers invested in the plugin.
+The organization was formed to drive the plugin development forward. The most serious problems mentioned above has been fixed
+in the current version of multi-tenant-core. 
+
+Kim A. Betti started working on webflow support without compile time dependency and a less intrusive way of intercepting Hibernate sessions. 
+The result of this work was this plugin (multi-tenant-single-db). The original plan was to merge at least some of the solutions in this plugin back into 
+[multi-tenant-core|http://github.com/multi-tenant/grails-multi-tenant-core], but the plugins has drifted further apart while refactoring and 
+improving single-database mode. 
+
+# Merging the changes back into multi-tenant-core would introduce unnecessary dependencies (Hawk Eventing and Hibernate Hijacker) for those using the plugin in multi-database mode.
 # Some of the changes in this plugin would break existing applications. 
+# Align the plugin more closely with the most common use cases. 
+
+{table}
+ *Feature*              | *multi-tenant-single-db*                 | *multi-tenant-core*
+Multi database mode     | No                                       | Yes
+Single database mode    | Yes, based on Hibernate Filters          | Yes, based on Criteria / Query manipulation
+Webflow support         | Yes, without compile time dependency     | No
+{table}
+
+
+*Short version:* If you want support for multi database mode then your only option is to go with multi-tenant-core. 

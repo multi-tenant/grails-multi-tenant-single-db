@@ -1,4 +1,5 @@
-There is a great post regarding how to do it with *grails* + *multi-tenant-single-db* + *mysql* here: [Grails: Multi tenant architecture and database indexes |http://www.developer-b.com/blog/entry/2014/2011/feb/23/grails-multi-tenant-and-database-indexes]
+There is a great post regarding how to do it with *grails* + *multi-tenant-single-db* + *mysql* here: 
+[Grails: Multi tenant architecture and database indexes |http://www.developer-b.com/blog/entry/2014/2011/feb/23/grails-multi-tenant-and-database-indexes]
 
 h3. Trivial example
 
@@ -20,6 +21,34 @@ class Animal {
 
 h3. Multi-column indexes
 
-Multi-column indexes are better to use when you know witch columns you have to index. Check the link above to understand how they work and how they can benefit your application.
+Multi-column indexes are better to use when you know witch columns you have to index. 
+Check the link above to understand how they work and how they can benefit your application.
 
-If you want to define multi-column indexes on your domain classes you may take a look into [grails-hibernate-hijacker docs|http://multi-tenant.github.com/grails-hibernate-hijacker/docs/v0.6/guide/2.%20Features.html#2.5.%20Composite%20index%20DSL] to understand how its DLS achieves it.
+If you want to define multi-column indexes on your domain classes you may take a look into 
+[grails-hibernate-hijacker docs|http://multi-tenant.github.com/grails-hibernate-hijacker/docs/v0.6/guide/2.%20Features.html#2.5.%20Composite%20index%20DSL] 
+to understand how its DLS achieves it.
+
+{code:java}
+import grails.plugin.multitenant.core.annotation.MultiTenant
+
+@MultiTenant
+class User {
+    
+    String username
+
+    static mapping = {
+        tenantIdIndex indexColumn: [name: "tenantId", type:Integer]
+    }
+    
+    // This will allow fast lookup on tenant alone and in
+    // combination with username.
+    static indexes = {
+        tenant_username_idx 'tenant_id', 'username'
+    }
+    
+}
+{code}
+
+{note}
+Support for the @indexes@ DSL is provided by Hibernate Hijacker and is subject to change. 
+{note}

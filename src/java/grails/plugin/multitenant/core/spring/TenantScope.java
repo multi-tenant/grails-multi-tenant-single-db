@@ -11,8 +11,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * Custom Spring scope for per-tenant Spring beans. 
+ * Custom Spring scope for per-tenant Spring beans.
+ * 
+ * Important: There is currently no listener making sure
+ * to remove any per-tenant beans when you delete a tenant.
+ * So if you delete a tenant this class will potentially
+ * hold a strong reference to tenant scoped beans belonging
+ * to the deleted tenant.
+ * 
  * Important: This class is expected to be thread-safe!
+ * 
  * @author Kim A. Betti
  */
 public class TenantScope implements Scope, ApplicationContextAware {
@@ -83,6 +91,7 @@ public class TenantScope implements Scope, ApplicationContextAware {
         this.currentTenant = currentTenant;
     }
 
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }

@@ -1,4 +1,4 @@
-The \@MultiTenant annotation is a central part of this plugin. This annotation causes two things to happen.
+The @\@MultiTenant@ annotation is a central part of this plugin. This annotation causes two things to happen.
 
 The annotation is part of a AST transformation hooking into the compilation process adding a @Integer tenantId@ field to all annotated domain classes.
 The transformation also adds the @MultiTenantDomainClass@ interface if the domain class isn't already implementing it. 

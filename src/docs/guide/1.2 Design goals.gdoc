@@ -3,6 +3,7 @@ h3. Main focus
 # Focus on single-database mode, while trying to keep the door open for later support for database per tenant as long as it doesn't add too much complexity. 
 # Make sure that the webflow plugin is supported. Without forcing anyone to install it into their projects. 
 # Leverage existing Spring and Hibernate solutions where possible. 
+# Cover as much as possible with unit and integration tests (many features are *very* difficult to test properly) 
 # Re-think some design decisions and add more support for the most common use cases.
 
 h3. Very long term, possibly never (depending on interest and patches)
