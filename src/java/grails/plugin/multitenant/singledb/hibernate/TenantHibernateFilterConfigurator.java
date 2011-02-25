@@ -5,12 +5,9 @@ import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
 import grails.plugin.multitenant.core.MultiTenantContext;
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.validation.ConstrainedProperty;
 import org.hibernate.HibernateException;
@@ -18,6 +15,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.FilterDefinition;
 import org.hibernate.event.EventListeners;
 import org.hibernate.mapping.PersistentClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Defines the Hibernate filter.
@@ -30,7 +29,7 @@ import org.hibernate.mapping.PersistentClass;
  */
 public class TenantHibernateFilterConfigurator implements HibernateConfigPostProcessor {
 
-    private static Log log = LogFactory.getLog(TenantHibernateFilterConfigurator.class);
+    private static Logger log = LoggerFactory.getLogger(TenantHibernateFilterConfigurator.class);
 
     // TODO: Move this somewhere else..? (also used in AST).
     public final static String TENANT_ID_FIELD_NAME = "tenantId";
@@ -54,15 +53,12 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
     }
 
     private void enrichMultiTenantDomainClasses(Configuration configuration) {
-        List<String> classNames = new ArrayList<String>();
         List<GrailsDomainClass> multiTenantDomainClasses = multiTenantContext.getMultiTenantDomainClasses();
         for (GrailsDomainClass domainClass : multiTenantDomainClasses) {
-            classNames.add(domainClass.getClass().getSimpleName());
+            log.debug("Enabling multi-tenant mode for domain class {}", domainClass.getClass().getSimpleName());
             addDomainFilter(domainClass, configuration);
             addTenantIdConstraints(domainClass);
         }
-
-        log.debug("Added multi tenant functionality to: " + classNames);
     }
 
     private void addDomainFilter(GrailsDomainClass domainClass, Configuration configuration) {
