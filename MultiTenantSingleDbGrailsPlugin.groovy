@@ -11,6 +11,7 @@ import grails.plugin.multitenant.core.spring.ConfiguredTenantScopedBeanProcessor
 import grails.plugin.multitenant.core.spring.TenantScope
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterEnabler
+import grails.plugin.hibernatehijacker.hibernate.HibernateEventSubscriptionFactory
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.springframework.beans.factory.config.CustomScopeConfigurer
@@ -90,8 +91,10 @@ class MultiTenantSingleDbGrailsPlugin {
 
         // Inserts tenantId, makes sure that we're not
         // loading other tenant's data and so on
-        tenantHibernateEventListener(TenantHibernateEventListener) {
-            currentTenant = ref("currentTenant")
+        tenantHibernateEventListener(HibernateEventSubscriptionFactory) {
+            eventListener = { TenantHibernateEventListener listener ->
+                currentTenant = ref("currentTenant")
+            }
         }
 
         // Enables the tenant filter for our domain classes

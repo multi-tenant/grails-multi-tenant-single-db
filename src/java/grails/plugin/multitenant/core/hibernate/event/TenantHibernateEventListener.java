@@ -1,7 +1,5 @@
 package grails.plugin.multitenant.core.hibernate.event;
 
-import grails.plugin.hibernatehijacker.hibernate.HibernateConfigPostProcessor;
-import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
 import grails.plugin.multitenant.core.ast.MultiTenantAST;
@@ -13,8 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.event.EventListeners;
 import org.hibernate.event.LoadEvent;
 import org.hibernate.event.LoadEventListener;
 import org.hibernate.event.PreInsertEvent;
@@ -33,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Kim A. Betti
  */
 @SuppressWarnings("serial")
-public class TenantHibernateEventListener implements HibernateConfigPostProcessor, PreInsertEventListener, PreUpdateEventListener, LoadEventListener {
+public class TenantHibernateEventListener implements PreInsertEventListener, PreUpdateEventListener, LoadEventListener {
 
     private static Logger log = LoggerFactory.getLogger(TenantHibernateFilterConfigurator.class);
 
@@ -46,18 +42,6 @@ public class TenantHibernateEventListener implements HibernateConfigPostProcesso
     // We need to get the index of the tenantId property.
     // This is another expensive operation so the result is cached here.
     private Map<Class<?>, Integer> entityParamIndexCache = new HashMap<Class<?>, Integer>();
-
-    /**
-     * TODO:
-     * This is a temporary solution. The class should not be responsible for
-     * subscribing itself to Hibernate. This should be configured externally.
-     */
-    @Override
-    public void doPostProcessing(Configuration configuration) throws HibernateException {
-        log.debug("Registering Hibernate listener multi-tenant entities");
-        EventListeners eventListeners = configuration.getEventListeners();
-        HibernateEventUtil.addListener(eventListeners, this);
-    }
 
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
