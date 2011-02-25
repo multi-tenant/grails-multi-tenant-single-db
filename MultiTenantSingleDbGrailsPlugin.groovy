@@ -18,7 +18,7 @@ import org.springframework.orm.hibernate3.FilterDefinitionFactoryBean
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.5"
+    def version = "0.5.1"
     def grailsVersion = "1.3.5 > *"
 
     def dependsOn = [:] // does not play well with Maven repositories
