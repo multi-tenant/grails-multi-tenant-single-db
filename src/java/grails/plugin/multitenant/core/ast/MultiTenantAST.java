@@ -1,8 +1,6 @@
 package grails.plugin.multitenant.core.ast;
 
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
-import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
-
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +20,8 @@ import org.codehaus.groovy.transform.GroovyASTTransformation;
  */
 @GroovyASTTransformation(phase = CompilePhase.CANONICALIZATION)
 public class MultiTenantAST implements ASTTransformation {
+
+    public final static String TENANT_ID_FIELD_NAME = "tenantId";
 
     @Override
     public void visit(ASTNode[] astNodes, SourceUnit sourceUnit) {
@@ -58,7 +58,7 @@ public class MultiTenantAST implements ASTTransformation {
         ConstantExpression defaultValue = new ConstantExpression(0);
         Statement getterBlock = null;
         Statement setterBlock = null;
-        node.addProperty(TenantHibernateFilterConfigurator.TENANT_ID_FIELD_NAME, Modifier.PUBLIC,
+        node.addProperty(TENANT_ID_FIELD_NAME, Modifier.PUBLIC,
                 integerType, defaultValue, getterBlock, setterBlock);
     }
 

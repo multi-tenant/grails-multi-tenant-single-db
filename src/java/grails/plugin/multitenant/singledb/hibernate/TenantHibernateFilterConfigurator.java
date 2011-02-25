@@ -2,14 +2,11 @@ package grails.plugin.multitenant.singledb.hibernate;
 
 import grails.plugin.hibernatehijacker.hibernate.HibernateConfigPostProcessor;
 import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
-import grails.plugin.multitenant.core.MultiTenantContext;
+import grails.plugin.multitenant.core.MultiTenantDomainClass;
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator;
 
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.codehaus.groovy.grails.validation.ConstrainedProperty;
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.FilterDefinition;
@@ -31,47 +28,47 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
 
     private static Logger log = LoggerFactory.getLogger(TenantHibernateFilterConfigurator.class);
 
-    // TODO: Move this somewhere else..? (also used in AST).
-    public final static String TENANT_ID_FIELD_NAME = "tenantId";
-
     private FilterDefinition multiTenantHibernateFilter;
     private TenantHibernateEventListener tenantHibernateEventListener;
-    private MultiTenantContext multiTenantContext;
 
     @Override
     public void doPostProcessing(Configuration configuration) throws HibernateException {
         log.debug("Configuring multi-tenant Hibernate filter");
 
-        createFilterDefinition(configuration);
+        addMultiTenantFilterDefinition(configuration);
         enrichMultiTenantDomainClasses(configuration);
         activateTenantEventListener(configuration);
     }
 
-    private void createFilterDefinition(Configuration configuration) {
+    private void addMultiTenantFilterDefinition(Configuration configuration) {
         log.debug("Defining Multi Tenant Hibernate filer");
         configuration.addFilterDefinition(multiTenantHibernateFilter);
     }
 
+    @SuppressWarnings("unchecked")
     private void enrichMultiTenantDomainClasses(Configuration configuration) {
-        List<GrailsDomainClass> multiTenantDomainClasses = multiTenantContext.getMultiTenantDomainClasses();
-        for (GrailsDomainClass domainClass : multiTenantDomainClasses) {
-            log.debug("Enabling multi-tenant mode for domain class {}", domainClass.getClass().getSimpleName());
-            addDomainFilter(domainClass, configuration);
-            addTenantIdConstraints(domainClass);
+        Iterator<PersistentClass> mappingIterator = configuration.getClassMappings();
+        while (mappingIterator.hasNext()) {
+            PersistentClass persistentClass = mappingIterator.next();
+            if (isMultiTenantClass(persistentClass.getMappedClass())) {
+                enrichMultiTenantDomainClass(persistentClass, configuration);
+            }
         }
     }
 
-    private void addDomainFilter(GrailsDomainClass domainClass, Configuration configuration) {
-        PersistentClass entity = configuration.getClassMapping(domainClass.getFullName());
-        String filterName = multiTenantHibernateFilter.getFilterName();
-        String condition = multiTenantHibernateFilter.getDefaultFilterCondition();
-        entity.addFilter(filterName, condition);
+    private void enrichMultiTenantDomainClass(PersistentClass persistentClass, Configuration configuration) {
+        log.debug("Enabling multi-tenant mode for domain class {}", persistentClass.getClassName());
+        addDomainFilter(persistentClass, configuration);
     }
 
-    @SuppressWarnings("unchecked")
-    private void addTenantIdConstraints(GrailsDomainClass domainClass) {
-        Map<String, ConstrainedProperty> constraints = domainClass.getConstrainedProperties();
-        constraints.get(TENANT_ID_FIELD_NAME).applyConstraint(ConstrainedProperty.NULLABLE_CONSTRAINT, false);
+    private boolean isMultiTenantClass(Class<?> mappedClass) {
+        return MultiTenantDomainClass.class.isAssignableFrom(mappedClass);
+    }
+
+    private void addDomainFilter(PersistentClass persistentClass, Configuration configuration) {
+        String filterName = multiTenantHibernateFilter.getFilterName();
+        String condition = multiTenantHibernateFilter.getDefaultFilterCondition();
+        persistentClass.addFilter(filterName, condition);
     }
 
     private void activateTenantEventListener(Configuration configuration) {
@@ -85,10 +82,6 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
 
     public void setTenantHibernateEventListener(TenantHibernateEventListener tenantHibernateEventListener) {
         this.tenantHibernateEventListener = tenantHibernateEventListener;
-    }
-
-    public void setMultiTenantContext(MultiTenantContext multiTenantContext) {
-        this.multiTenantContext = multiTenantContext;
     }
 
 }

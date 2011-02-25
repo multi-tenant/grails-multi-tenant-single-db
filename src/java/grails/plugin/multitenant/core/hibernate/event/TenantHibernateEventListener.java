@@ -2,10 +2,9 @@ package grails.plugin.multitenant.core.hibernate.event;
 
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
+import grails.plugin.multitenant.core.ast.MultiTenantAST;
 import grails.plugin.multitenant.core.exception.TenantException;
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
-import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +67,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         Class<?> entityClass = event.getEntity().getClass();
         if (!entityParamIndexCache.containsKey(entityClass)) {
             EntityMetamodel metaModel = event.getPersister().getEntityMetamodel();
-            int propertyIndex = getPropertyIndex(metaModel, TenantHibernateFilterConfigurator.TENANT_ID_FIELD_NAME);
+            int propertyIndex = getPropertyIndex(metaModel, MultiTenantAST.TENANT_ID_FIELD_NAME);
             entityParamIndexCache.put(entityClass, propertyIndex);
         }
 

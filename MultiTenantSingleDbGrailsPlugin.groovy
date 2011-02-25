@@ -66,6 +66,8 @@ Multi tenant setup focused on single database mode.
             scopes = [ tenant: ref("tenantScope") ]
         }
         
+        // Definintion of the Hibernate filter making sure that
+        // each tenant only sees and touches its own data. 
         multiTenantHibernateFilter(FilterDefinitionFactoryBean) {
             defaultFilterCondition = ":tenantId = tenant_id"
             parameterTypes = [ tenantId: "java.lang.Integer" ]
@@ -95,7 +97,6 @@ Multi tenant setup focused on single database mode.
 
         // Enables the tenant filter for our domain classes
         tenantFilterConfigurator(TenantHibernateFilterConfigurator) {
-            multiTenantContext = ref("multiTenantContext")
             tenantHibernateEventListener = ref("tenantHibernateEventListener")
             multiTenantHibernateFilter = ref("multiTenantHibernateFilter")
         }
