@@ -1,7 +1,9 @@
 package grails.plugin.multitenant.core.hibernate.event
 
 import grails.plugin.multitenant.core.Tenant
+import grails.plugin.multitenant.core.TenantRepository;
 import grails.plugins.hawkeventing.Event
+import grails.plugins.hawkeventing.EventBroker;
 import grails.util.GrailsNameUtils
 
 import org.slf4j.Logger
@@ -20,11 +22,11 @@ class TenantDomainClassListener implements InitializingBean {
 
     private final static Logger log = LoggerFactory.getLogger(TenantDomainClassListener);
 
-    def eventBroker
-    def multiTenantContext
+    EventBroker eventBroker
+    TenantRepository tenantRepository
 
     public void afterPropertiesSet() {
-        Class<? extends Tenant> tenantDomainClass = multiTenantContext.getTenantClass()
+        Class<? extends Tenant> tenantDomainClass = tenantRepository.getTenantClass()
         if (!tenantDomainClass) {
             log.warn "Unable to find any domain classes implementing the Tenant interface, tenant events will not be published."
         } else {

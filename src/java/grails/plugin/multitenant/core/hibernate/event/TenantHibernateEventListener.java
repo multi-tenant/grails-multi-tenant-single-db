@@ -1,16 +1,20 @@
 package grails.plugin.multitenant.core.hibernate.event;
 
+import grails.plugin.hibernatehijacker.hibernate.HibernateConfigPostProcessor;
+import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
 import grails.plugin.multitenant.core.ast.MultiTenantAST;
 import grails.plugin.multitenant.core.exception.TenantException;
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
+import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.event.EventListeners;
 import org.hibernate.event.LoadEvent;
 import org.hibernate.event.LoadEventListener;
 import org.hibernate.event.PreInsertEvent;
@@ -19,6 +23,8 @@ import org.hibernate.event.PreUpdateEvent;
 import org.hibernate.event.PreUpdateEventListener;
 import org.hibernate.tuple.StandardProperty;
 import org.hibernate.tuple.entity.EntityMetamodel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Listens for pre-insert, pre-update and load / fetch Hibernate events.
@@ -27,9 +33,9 @@ import org.hibernate.tuple.entity.EntityMetamodel;
  * @author Kim A. Betti
  */
 @SuppressWarnings("serial")
-public class TenantHibernateEventListener implements PreInsertEventListener, PreUpdateEventListener, LoadEventListener {
+public class TenantHibernateEventListener implements HibernateConfigPostProcessor, PreInsertEventListener, PreUpdateEventListener, LoadEventListener {
 
-    private static Log log = LogFactory.getLog(TenantHibernateEventListener.class);
+    private static Logger log = LoggerFactory.getLogger(TenantHibernateFilterConfigurator.class);
 
     private CurrentTenant currentTenant;
 
@@ -40,6 +46,18 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     // We need to get the index of the tenantId property.
     // This is another expensive operation so the result is cached here.
     private Map<Class<?>, Integer> entityParamIndexCache = new HashMap<Class<?>, Integer>();
+
+    /**
+     * TODO:
+     * This is a temporary solution. The class should not be responsible for
+     * subscribing itself to Hibernate. This should be configured externally.
+     */
+    @Override
+    public void doPostProcessing(Configuration configuration) throws HibernateException {
+        log.debug("Registering Hibernate listener multi-tenant entities");
+        EventListeners eventListeners = configuration.getEventListeners();
+        HibernateEventUtil.addListener(eventListeners, this);
+    }
 
     @Override
     public boolean onPreInsert(PreInsertEvent event) {

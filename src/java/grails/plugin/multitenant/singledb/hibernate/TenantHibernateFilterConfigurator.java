@@ -1,16 +1,13 @@
 package grails.plugin.multitenant.singledb.hibernate;
 
 import grails.plugin.hibernatehijacker.hibernate.HibernateConfigPostProcessor;
-import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventUtil;
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
-import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener;
 
 import java.util.Iterator;
 
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.FilterDefinition;
-import org.hibernate.event.EventListeners;
 import org.hibernate.mapping.PersistentClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +26,12 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
     private static Logger log = LoggerFactory.getLogger(TenantHibernateFilterConfigurator.class);
 
     private FilterDefinition multiTenantHibernateFilter;
-    private TenantHibernateEventListener tenantHibernateEventListener;
 
     @Override
     public void doPostProcessing(Configuration configuration) throws HibernateException {
         log.debug("Configuring multi-tenant Hibernate filter");
-
         addMultiTenantFilterDefinition(configuration);
         enrichMultiTenantDomainClasses(configuration);
-        activateTenantEventListener(configuration);
     }
 
     private void addMultiTenantFilterDefinition(Configuration configuration) {
@@ -71,17 +65,8 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
         persistentClass.addFilter(filterName, condition);
     }
 
-    private void activateTenantEventListener(Configuration configuration) {
-        EventListeners eventListeners = configuration.getEventListeners();
-        HibernateEventUtil.addListener(eventListeners, tenantHibernateEventListener);
-    }
-
     public void setMultiTenantHibernateFilter(FilterDefinition multiTenantHibernateFilter) {
         this.multiTenantHibernateFilter = multiTenantHibernateFilter;
-    }
-
-    public void setTenantHibernateEventListener(TenantHibernateEventListener tenantHibernateEventListener) {
-        this.tenantHibernateEventListener = tenantHibernateEventListener;
     }
 
 }

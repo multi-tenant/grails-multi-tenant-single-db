@@ -1,8 +1,9 @@
-import grails.plugin.multitenant.core.CurrentTenantThreadLocal
-import grails.plugin.multitenant.core.MultiTenantContext
 import grails.plugin.multitenant.core.MultiTenantService
 import grails.plugin.multitenant.core.Tenant
-import grails.plugin.multitenant.core.exception.TenantException;
+import grails.plugin.multitenant.core.TenantRepository
+import grails.plugin.multitenant.core.impl.CurrentTenantThreadLocal
+import grails.plugin.multitenant.core.impl.DefaultTenantRepository
+import grails.plugin.multitenant.core.exception.TenantException
 import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener
 import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
 import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter
@@ -14,11 +15,11 @@ import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterEnabler
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.springframework.beans.factory.config.CustomScopeConfigurer
 import org.springframework.orm.hibernate3.FilterDefinitionFactoryBean
-
+import org.springframework.context.ApplicationContext
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.5.1"
+    def version = "0.6"
     def grailsVersion = "1.3.5 > *"
 
     def dependsOn = [:] // does not play well with Maven repositories
@@ -37,13 +38,19 @@ class MultiTenantSingleDbGrailsPlugin {
     def author = "Kim A. Betti"
     def authorEmail = "kim@developer-b.com"
     def title = "MultiTenant - SingleDB"
-    def description = '''\\
-Multi tenant setup focused on single database mode.
-'''
+    def description = "Multi tenant setup focused on single database mode"
 
     def documentation = "https://github.com/multi-tenant/grails-multi-tenant-single-db"
 
     def doWithSpring = {
+        
+        // Provide a default implementation of TenantRepository if the 
+        // application doesn't provide one. This will scan the domain classes
+        // looking for one implementing the TenantInterface. 
+        if (!springConfig.containsBean("tenantRepository")) {
+            println "WARNING: No tenantRepository bean provided. Using fallback implementation."
+            tenantRepository(DefaultTenantRepository)
+        }
 
         // Default CurrentTenant implementation storing
         // the current tenant id in a ThreadLocal variable. 
@@ -71,7 +78,6 @@ Multi tenant setup focused on single database mode.
         multiTenantHibernateFilter(FilterDefinitionFactoryBean) {
             defaultFilterCondition = ":tenantId = tenant_id"
             parameterTypes = [ tenantId: "java.lang.Integer" ]
-            filterName = "onlyCurrentTenant"
         }
         
         // Listens for new Hibernate sessions and enables the 
@@ -82,13 +88,6 @@ Multi tenant setup focused on single database mode.
             multiTenantHibernateFilter = ref("multiTenantHibernateFilter")
         }
 
-        // Keeps track of multi-tenant related classes. 
-        // Was originally introduced to deprecate TenantUtils and
-        // make other beans independent of grailsApplication. 
-        multiTenantContext(MultiTenantContext) {
-            grailsApplication = ref("grailsApplication")
-        }
-        
         // Inserts tenantId, makes sure that we're not
         // loading other tenant's data and so on
         tenantHibernateEventListener(TenantHibernateEventListener) {
@@ -97,7 +96,6 @@ Multi tenant setup focused on single database mode.
 
         // Enables the tenant filter for our domain classes
         tenantFilterConfigurator(TenantHibernateFilterConfigurator) {
-            tenantHibernateEventListener = ref("tenantHibernateEventListener")
             multiTenantHibernateFilter = ref("multiTenantHibernateFilter")
         }
 
@@ -106,25 +104,26 @@ Multi tenant setup focused on single database mode.
         // listen in on these events. 
         tenantDomainClassListener(TenantDomainClassListener) {
             eventBroker = ref("eventBroker")
-            multiTenantContext = ref("multiTenantContext")
+            tenantRepository = ref("tenantRepository")
         }
 
     }
 
-    def doWithDynamicMethods = { ctx ->
-        MultiTenantService mtService = ctx.getBean("multiTenantService")
-        MultiTenantContext mtCtx = ctx.getBean("multiTenantContext")
-        Class tenantClass = mtCtx.getTenantClass()
+    def doWithDynamicMethods = { ApplicationContext ctx ->
+        createMethodsOnTenantClass(ctx)
+        createWithTenantIdMethod(Tenant, ctx.multiTenantService)
+        createWithoutTenantRestrictionMethod(Tenant, ctx.multiTenantService)
+    }
+    
+    protected createMethodsOnTenantClass(ApplicationContext ctx) {
+        TenantRepository tenantRepository = ctx.tenantRepository
+        Class tenantClass = tenantRepository.tenantClass
         
-        // TODO: Should we print a warning if we don't find a tenant class?
-        if (tenantClass) {
-            createWithTenantMethod(tenantClass, mtService)
-            createWithTenantIdMethod(tenantClass, mtService)
-            createWithoutTenantRestrictionMethod(tenantClass, mtService)
-        } 
-        
-        createWithTenantIdMethod(Tenant, mtService)
-        createWithoutTenantRestrictionMethod(Tenant, mtService)
+        if (tenantClass != null) {
+            createWithTenantMethod(tenantClass, ctx.multiTenantService)
+            createWithTenantIdMethod(tenantClass, ctx.multiTenantService)
+            createWithoutTenantRestrictionMethod(tenantClass, ctx.multiTenantService)
+        }
     }
     
     protected createWithTenantMethod(Class tenantClass, MultiTenantService mtService) {

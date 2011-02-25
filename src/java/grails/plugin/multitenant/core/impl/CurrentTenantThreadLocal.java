@@ -1,5 +1,6 @@
-package grails.plugin.multitenant.core;
+package grails.plugin.multitenant.core.impl;
 
+import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugins.hawkeventing.EventBroker;
 
 /**
