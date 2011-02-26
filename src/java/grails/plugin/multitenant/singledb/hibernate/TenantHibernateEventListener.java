@@ -1,11 +1,11 @@
-package grails.plugin.multitenant.core.hibernate.event;
+package grails.plugin.multitenant.singledb.hibernate;
 
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
 import grails.plugin.multitenant.core.ast.MultiTenantAST;
+import grails.plugin.multitenant.core.exception.NoCurrentTenantException;
 import grails.plugin.multitenant.core.exception.TenantException;
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
-import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,12 +43,20 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     // This is another expensive operation so the result is cached here.
     private Map<Class<?>, Integer> entityParamIndexCache = new HashMap<Class<?>, Integer>();
 
+    /**
+     * One important thing to know. It's not enough to update the
+     * entity instance with the new tenant-id. Hibernate will _not_ pick up
+     * on this and will therefore not save the updated tenant id to database.
+     * 
+     * We have to get hold of the JPA meta model, find the index of the
+     * tenantId field and update the entity state in the event.
+     */
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
         if (isMultiTenantEntity(event.getEntity())) {
             Integer currentTenantId = currentTenant.get();
             if (currentTenantId == null) {
-                throw new TenantException("Tried to save multi-tenant domain class '"
+                throw new NoCurrentTenantException("Tried to save multi-tenant domain class '"
                         + event.getEntity().getClass().getSimpleName() + "', but no tenant is set");
             }
 

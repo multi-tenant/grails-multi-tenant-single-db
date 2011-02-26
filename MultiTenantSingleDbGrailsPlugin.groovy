@@ -5,12 +5,12 @@ import grails.plugin.multitenant.core.impl.CurrentTenantThreadLocal
 import grails.plugin.multitenant.core.impl.DefaultTenantRepository
 import grails.plugin.multitenant.core.exception.TenantException
 import grails.plugin.multitenant.core.hibernate.event.TenantDomainClassListener
-import grails.plugin.multitenant.core.hibernate.event.TenantHibernateEventListener
 import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter
 import grails.plugin.multitenant.core.spring.ConfiguredTenantScopedBeanProcessor
 import grails.plugin.multitenant.core.spring.TenantScope
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterEnabler
+import grails.plugin.multitenant.singledb.hibernate.TenantHibernateEventListener
 import grails.plugin.hibernatehijacker.hibernate.HibernateEventSubscriptionFactory
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
