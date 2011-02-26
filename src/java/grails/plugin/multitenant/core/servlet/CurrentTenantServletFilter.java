@@ -28,8 +28,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  */
 public class CurrentTenantServletFilter implements Filter {
 
-    private CurrentTenant currentTenant; // thread local storage
-    private TenantResolver tenantResolver; // provided by implementation
+    protected CurrentTenant currentTenant; // thread local storage
+    protected TenantResolver tenantResolver; // provided by implementation
 
     @Override
     public void init(FilterConfig fc) throws ServletException {

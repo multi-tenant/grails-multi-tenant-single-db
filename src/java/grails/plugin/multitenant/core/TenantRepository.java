@@ -11,10 +11,19 @@ import grails.plugin.multitenant.core.exception.TenantNotFoundException;
  */
 public interface TenantRepository {
 
+    /**
+     * Look up a tenant instance associated with a given id.
+     * @param tenantId This will often be a database PK
+     * @return The tenant instance associated with the tenant id
+     * @throws TenantNotFoundException
+     */
     Tenant findByTenantId(Integer tenantId) throws TenantNotFoundException;
 
-    void setTenantClass(Class<? extends Tenant> tenantClass);
-
+    /**
+     * This will often be a domain class like Customer or User.
+     * @return the class representing a tenant in the application
+     */
     Class<? extends Tenant> getTenantClass();
+    void setTenantClass(Class<? extends Tenant> tenantClass);
 
 }
