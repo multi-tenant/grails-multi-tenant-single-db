@@ -1,6 +1,6 @@
 package demo
 
-import grails.plugin.spock.IntegrationSpec;
+import grails.plugin.spock.IntegrationSpec
 
 /**
  * Mostly as a smoke test to detect if any multi-tenant
@@ -13,15 +13,17 @@ class DemoCustomerSpec extends IntegrationSpec {
     
     def setup() {
         testTenant = new DemoTenant(name: "test tenant", domain: "test.com")
-        testTenant.save flush: true, failOnError: true
+        testTenant.save(flush: true, failOnError: true)
     }
     
     def "instances are available for tenants"() {
-        expect: "we should be able to look up the customer inside a tenant namespace"
+        given: "a customer instance created outside a tenant namespace"
         new DemoCustomer(name: "Customer A").save(failOnError: true, flush: true)
+        
+        expect: "we should be able to look up the customer inside a tenant namespace"
         testTenant.withThisTenant {
             DemoCustomer.findByName("Customer A")
         }
     }
-    
+
 }

@@ -1,5 +1,6 @@
 package demo
 
+import grails.plugin.multitenant.core.Tenant;
 import grails.test.*
 
 import org.junit.Test
@@ -16,17 +17,17 @@ class DemoServiceTests extends GrailsUnitTestCase {
     @Test
     void shouldCreateProxyForPerTenantBeans() {
 
-        DemoTenant.withTenantId 1, {
+        Tenant.withTenantId 1, {
             assertEquals "none", demoService.touchedByTenant
             demoService.touchedByTenant = "Tenant-1"
         }
 
-        DemoTenant.withTenantId 2, {
+        Tenant.withTenantId 2, {
             assertEquals "none", demoService.touchedByTenant
             demoService.touchedByTenant = "Tenant-2"
         }
 
-        DemoTenant.withTenantId 1, { 
+        Tenant.withTenantId 1, { 
             assertEquals "Tenant-1", demoService.touchedByTenant
         }
     }

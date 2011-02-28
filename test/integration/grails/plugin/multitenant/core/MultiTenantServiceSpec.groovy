@@ -1,8 +1,7 @@
 package grails.plugin.multitenant.core
 
-import grails.plugin.multitenant.core.exception.TenantException
 import grails.plugin.spock.IntegrationSpec
-import demo.DemoAnimal;
+import demo.DemoAnimal
 import demo.DemoProduct
 import demo.DemoTenant
 
@@ -13,34 +12,23 @@ import demo.DemoTenant
 class MultiTenantServiceSpec extends IntegrationSpec {
     
     def testTenant
-    def mulitTenantService
+    def multiTenantService
     
     def setup() {
         testTenant = new DemoTenant(name: "test tenant", domain: "test.com")
         testTenant.save flush: true, failOnError: true
     }
 
-    def "withThisTenant should work"() {
-        when:
-        boolean closureHasExecuted = false
-        testTenant.withThisTenant {
-            closureHasExecuted = true
-        }
-        
-        then:
-        closureHasExecuted
-    }
-    
     def "checked exceptions should roll back transaction"() {
         given:
         def product = null
-        testTenant.withThisTenant {
+        multiTenantService.doWithTenantId(123) {
             product = new DemoProduct(name: "Some product")
             product.save flush: true, failOnError: true
         }
         
         when:
-        testTenant.withThisTenant {
+        multiTenantService.doWithTenantId(123) {
             product.name = "Another name"
             product.save failOnError: true, flush: true
             throw new Exception("Should cause exception rollback")
@@ -57,13 +45,13 @@ class MultiTenantServiceSpec extends IntegrationSpec {
     def "unchecked exception should also roll back exception"() {
         given:
         def product = null
-        testTenant.withThisTenant {
+        multiTenantService.doWithTenantId(123) {
             product = new DemoProduct(name: "Another product")
             product.save flush: true, failOnError: true
         }
         
         when:
-        testTenant.withThisTenant {
+        tmultiTenantService.doWithTenantId(123) {
             product.name = "Another name"
             product.save failOnError: true, flush: true
             throw new RuntimeException("Should cause exception rollback")
@@ -77,18 +65,7 @@ class MultiTenantServiceSpec extends IntegrationSpec {
         product.name == "Another product"
     }
     
-    def "calling withThisTenant on a transient tenant instance should trigger an exception"() {
-        given:
-        DemoTenant transientTenant = new DemoTenant(name: "Transient tenant")
-        
-        when:
-        transientTenant.withThisTenant {
-            throw new Exception("This should never be executed")
-        }
-        
-        then:
-        TenantException tex = thrown()
-    }
+    
     
     def "do without tenant restrictions"() {
         given: "we create an animal"
