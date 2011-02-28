@@ -114,7 +114,7 @@ private void updateSpringResources() {
 }
 
 private void updateConfig() {
-    String configLines = "multitenant {\n    tenantClass = ${packageName}.${tenantDomainClassName}\n}"
+    String configLines = "multiTenant {\n    tenantClass = ${packageName}.${tenantDomainClassName}\n}"
     
     String configPath = "$basedir/grails-app/conf/Config.groovy"
     File configFile = new File(configPath)
