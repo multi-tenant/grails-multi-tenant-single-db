@@ -1,25 +1,20 @@
 package grails.plugin.multitenant.singledb
 
-import grails.plugin.multitenant.core.MultiTenantService;
-import grails.plugin.multitenant.core.Tenant;
-import grails.plugin.hibernatehijacker.hibernate.HibernateEventSubscriptionFactory;
-import grails.plugin.multitenant.core.TenantRepository;
-import grails.plugin.multitenant.core.exception.TenantException;
-import grails.plugin.multitenant.core.impl.CurrentTenantThreadLocal;
-import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter;
+import grails.plugin.hibernatehijacker.hibernate.HibernateEventSubscriptionFactory
+import grails.plugin.multitenant.core.MultiTenantService
+import grails.plugin.multitenant.core.Tenant
+import grails.plugin.multitenant.core.exception.TenantException
+import grails.plugin.multitenant.core.impl.CurrentTenantThreadLocal
+import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter
 import grails.plugin.multitenant.core.spring.*
 import grails.plugin.multitenant.singledb.hibernate.*
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder;
-import org.codehaus.groovy.grails.commons.spring.RuntimeSpringConfiguration;
-import org.springframework.beans.factory.config.CustomScopeConfigurer;
-import org.springframework.context.ApplicationContext;
-import org.springframework.orm.hibernate3.FilterDefinitionFactoryBean;
-
-import org.slf4j.Logger 
-import org.slf4j.LoggerFactory;
-
-import demo.DemoTenant;
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.config.CustomScopeConfigurer
+import org.springframework.context.ApplicationContext
+import org.springframework.orm.hibernate3.FilterDefinitionFactoryBean
 
 /**
  * Used by the plugin descriptor.
