@@ -4,7 +4,7 @@ Hibernate will filter all queries targeting multi-tenant domain classes before t
 
 With a multi database approach tenant data will be stored in separate databases. 
 This is often a requirement from 'enterprise' customers like banks, governments 
-and companies with more lawyers than developers. 
+where developers are outnumbered by lawyers by a factor off 5. 
 
 h4. Pros
  

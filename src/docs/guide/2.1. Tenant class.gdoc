@@ -1,4 +1,6 @@
-The plugin adds a few methods to your @Tenant@ class. 
+Most applications will have a domain class where you store tenant data. This will probably be named something like @User@, @Customer@ or @Tenant@.
+By implementing the interface @grails.plugin.multitenant.core.Tenant@ and overriding the @Integer tenantId()@ method, 
+the plugin will give you some benefits out of the box.  
 
 The examples below assumes that you have a tenant class similar to this.
 
@@ -16,7 +18,34 @@ class Customer implements Tenant {
 }
 {code}
 
-h3. withThisTenant
+h3. Automatic tenant events
+
+The plugin will trigger a few custom events when changes are made to your tenant domain class. 
+This can be very useful for things like maintaining a cache for fast lookups. 
+
+The following events are published when a tenant has been added, updated or deleted: @tenant.created@, @tenant.updated@ and @tenant.deleted@.
+
+{code:java}
+class MyTenantService implements InitializingBean { 
+
+    def eventBroker
+
+    void afterPropertiesSet() {
+        eventBroker.subscribe("tenant.createed") { evt ->
+            println "New tenant created: " + evt.payload
+        }    
+    }
+
+}
+{code}
+
+Have a look at the [documentation for Hawk Eventing|http://multi-tenant.github.com/grails-hawk-eventing/] for information on how to subscribe to these events.
+
+h4. Dynamic methods
+
+The plugin adds a few methods to your @Tenant@ class. 
+
+h5. withThisTenant
 
 Normally you want as much as possible of the multi-tenant stuff to happen transparently behind the scenes, but there are cases where it's useful to be able to run operations on a specific tenant. This is often useful during testing and bootstrapping of the application during development. 
 
@@ -30,7 +59,7 @@ customerX.withThisTenant {
 }
 {code}
 
-h3. withTenantId
+h5. withTenantId
 
 This is method is similar to @withThisTenant@, but is added to the static meta class. 
 It's useful when you don't have the tenant instance available, but you know the tenant-id. 
@@ -51,7 +80,7 @@ Tenant.withTenantId(123) {
 }
 {code}
 
-h3. withoutTenantRestriction
+h5. withoutTenantRestriction
 
 This method does the opposite of others. The plugin executes the closure passed as parameter without any tenant restrictions.
 For example, if you're running on tenant 1, and run the following code:

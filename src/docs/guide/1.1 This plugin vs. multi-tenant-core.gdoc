@@ -23,6 +23,7 @@ improving single-database mode.
  *Feature*              | *multi-tenant-single-db*                 | *multi-tenant-core*
 Multi database mode     | No                                       | Yes
 Single database mode    | Yes, based on Hibernate Filters          | Yes, based on Criteria / Query manipulation
+HQL support             | Yes, based on Hibernate Filters          | No
 Webflow support         | Yes, without compile time dependency     | No
 {table}
 

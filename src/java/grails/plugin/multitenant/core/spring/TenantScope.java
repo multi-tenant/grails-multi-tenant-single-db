@@ -1,7 +1,6 @@
 package grails.plugin.multitenant.core.spring;
 
 import grails.plugin.multitenant.core.CurrentTenant;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

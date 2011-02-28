@@ -6,7 +6,8 @@ So far this plugin works in "single database" mode. What this means is that all 
 Hibernate will re-write queries before they hit the database so only data belonging to the _current_ tenant will be fetched. 
 Do note that some companies won't allow you to store their data in the same database as other customers.  
 
-This is usually used on SaaS applications, where you can sign-in to have one 'instance' of the offered application so you'll probably have your own URL (username.app.com).
+This is usually used on SaaS applications, where you can sign-in to have one 'instance' of the offered application so you'll 
+probably have your own URL (username.app.com).
 
 Check these links to read about Multi-Tenancy
 

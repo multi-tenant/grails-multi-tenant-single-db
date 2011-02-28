@@ -1,7 +1,7 @@
 The plugin ships with _experimental_ support for per-tenant beans. 
 It's implemented using a custom tenant scope in combination with a scoped proxy. 
 
-h2. Configured in config.groovy:
+h3. Configured in config.groovy:
 
 This feature can be configured through config.groovy. See example below:
 
@@ -11,7 +11,7 @@ multiTenant {
 }
 {code}
 
-h2. The static scope property in Grails services
+h3. The static scope property in Grails services
 
 This will only work for Grails service artifacts. 
 
@@ -23,7 +23,7 @@ class MyService {
 }
 {code}
 
-h2. Spring's \@Scope annotation
+h3. Spring's \@Scope annotation
 
 Spring 2.5 introduced a @\@Scope@ annotation, but this seems to be tied to component scanning 
 and will not work out of the box with the custom tenant scope introduced by this plugin.

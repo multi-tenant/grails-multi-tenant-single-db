@@ -1,0 +1,11 @@
+This script will generate:
+
+# The skeleton of a tenant resolver
+# Domain class to represent tenants
+# Simple tenant repository implementation 
+ 
+You will have to update @grails-app/conf/Config.groovy@ and @grails-app/conf/spring/resources.groovy@ after running this script. 
+
+{code}
+Example: grails mt-quickstart com.yourapp DomainTenantResolver CachingTenantRepository Customer 
+{code}

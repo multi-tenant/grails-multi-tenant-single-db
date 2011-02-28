@@ -49,6 +49,7 @@ class User {
 }
 {code}
 
-{note}
-Support for the @indexes@ DSL is provided by Hibernate Hijacker and is subject to change. 
+{note} 
+Support for the @indexes@ DSL is provided by Hibernate Hijacker. 
+This is an experimental feature and might change in the future.  
 {note}

@@ -19,11 +19,4 @@ public interface TenantRepository {
      */
     Tenant findByTenantId(Integer tenantId) throws TenantNotFoundException;
 
-    /**
-     * This will often be a domain class like Customer or User.
-     * @return the class representing a tenant in the application
-     */
-    Class<? extends Tenant> getTenantClass();
-    void setTenantClass(Class<? extends Tenant> tenantClass);
-
 }

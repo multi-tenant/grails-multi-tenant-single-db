@@ -35,11 +35,16 @@ class MtSingleDbPluginSupport {
     private static final Logger log = LoggerFactory.getLogger(this) 
 
     static doWithSpring = {
-        
+                
         // Default CurrentTenant implementation storing
         // the current tenant id in a ThreadLocal variable.
         currentTenant(CurrentTenantThreadLocal) {
             eventBroker = ref("eventBroker")
+        }
+        
+        // Injects currentTenant into beans implementing CurrentTenantAware
+        currentTenantAwarePostProcessor(CurrentTenantAwarePostProcessor) {
+            currentTenant = ref("currentTenant")
         }
 
         // A custom Spring scope for beans.
@@ -67,9 +72,9 @@ class MtSingleDbPluginSupport {
         // Listens for new Hibernate sessions and enables the
         // multi-tenant filter with the current tenant id.
         tenantHibernateFilterEnabler(TenantHibernateFilterEnabler) {
+            multiTenantHibernateFilter = ref("multiTenantHibernateFilter")
             currentTenant = ref("currentTenant")
             sessionFactory = ref("sessionFactory")
-            multiTenantHibernateFilter = ref("multiTenantHibernateFilter")
         }
 
         // Inserts tenantId, makes sure that we're not
@@ -88,9 +93,10 @@ class MtSingleDbPluginSupport {
         // Listens for new, removed and updated tenants and broadcasts
         // the information using Hawk Eventing making it easier to
         // listen in on these events.
+        def multiTenantConfig = ConfigurationHolder.config.multitenant
         tenantHibernateEventProxy(TenantHibernateEventProxy) {
+            tenantClass = multiTenantConfig?.tenantClass ?: null
             eventBroker = ref("eventBroker")
-            tenantClass = ConfigurationHolder.config.multitenant?.tenantClass ?: null
         }
 
     }

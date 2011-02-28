@@ -1,0 +1,2 @@
+The @tenantRepository@ bean's responsibility is to look up Tenant instances based on the numeric tenant id 
+(provided by the @tenantResolver@ bean stored in @currentTenant@). Running the @mt-quickstart@ script will generate a basic implementation for you.  

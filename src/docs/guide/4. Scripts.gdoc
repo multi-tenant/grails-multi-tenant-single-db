@@ -1,0 +1,5 @@
+{warning}
+Important! Some of the scripts will make changes to existing files! 
+Make sure to commit any changes before running a script! 
+This way you can roll back if something goes wrong. 
+{warning}
