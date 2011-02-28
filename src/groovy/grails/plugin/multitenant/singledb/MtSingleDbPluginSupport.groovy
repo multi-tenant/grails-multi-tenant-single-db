@@ -5,6 +5,7 @@ import grails.plugin.multitenant.core.MultiTenantService
 import grails.plugin.multitenant.core.Tenant
 import grails.plugin.multitenant.core.exception.TenantException
 import grails.plugin.multitenant.core.impl.CurrentTenantThreadLocal
+import grails.plugin.multitenant.core.log.TenantMDC;
 import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter
 import grails.plugin.multitenant.core.spring.*
 import grails.plugin.multitenant.singledb.hibernate.*
