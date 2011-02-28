@@ -1,9 +1,5 @@
 // configuration for plugin testing - will not be included in the plugin zip
 
-multiTenant { 
-    perTenantBeans = [ 'demoService' ]
-}
- 
 log4j = {
     // Example of changing the log pattern for the default console
     // appender:
@@ -28,11 +24,11 @@ log4j = {
 
     info    'grails.app'
 
-    debug   'grails.plugin.multitenant.singledb',
-            'grails.plugin.multitenant.core'
+    debug   'grails.plugin.multitenant'
 }
 
-multitenant {
+multiTenant {
+    perTenantBeans = [ "demoService" ]
     tenantClass = demo.DemoTenant
 }
 

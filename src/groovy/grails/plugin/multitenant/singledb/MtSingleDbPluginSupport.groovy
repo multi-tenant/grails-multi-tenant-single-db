@@ -30,6 +30,8 @@ class MtSingleDbPluginSupport {
     private static final Logger log = LoggerFactory.getLogger(this) 
 
     static doWithSpring = {
+        
+        def multiTenantConfig = ConfigurationHolder.config?.multiTenant
                 
         // Default CurrentTenant implementation storing
         // the current tenant id in a ThreadLocal variable.
@@ -49,7 +51,7 @@ class MtSingleDbPluginSupport {
 
         // Set per-tenant beans up in the custom tenant scope
         configuredTenantBeanProcessor(ConfiguredTenantScopedBeanProcessor) {
-            perTenantBeans = ConfigurationHolder.config?.multiTenant?.perTenantBeans ?: []
+            perTenantBeans = multiTenantConfig?.perTenantBeans ?: []
         }
         
         // Responsible for registering the custom 'tenant' scope with Spring.
@@ -88,7 +90,6 @@ class MtSingleDbPluginSupport {
         // Listens for new, removed and updated tenants and broadcasts
         // the information using Hawk Eventing making it easier to
         // listen in on these events.
-        def multiTenantConfig = ConfigurationHolder.config.multitenant
         tenantHibernateEventProxy(TenantHibernateEventProxy) {
             tenantClass = multiTenantConfig?.tenantClass ?: null
             eventBroker = ref("eventBroker")
@@ -103,7 +104,7 @@ class MtSingleDbPluginSupport {
     }
  
     static createMethodsOnTenantClass(ApplicationContext ctx) {
-        Class tenantClass = ConfigurationHolder.config.multitenant?.tenantClass ?: null
+        Class tenantClass = ConfigurationHolder.config.multiTenant?.tenantClass ?: null
         
         if (tenantClass != null) {
             createWithThisTenantMethod(tenantClass, ctx.multiTenantService)
@@ -141,7 +142,6 @@ class MtSingleDbPluginSupport {
         }
     }
        
-    
     static doWithWebDescriptor = { xml ->
         def contextParam = xml.'context-param'
         contextParam[contextParam.size() - 1] + {

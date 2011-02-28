@@ -2,7 +2,7 @@ import grails.plugin.multitenant.singledb.MtSingleDbPluginSupport
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.7.1"
+    def version = "0.7.2"
     def grailsVersion = "1.3.5 > *"
 
     def dependsOn = [:] // does not play well with Maven repositories
