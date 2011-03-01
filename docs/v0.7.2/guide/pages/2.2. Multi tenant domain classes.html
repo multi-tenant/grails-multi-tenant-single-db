@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>2.2. Multi tenant domain classes</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    <h3>The &#64;MultiTenant annotation</h3><p class="paragraph"/>The <code>&#64;MultiTenant</code> annotation is a central part of this plugin. This annotation causes two things to happen.<p class="paragraph"/>The annotation is part of a AST transformation hooking into the compilation process adding a <code>Integer tenantId</code> field to all annotated domain classes.
+The transformation also adds the <code>MultiTenantDomainClass</code> interface if the domain class isn't already implementing it.<p class="paragraph"/>The application will look for Hibernate domain classes annotated with &#64;MultiTenant during application startup. 
+Hibernate operations against these domain classes will be filtered to only affect data belonging to the current tenant.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.annotation.MultiTenant<p class="paragraph"/>@MultiTenant
+class Animal &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/><h3>The unique constraint</h3><p class="paragraph"/>You must take some extra care with the unique constraint as all tenants will share the same database. 
+In the future we might add this automatically during application startup.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.annotation.MultiTenant<p class="paragraph"/>@MultiTenant
+class Animal &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>    <span class="java&#45;keyword">static</span> constraints = &#123;
+        name unique: 'tenantId'
+    &#125;<p class="paragraph"/>&#125;</pre></div>
+    </body>
+</html>

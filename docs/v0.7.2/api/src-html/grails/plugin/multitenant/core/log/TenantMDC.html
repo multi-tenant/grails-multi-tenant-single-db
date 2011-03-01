@@ -1,0 +1,94 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package grails.plugin.multitenant.core.log;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    import org.slf4j.MDC;<a name="line.3"></a>
+<FONT color="green">004</FONT>    <a name="line.4"></a>
+<FONT color="green">005</FONT>    import grails.plugin.multitenant.core.CurrentTenant;<a name="line.5"></a>
+<FONT color="green">006</FONT>    import grails.plugins.hawkeventing.Event;<a name="line.6"></a>
+<FONT color="green">007</FONT>    import grails.plugins.hawkeventing.annotation.Consuming;<a name="line.7"></a>
+<FONT color="green">008</FONT>    import grails.plugins.hawkeventing.annotation.HawkEventConsumer;<a name="line.8"></a>
+<FONT color="green">009</FONT>    <a name="line.9"></a>
+<FONT color="green">010</FONT>    /**<a name="line.10"></a>
+<FONT color="green">011</FONT>     * MDC / Mapped diagnostic context.<a name="line.11"></a>
+<FONT color="green">012</FONT>     * <a name="line.12"></a>
+<FONT color="green">013</FONT>     * @see http://logback.qos.ch/manual/mdc.html<a name="line.13"></a>
+<FONT color="green">014</FONT>     * @see http://www.slf4j.org/api/org/slf4j/MDC.html<a name="line.14"></a>
+<FONT color="green">015</FONT>     * @see http://blog.oio.de/2010/11/23/usage-tracking-with-grails/<a name="line.15"></a>
+<FONT color="green">016</FONT>     * @author Kim A. Betti<a name="line.16"></a>
+<FONT color="green">017</FONT>     */<a name="line.17"></a>
+<FONT color="green">018</FONT>    @HawkEventConsumer<a name="line.18"></a>
+<FONT color="green">019</FONT>    public class TenantMDC {<a name="line.19"></a>
+<FONT color="green">020</FONT>    <a name="line.20"></a>
+<FONT color="green">021</FONT>        @Consuming(CurrentTenant.TENANT_AFTER_CHANGE_EVENT)<a name="line.21"></a>
+<FONT color="green">022</FONT>        public void currentTenantUpdated(Event event) {<a name="line.22"></a>
+<FONT color="green">023</FONT>            Integer tenantId = (Integer) event.getPayload();<a name="line.23"></a>
+<FONT color="green">024</FONT>            String tenant = (tenantId == null) ? "no-tenant" : "tenant-" + tenantId;<a name="line.24"></a>
+<FONT color="green">025</FONT>            MDC.put("tenant", tenant);<a name="line.25"></a>
+<FONT color="green">026</FONT>        }<a name="line.26"></a>
+<FONT color="green">027</FONT>    <a name="line.27"></a>
+<FONT color="green">028</FONT>    }<a name="line.28"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>

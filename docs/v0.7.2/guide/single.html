@@ -1,0 +1,183 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>multi-tenant-single-db 0.7.2 - Reference Documentation</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Style" charset="utf-8"/>
+        <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    </head>
+    <body class="body">
+        <div id="header">
+            <div class="images"><br/><br/>
+                <a href="http://grails.org" target="_blank"><img alt="The Grails Framework" src="../img/grails.png" border="0"/></a>
+                <span style="right:30px; top:20px; position:absolute;">
+                    <a href="../index.html" target="_top">Frames</a> | <a href="index.html" target="_top">No Frames</a><br/><br/>
+                    <a href="http://springsource.com" target="_blank"><img alt="SpringSource - A Division of VMware" src="../img/springsource-logo.png" border="0"/></a>
+                </span>
+            </div>
+            <div class="message">multi-tenant-single-db</div>
+            <h1>multi-tenant-single-db - Reference Documentation</h1>
+            <p><strong>Authors:</strong> Kim A. Betti</p>
+            <p><strong>Version:</strong> 0.7.2</p>
+            <em></em>
+        </div>
+
+        <div id="toc">
+            <h2>Table of Contents</h2>
+            <div class="tocItem" style="margin-left:0px"><a href="#1. Introduction">1. Introduction</a></div><div class="tocItem" style="margin-left:10px"><a href="#1.1 This plugin vs. multi-tenant-core">1.1 This plugin vs. multi-tenant-core</a></div><div class="tocItem" style="margin-left:10px"><a href="#1.2 Design goals">1.2 Design goals</a></div><div class="tocItem" style="margin-left:10px"><a href="#1.3 Single database mode">1.3 Single database mode</a></div><div class="tocItem" style="margin-left:20px"><a href="#1.3.1 Indexing your database">1.3.1 Indexing your database</a></div><div class="tocItem" style="margin-left:0px"><a href="#2. Plugin concepts">2. Plugin concepts</a></div><div class="tocItem" style="margin-left:10px"><a href="#2.1. Tenant class">2.1. Tenant class</a></div><div class="tocItem" style="margin-left:10px"><a href="#2.2. Multi tenant domain classes">2.2. Multi tenant domain classes</a></div><div class="tocItem" style="margin-left:10px"><a href="#2.3. Tenant resolver">2.3. Tenant resolver</a></div><div class="tocItem" style="margin-left:10px"><a href="#2.4. Tenant repository">2.4. Tenant repository</a></div><div class="tocItem" style="margin-left:10px"><a href="#2.5. Tenant scoped beans">2.5. Tenant scoped beans</a></div><div class="tocItem" style="margin-left:0px"><a href="#3. Testing">3. Testing</a></div><div class="tocItem" style="margin-left:0px"><a href="#4. Scripts">4. Scripts</a></div><div class="tocItem" style="margin-left:10px"><a href="#4.1. mt-quickstart">4.1. mt-quickstart</a></div><div class="tocItem" style="margin-left:0px"><a href="#5. Changelog">5. Changelog</a></div>
+        </div>
+        <div id="content">
+            <h1><a name="1. Introduction">1. Introduction</a></h1>The MultiTenant - SingleDB plugin aims to make it easy to set up and develop a multi-tenant application based on Hibernate. 
+A multi tenant application will let you run multiple users or customers in the same application instance without them 
+being able to see or modify each others data.<p class="paragraph"/>So far this plugin works in "single database" mode. What this means is that all your tenants will share the same database and tables. 
+Hibernate will re-write queries before they hit the database so only data belonging to the  <em class="italic">current</em>  tenant will be fetched. 
+Do note that some companies won't allow you to store their data in the same database as other customers.<p class="paragraph"/>This is usually used on SaaS applications, where you can sign-in to have one 'instance' of the offered application so you'll 
+probably have your own URL (username.app.com).<p class="paragraph"/>Check these links to read about Multi-Tenancy
+<ul class="star">
+<li><a href="http://en.wikipedia.org/wiki/Multitenancy" target="blank">http://en.wikipedia.org/wiki/Multitenancy</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa479086.aspx" target="blank">http://msdn.microsoft.com/en-us/library/aa479086.aspx</a></li>
+</ul><p class="paragraph"/><h2><a name="1.1 This plugin vs. multi-tenant-core">1.1 This plugin vs. multi-tenant-core</a></h2>Those of you who has been using the multi-tenant plugin for a while are probably using multi-tenant-core. 
+This great plugin was unmaintained for a long time and suffered from a list of minor and major problems. 
+The plugin made use of some classes from the unofficial <code>sun.*</code> package, had compatibility problems with recent 
+versions of Grails and used some intrusive means in order to intercepting Hibernate Sessions and criteria. 
+Another problem was that webflow support added a compile-time dependency to the webflow plugin. 
+This caused web flow support to be dropped from the multi-tenant-core plugin.<p class="paragraph"/>At some point Scott Ryan took over maintenance of the plugin. 
+A few months later the multi-tenant organization was formed on GitHub by a group of developers invested in the plugin.
+The organization was formed to drive the plugin development forward. The most serious problems mentioned above has been fixed
+in the current version of multi-tenant-core.<p class="paragraph"/>Kim A. Betti started working on webflow support without compile time dependency and a less intrusive way of intercepting Hibernate sessions. 
+The result of this work was this plugin (multi-tenant-single-db). The original plan was to merge at least some of the solutions in this plugin back into 
+<a href="http://github.com/multi-tenant/grails-multi-tenant-core" target="blank">multi-tenant-core</a>, but the plugins has drifted further apart while refactoring and 
+improving single-database mode. 
+<ol>
+<li>Merging the changes back into multi-tenant-core would introduce unnecessary dependencies (Hawk Eventing and Hibernate Hijacker) for those using the plugin in multi-database mode.</li>
+<li>Some of the changes in this plugin would break existing applications.</li>
+<li>Align the plugin more closely with the most common use cases.</li>
+</ol><p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Feature</strong></th><th><strong class="bold">multi-tenant-single-db</strong></th><th><strong class="bold">multi-tenant-core</strong></th></tr><tr class="table-odd"><td>Multi database mode</td><td>No</td><td>Yes</td></tr><tr class="table-even"><td>Single database mode</td><td>Yes, based on Hibernate Filters</td><td>Yes, based on Criteria / Query manipulation</td></tr><tr class="table-odd"><td>HQL support</td><td>Yes, based on Hibernate Filters</td><td>No</td></tr><tr class="table-even"><td>Webflow support</td><td>Yes, without compile time dependency</td><td>No</td></tr></table><p class="paragraph"/>
+<strong class="bold">Short version:</strong> If you want support for multi database mode then your only option is to go with multi-tenant-core. <h2><a name="1.2 Design goals">1.2 Design goals</a></h2><h3>Main focus</h3>
+<ol>
+<li>Focus on single-database mode, while trying to keep the door open for later support for database per tenant as long as it doesn't add too much complexity.</li>
+<li>Make sure that the webflow plugin is supported. Without forcing anyone to install it into their projects.</li>
+<li>Leverage existing Spring and Hibernate solutions where possible.</li>
+<li>Cover as much as possible with unit and integration tests (many features are <strong class="bold">very</strong> difficult to test properly)</li>
+<li>Re-think some design decisions and add more support for the most common use cases.</li>
+</ol><p class="paragraph"/><h3>Very long term, possibly never (depending on interest and patches)</h3>
+<ol>
+<li>Create a separate core plugin independent of Hibernate.</li>
+<li>Support multiple-database mode? Hibernate Shards? There are rumors on the street talking about Multi Tenant support in Hibernate 4.</li>
+<li>Implement support for name-of-latest-and-greatest-nosql-hype-here</li>
+</ol><p class="paragraph"/><h2><a name="1.3 Single database mode">1.3 Single database mode</a></h2>This plugin is (at least for the time being) focusing solely on single database mode. 
+What this means is that every tenant (user, customer..) shares that same database. 
+Hibernate will filter all queries targeting multi-tenant domain classes before they hit the database.<p class="paragraph"/>With a multi database approach tenant data will be stored in separate databases. 
+This is often a requirement from 'enterprise' customers like banks, governments 
+where developers are outnumbered by lawyers by a factor off 5.<p class="paragraph"/><h4>Pros</h4>
+<ul class="star">
+<li>Tenants can be created and deleted without any maintenance overhead.</li>
+<li>You can backup and restore everything in one operation.</li>
+</ul><p class="paragraph"/><h4>Cons</h4>
+<ul class="star">
+<li>Some backup scenarios are actually more difficult. In a multi database environment you can backup and restore individual tenants. This is obviously a lot more tricky if all tenants share one database.</li>
+<li>You might run into database scaling challenges if your tenants produce a lot of data. You might look into key based partitioning in your database.</li>
+</ul><p class="paragraph"/>This is by no means a complete list, it's just a couple of points from the top
+of my head to give you an idea of what you're buying into, feel free to suggest more pros'n'cons.<p class="paragraph"/><h2><a name="1.3.1 Indexing your database">1.3.1 Indexing your database</a></h2>There is a great post regarding how to do it with <strong class="bold">grails</strong> + <strong class="bold">multi-tenant-single-db</strong> + <strong class="bold">mysql</strong> here: 
+<a href="http://www.developer-b.com/blog/entry/2014/2011/feb/23/grails-multi-tenant-and-database-indexes" target="blank">Grails: Multi tenant architecture and database indexes </a><p class="paragraph"/><h3>Trivial example</h3><p class="paragraph"/>If you just want to index your tenantId property to allow faster scans in your table, this would fit:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.annotation.MultiTenant<p class="paragraph"/>@MultiTenant
+class Animal &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>    <span class="java&#45;keyword">static</span> mapping = &#123;
+        tenantIdIndex indexColumn: &#91;name: <span class="java&#45;quote">"tenantId"</span>, type:<span class="java&#45;object">Integer</span>&#93;
+    &#125;
+&#125;</pre></div><p class="paragraph"/><h3>Multi-column indexes</h3><p class="paragraph"/>Multi-column indexes are better to use when you know witch columns you have to index. 
+Check the link above to understand how they work and how they can benefit your application.<p class="paragraph"/>If you want to define multi-column indexes on your domain classes you may take a look into 
+<a href="http://multi-tenant.github.com/grails-hibernate-hijacker/docs/v0.6/guide/2.%20Features.html#2.5.%20Composite%20index%20DSL" target="blank">grails-hibernate-hijacker docs</a> 
+to understand how its DLS achieves it.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.annotation.MultiTenant<p class="paragraph"/>@MultiTenant
+class User &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> username<p class="paragraph"/>    <span class="java&#45;keyword">static</span> mapping = &#123;
+        tenantIdIndex indexColumn: &#91;name: <span class="java&#45;quote">"tenantId"</span>, type:<span class="java&#45;object">Integer</span>&#93;
+    &#125;<p class="paragraph"/>    // This will allow fast lookup on tenant alone and in
+    // combination with username.
+    <span class="java&#45;keyword">static</span> indexes = &#123;
+        tenant_username_idx 'tenant_id', 'username'
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/><blockquote class="note"> 
+Support for the <code>indexes</code> DSL is provided by Hibernate Hijacker. 
+This is an experimental feature and might change in the future.  
+</blockquote><h1><a name="2. Plugin concepts">2. Plugin concepts</a></h1>Central concepts. <h2><a name="2.1. Tenant class">2.1. Tenant class</a></h2>Most applications will have a domain class where you store tenant data. This will probably be named something like <code>User</code>, <code>Customer</code> or <code>Tenant</code>.
+By implementing the interface <code>grails.plugin.multitenant.core.Tenant</code> and overriding the <code>Integer tenantId()</code> method, 
+the plugin will give you some benefits out of the box.<p class="paragraph"/>The examples below assumes that you have a tenant class similar to this.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.Tenant<p class="paragraph"/>class Customer <span class="java&#45;keyword">implements</span> Tenant &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>    <span class="java&#45;object">Integer</span> tenantId() &#123;
+        <span class="java&#45;keyword">return</span> <span class="java&#45;keyword">this</span>.id
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/><h3>Automatic tenant events</h3><p class="paragraph"/>The plugin will trigger a few custom events when changes are made to your tenant domain class. 
+This can be very useful for things like maintaining a cache for fast lookups.<p class="paragraph"/>The following events are published when a tenant has been added, updated or deleted: <code>tenant.created</code>, <code>tenant.updated</code> and <code>tenant.deleted</code>.<p class="paragraph"/><div class="code"><pre>class MyTenantService <span class="java&#45;keyword">implements</span> InitializingBean &#123;<p class="paragraph"/>    def eventBroker<p class="paragraph"/>    void afterPropertiesSet() &#123;
+        eventBroker.subscribe(<span class="java&#45;quote">"tenant.createed"</span>) &#123; evt &#45;&#62;
+            println <span class="java&#45;quote">"New tenant created: "</span> + evt.payload
+        &#125;    
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/>Have a look at the <a href="http://multi-tenant.github.com/grails-hawk-eventing/" target="blank">documentation for Hawk Eventing</a> for information on how to subscribe to these events.<p class="paragraph"/><h4>Dynamic methods</h4><p class="paragraph"/>The plugin adds a few methods to your <code>Tenant</code> class.<p class="paragraph"/><h5>withThisTenant</h5><p class="paragraph"/>Normally you want as much as possible of the multi-tenant stuff to happen transparently behind the scenes, but there are cases where it's useful to be able to run operations on a specific tenant. This is often useful during testing and bootstrapping of the application during development.<p class="paragraph"/><div class="code"><pre>def customerX = <span class="java&#45;keyword">new</span> Customer(name: <span class="java&#45;quote">"Customer X"</span>)
+customerX.save()<p class="paragraph"/>customerX.withThisTenant &#123;
+    // All Hibernate related operations executed here
+    // will happen with 'Customer X' as current tenant. 
+&#125;</pre></div><p class="paragraph"/><h5>withTenantId</h5><p class="paragraph"/>This is method is similar to <code>withThisTenant</code>, but is added to the static meta class. 
+It's useful when you don't have the tenant instance available, but you know the tenant-id.<p class="paragraph"/><div class="code"><pre>Customer.withTenantId(123) &#123;
+    // All Hibernate related operations executed here
+    // will be executed with tenant id 123. 
+&#125;</pre></div><p class="paragraph"/>This method is added to the Tenant interface either, so, whatever you Tenant class is named (<code>Customer</code>, <code>User</code>, etc), you can always use:<p class="paragraph"/><div class="code"><pre>Tenant.withTenantId(123) &#123;
+    // All Hibernate related operations executed here
+    // will be executed with tenant id 123. 
+&#125;</pre></div><p class="paragraph"/><h5>withoutTenantRestriction</h5><p class="paragraph"/>This method does the opposite of others. The plugin executes the closure passed as parameter without any tenant restrictions.
+For example, if you're running on tenant 1, and run the following code:<p class="paragraph"/><div class="code"><pre>def messages = &#91;&#93;<p class="paragraph"/>Customer.withoutTenantRestriction &#123;
+    // All Hibernate related operations executed here
+    // will be executed without any tenant restriction.
+    messages = Message.list()
+&#125;</pre></div><p class="paragraph"/>It will return all messages in the database, even <code>Message</code> being a <code>&#64;MultiTenant</code> annotated class.<p class="paragraph"/>This method, as <code>withTenantId</code>, is added to the Tenant interface, so, whatever you can use:<p class="paragraph"/><div class="code"><pre>Customer.withoutTenantRestriction &#123;
+    // All Hibernate related operations executed here
+    // will be executed without any tenant restriction.
+&#125;</pre></div><h2><a name="2.2. Multi tenant domain classes">2.2. Multi tenant domain classes</a></h2><h3>The &#64;MultiTenant annotation</h3><p class="paragraph"/>The <code>&#64;MultiTenant</code> annotation is a central part of this plugin. This annotation causes two things to happen.<p class="paragraph"/>The annotation is part of a AST transformation hooking into the compilation process adding a <code>Integer tenantId</code> field to all annotated domain classes.
+The transformation also adds the <code>MultiTenantDomainClass</code> interface if the domain class isn't already implementing it.<p class="paragraph"/>The application will look for Hibernate domain classes annotated with &#64;MultiTenant during application startup. 
+Hibernate operations against these domain classes will be filtered to only affect data belonging to the current tenant.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.annotation.MultiTenant<p class="paragraph"/>@MultiTenant
+class Animal &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/><h3>The unique constraint</h3><p class="paragraph"/>You must take some extra care with the unique constraint as all tenants will share the same database. 
+In the future we might add this automatically during application startup.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.annotation.MultiTenant<p class="paragraph"/>@MultiTenant
+class Animal &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>    <span class="java&#45;keyword">static</span> constraints = &#123;
+        name unique: 'tenantId'
+    &#125;<p class="paragraph"/>&#125;</pre></div><h2><a name="2.3. Tenant resolver">2.3. Tenant resolver</a></h2>The <strong class="bold">tenant resolver</strong> is point on your application that will detect witch tenant will deal the current request that is made on your application.
+Most multi-tenant applications would define tenant based on the URL used to reach your application, but you can check for some user's session attribute, 
+or any other thing that you want.<p class="paragraph"/>When implementing your own tenant resolver, you'll have to implement the <code>grails.plugin.multitenant.core.resolve.TenantResolver</code> 
+interface and override the <code>public Integer resolve(HttpServletRequest request)</code> method.<p class="paragraph"/>For example, imagine you have the '*.greatapp.com' hosting your application.
+<ul class="star">
+<li>Requests coming from 'john.greatapp.com' would resolve the tenant for user john, so tenant 1</li>
+<li>Requests coming from 'mary.greatapp.com' would resolve the tenant for user mary, so tenant 2</li>
+<li>Requests coming from 'paul.greatapp.com' would resolve the tenant for user paul, so tenant 3</li>
+</ul><p class="paragraph"/>The code below shows how a simple Tenant Resolver implementation should be.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.resolve.TenantResolver<p class="paragraph"/>class TenantDomainResolver <span class="java&#45;keyword">implements</span> TenantResolver &#123;<p class="paragraph"/>    @Override
+    <span class="java&#45;keyword">public</span> <span class="java&#45;object">Integer</span> resolve(HttpServletRequest request) &#123;<p class="paragraph"/>        <span class="java&#45;object">String</span> host = request.getServerName()
+        <span class="java&#45;keyword">switch</span> (host) &#123;
+            <span class="java&#45;keyword">case</span> <span class="java&#45;quote">"john.greatapp.com"</span>:
+                <span class="java&#45;keyword">return</span> 1<p class="paragraph"/>            <span class="java&#45;keyword">case</span> <span class="java&#45;quote">"mary.greatapp.com"</span>:
+                <span class="java&#45;keyword">return</span> 2<p class="paragraph"/>            <span class="java&#45;keyword">case</span> <span class="java&#45;quote">"paul.greatapp.com"</span>:
+                <span class="java&#45;keyword">return</span> 3<p class="paragraph"/>            <span class="java&#45;keyword">default</span>:
+                <span class="java&#45;keyword">return</span> <span class="java&#45;keyword">null</span>
+        &#125;
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/>Of course, your application will probably look this information up from a database.
+Host names rarely change so if you resolve tenants based on the host http header you might want
+to implement a host =&#62; tenant-id cache here.<p class="paragraph"/><blockquote class="warning">
+In the example above, if the tenant has not been found, it would return null. <strong class="bold">Be careful with this approach</strong>, 
+returning null, query restrictions will not be applied, so, data of all tenants will be returned when queried.
+</blockquote><h2><a name="2.4. Tenant repository">2.4. Tenant repository</a></h2>The <code>tenantRepository</code> bean's responsibility is to look up Tenant instances based on the numeric tenant id 
+(provided by the <code>tenantResolver</code> bean stored in <code>currentTenant</code>). Running the <code>mt-quickstart</code> script will generate a basic implementation for you.  <h2><a name="2.5. Tenant scoped beans">2.5. Tenant scoped beans</a></h2>The plugin ships with  <em class="italic">experimental</em>  support for per-tenant beans. 
+It's implemented using a custom tenant scope in combination with a scoped proxy.<p class="paragraph"/><h3>Configured in config.groovy:</h3><p class="paragraph"/>This feature can be configured through config.groovy. See example below:<p class="paragraph"/><div class="code"><pre>multiTenant &#123;
+    perTenantBeans = &#91; <span class="java&#45;quote">"someSpringBean"</span> &#93;
+&#125;</pre></div><p class="paragraph"/><h3>The static scope property in Grails services</h3><p class="paragraph"/>This will only work for Grails service artifacts.<p class="paragraph"/><div class="code"><pre>class MyService &#123;<p class="paragraph"/>    <span class="java&#45;keyword">static</span> scope = <span class="java&#45;quote">"tenant"</span><p class="paragraph"/>&#125;</pre></div><p class="paragraph"/><h3>Spring's &#64;Scope annotation</h3><p class="paragraph"/>Spring 2.5 introduced a <code>&#64;Scope</code> annotation, but this seems to be tied to component scanning 
+and will not work out of the box with the custom tenant scope introduced by this plugin.<h1><a name="3. Testing">3. Testing</a></h1><blockquote class="note">
+We'd like to add some extra support for multi-tenant testing, but we're not quite there yet. 
+</blockquote><h1><a name="4. Scripts">4. Scripts</a></h1><blockquote class="warning">
+Important! Some of the scripts will make changes to existing files! 
+Make sure to commit any changes before running a script! 
+This way you can roll back if something goes wrong. 
+</blockquote><h2><a name="4.1. mt-quickstart">4.1. mt-quickstart</a></h2>This script will generate:
+<ol>
+<li>The skeleton of a tenant resolver</li>
+<li>Domain class to represent tenants</li>
+<li>Simple tenant repository implementation</li>
+</ol><p class="paragraph"/> 
+You will have to update <code>grails-app/conf/Config.groovy</code> and <code>grails-app/conf/spring/resources.groovy</code> after running this script.<p class="paragraph"/><div class="code"><pre>Example: grails mt&#45;quickstart com.yourapp DomainTenantResolver CachingTenantRepository Customer</pre></div><h1><a name="5. Changelog">5. Changelog</a></h1><h3>v0.7 - February the 28th. 2011</h3>
+<ul class="star">
+<li>TenantRepository</li>
+<li>CurrentTenantAware</li>
+<li>Script: mt-quickstart</li>
+</ul><p class="paragraph"/>
+        </div>
+        <div id="footer">
+             Have a nice day!
+        </div>
+    </body>
+</html>

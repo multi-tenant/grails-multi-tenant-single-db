@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+        <title>4. Scripts</title>
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen" title="Ref" charset="utf-8"/>
+    </head>
+    <body class="body">
+    <h1><a name="4. Scripts">4. Scripts</a></h1><blockquote class="warning">
+Important! Some of the scripts will make changes to existing files! 
+Make sure to commit any changes before running a script! 
+This way you can roll back if something goes wrong. 
+</blockquote><h2><a name="4.1. mt-quickstart">4.1. mt-quickstart</a></h2>This script will generate:
+<ol>
+<li>The skeleton of a tenant resolver</li>
+<li>Domain class to represent tenants</li>
+<li>Simple tenant repository implementation</li>
+</ol><p class="paragraph"/> 
+You will have to update <code>grails-app/conf/Config.groovy</code> and <code>grails-app/conf/spring/resources.groovy</code> after running this script.<p class="paragraph"/><div class="code"><pre>Example: grails mt&#45;quickstart com.yourapp DomainTenantResolver CachingTenantRepository Customer</pre></div>
+    </body>
+</html>
