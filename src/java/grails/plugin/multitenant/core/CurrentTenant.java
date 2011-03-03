@@ -14,4 +14,6 @@ public interface CurrentTenant {
 
     void set(Integer tenantId);
 
+    boolean isSet();
+
 }

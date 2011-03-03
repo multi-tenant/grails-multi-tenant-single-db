@@ -3,6 +3,15 @@ package grails.plugin.multitenant.singledb.hibernate
 import grails.plugin.multitenant.core.Tenant
 import grails.plugin.multitenant.core.exception.TenantSecurityException
 import grails.plugin.spock.IntegrationSpec
+import groovy.sql.Sql
+
+import org.hibernate.SessionFactory
+import org.hibernate.Session;
+
+import spock.lang.FailsWith;
+
+import demo.DemoAnimal;
+import demo.DemoPetOwner
 import demo.DemoProduct
 
 /**
@@ -12,6 +21,8 @@ import demo.DemoProduct
 class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
     
     static transactional = false
+    
+    SessionFactory sessionFactory
     
     def "tenant id should be injected"() {
         when:
@@ -87,5 +98,74 @@ class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
             productInstance.save(flush: true, failOnError: true)
         }
     }
+    
+    def "should not be able to delete another tenants entities"() {
+        given: "a random product"
+        DemoProduct jaguar = Tenant.withTenantId(100) {
+            createAndPersistProduct("Jaguar")
+        }
+        
+        when: "we try to create it in the namespace of another tenant"
+        Tenant.withTenantId(200) {
+            jaguar.delete();
+        }
+
+        then: "the product still exists in the database"
+        Tenant.withTenantId(100) {
+            DemoProduct.findByName("Jaguar")
+        } != null
+    
+        when: "we try to delete it in the namespace of the owning tenant"
+        Tenant.withTenantId(100) {
+            jaguar.delete();
+        }
+        
+        then: "it is deleted from the database"
+        Tenant.withTenantId(200) {
+            jaguar.delete();
+        } == null
+    }
+    
+    protected DemoProduct createAndPersistProduct(String productName) {
+        DemoProduct product = new DemoProduct(name: productName)
+        product.save(flush: true, failOnError: true)
+        return product
+    }
+    
+//    TODO: Detect and implement this in a graceful way
+//    def "one of a collection is not his"() {
+//        given:
+//        Session session = sessionFactory.getCurrentSession()
+//        assert session.createSQLQuery("insert into demo_pet_owner(version, name, tenant_id) values(0, 'Mickey Mouse', 567)").executeUpdate() == 1
+//        
+//        when:
+//        Integer mickeyId = Tenant.withTenantId(567) {
+//            DemoPetOwner.findByName("Mickey Mouse")?.id
+//        }
+//        
+//        then:
+//        mickeyId != null
+//        mickeyId > 0
+//    
+//        when:
+//        String base = "insert into demo_animal(version, class, name, cats_killed, owner_id, tenant_id) "
+//        assert session.createSQLQuery(base + "values(0, 'demo.DemoDog', 'Pluto', 0, $mickeyId, 567)").executeUpdate() == 1
+//        assert session.createSQLQuery(base + "values(0, 'demo.DemoDog', 'Bolivar', 2, $mickeyId, 111)").executeUpdate() == 1
+//        session.clear()
+//        
+//        then: "as Hibernate hasn't fetched the actual data yet so we don't know that one doesn't belong to Mickey"
+//        Tenant.withTenantId(567) {
+//            DemoPetOwner.findByName("Mickey Mouse").pets.size()
+//        } == 2
+//    
+//        when: "we force Hibernate to load the entities"
+//        def mickeysDogs = Tenant.withTenantId(567) {
+//            DemoPetOwner.findByName("Mickey Mouse").pets.collect { it.name } 
+//        } 
+//        
+//        then: "a tenant security exception is thrown"
+//        !mickeysDogs.contains("Bolivar")
+//        mickeysDogs.size() == 1
+//    }
     
 }

@@ -1,5 +1,6 @@
 package grails.plugin.multitenant.core
 
+import org.hibernate.SessionFactory;
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -18,6 +19,7 @@ class MultiTenantService {
 
     CurrentTenant currentTenant
     TransactionTemplate transactionTemplate
+    SessionFactory sessionFactory
     
     /**
      * Execute some code in the 'namespace' of the given tenant id. 

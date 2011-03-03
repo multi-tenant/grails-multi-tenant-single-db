@@ -19,6 +19,11 @@ public class CurrentTenantThreadLocal implements CurrentTenant {
     }
 
     @Override
+    public boolean isSet() {
+        return currentTenant.get() != null;
+    }
+
+    @Override
     public void set(Integer tenantId) {
         eventBroker.publish(TENANT_BEFORE_CHANGE_EVENT, tenantId);
         currentTenant.set(tenantId);

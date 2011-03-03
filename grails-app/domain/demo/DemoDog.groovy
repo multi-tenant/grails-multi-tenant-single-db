@@ -9,7 +9,6 @@ import grails.plugin.multitenant.core.annotation.MultiTenant
  * class still have to add the same annotation. 
  * I haven't figured out why this is yet. 
  */
-@MultiTenant
 class DemoDog extends DemoAnimal {
 
     int catsKilled = 0

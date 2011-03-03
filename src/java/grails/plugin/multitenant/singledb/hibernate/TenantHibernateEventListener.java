@@ -13,6 +13,10 @@ import java.util.Map;
 import org.hibernate.HibernateException;
 import org.hibernate.event.LoadEvent;
 import org.hibernate.event.LoadEventListener;
+import org.hibernate.event.PostLoadEvent;
+import org.hibernate.event.PostLoadEventListener;
+import org.hibernate.event.PreDeleteEvent;
+import org.hibernate.event.PreDeleteEventListener;
 import org.hibernate.event.PreInsertEvent;
 import org.hibernate.event.PreInsertEventListener;
 import org.hibernate.event.PreUpdateEvent;
@@ -23,33 +27,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Listens for pre-insert, pre-update and load / fetch Hibernate events.
- * If the domain class related to the event is a multi-tenant class we apply
- * the relevant constraints.
+ * Listens for pre-insert, pre-update and load / fetch Hibernate events. If the
+ * domain class related to the event is a multi-tenant class we apply the
+ * relevant constraints.
+ * 
  * @author Kim A. Betti
  */
 @SuppressWarnings("serial")
-public class TenantHibernateEventListener implements PreInsertEventListener, PreUpdateEventListener, LoadEventListener {
+public class TenantHibernateEventListener implements PreInsertEventListener, PreUpdateEventListener, LoadEventListener, PostLoadEventListener, PreDeleteEventListener {
 
     private static Logger log = LoggerFactory.getLogger(TenantHibernateFilterConfigurator.class);
 
     private CurrentTenant currentTenant;
 
-    // The PostLoad event only contains the class name so reflection is used to
-    // load the corresponding class. This is obviously expensive so we cache the result.
-    private Map<String, Class<?>> reflectedCache = new HashMap<String, Class<?>>();
-
     // We need to get the index of the tenantId property.
     // This is another expensive operation so the result is cached here.
-    private Map<Class<?>, Integer> entityParamIndexCache = new HashMap<Class<?>, Integer>();
+    private Map<Class<? extends MultiTenantDomainClass>, Integer> entityParamIndexCache = new HashMap<Class<? extends MultiTenantDomainClass>, Integer>();
 
     /**
-     * One important thing to know. It's not enough to update the
-     * entity instance with the new tenant-id. Hibernate will _not_ pick up
-     * on this and will therefore not save the updated tenant id to database.
+     * One important thing to know. It's not enough to update the entity
+     * instance with the new tenant-id. Hibernate will _not_ pick up on this and
+     * will therefore not save the updated tenant id to database.
      * 
-     * We have to get hold of the JPA meta model, find the index of the
-     * tenantId field and update the entity state in the event.
+     * We have to get hold of the JPA meta model, find the index of the tenantId
+     * field and update the entity state in the event.
      */
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
@@ -73,8 +74,9 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         event.getState()[paramIndex] = currentTenantId;
     }
 
+    @SuppressWarnings("unchecked")
     private int getTenantIdParamIndex(PreInsertEvent event) {
-        Class<?> entityClass = event.getEntity().getClass();
+        Class<? extends MultiTenantDomainClass> entityClass = (Class<? extends MultiTenantDomainClass>) event.getEntity().getClass();
         if (!entityParamIndexCache.containsKey(entityClass)) {
             EntityMetamodel metaModel = event.getPersister().getEntityMetamodel();
             int propertyIndex = getPropertyIndex(metaModel, MultiTenantAST.TENANT_ID_FIELD_NAME);
@@ -114,31 +116,83 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     }
 
     @Override
-    public void onLoad(LoadEvent event, LoadType type) throws HibernateException {
-        Class<?> entityClass = getClassFromName(event.getEntityClassName());
-        Object result = event.getResult();
-        if (result != null && isMultiTenantEntity(result)) {
-            Integer currentTenantId = currentTenant.get();
-            Integer loadedTenantId = ((MultiTenantDomainClass) result).getTenantId();
-            if (!currentTenantId.equals(loadedTenantId) && !event.isAssociationFetch()) {
-                log.warn("Tried to load entity '" + entityClass.getSimpleName() + "' from other tenant, expected " + currentTenantId + ", found " + loadedTenantId);
+    public void onLoad(LoadEvent event, LoadType loadType) throws HibernateException {
+        Object LoadedEntity = event.getResult();
+        if (LoadedEntity != null && isMultiTenantEntity(LoadedEntity)) {
+            MultiTenantDomainClass entity = (MultiTenantDomainClass) LoadedEntity;
+            System.out.println("Verifying loading of " + entity + " association fetch? " + event.isAssociationFetch() + ", type: "
+                    + loadType + ", tenant id: " + entity.getTenantId());
+
+            // We won't be able to extract tenant-id from an association fetch.
+            // TODO: This is a bit scary as it means that we potentially can load entities from
+            // other tenants through various variants of Hibernate collection / lazy loading.
+            if (!event.isAssociationFetch() && !allowEntityLoad(entity)) {
+                log.debug("Refusing tenant {} to load {}", currentTenant.get(), entity);
                 event.setResult(null);
             }
         }
     }
 
-    private Class<?> getClassFromName(String className) {
-        if (!reflectedCache.containsKey(className)) {
-            try {
-                Class<?> aClass = getClass().getClassLoader().loadClass(className);
-                reflectedCache.put(className, aClass);
-            } catch (ClassNotFoundException ex) {
-                String message = "Could not find class " + className;
-                throw new TenantException(message, ex);
+    private boolean allowEntityLoad(MultiTenantDomainClass entity) {
+        if (currentTenant.isSet()) {
+            if (belongsToCurrentTenant(entity)) {
+                return true;
+            } else {
+                log.warn("Tried to fetch an instance of {} belonging to {}", entity.getClass().getName(), entity.getTenantId());
+                return false;
+            }
+        } else {
+            return true; // No current tenant => no restrictions
+        }
+    }
+
+
+
+    /**
+     * This is our last chance to detect attempts to load entities belonging to
+     * other tenants.
+     */
+    @Override
+    public void onPostLoad(PostLoadEvent event) {
+        // This works, but has the down side that it also triggers an
+        // exception for situations we've already handled more gracefully
+        // pretending that the entity wasn't found.
+
+        //        Object entity = event.getEntity();
+        //        if (isMultiTenantEntity(entity)) {
+        //            System.out.println("Verifying post load of " + event.getEntity());
+        //            if (currentTenant.isSet()) {
+        //                MultiTenantDomainClass tenantEntity = (MultiTenantDomainClass) entity;
+        //                System.out.println(" -> post load tenant id: " + tenantEntity.getTenantId());
+        //
+        //                Integer tenantEntityId = tenantEntity.getTenantId();
+        //                if (!currentTenant.get().equals(tenantEntityId)) {
+        //                    System.out.println(" -> Warning! Detected another tenant");
+        //                    throw new TenantSecurityException("Tried to load '" + tenantEntity + "' with another tenant id. Expected "
+        //                            + currentTenant.get() + ", found " + tenantEntityId, currentTenant.get(), tenantEntityId);
+        //                }
+        //            }
+        //        }
+    }
+
+
+    @Override
+    public boolean onPreDelete(PreDeleteEvent event) {
+        boolean shouldVetoDelete = false;
+        if (isMultiTenantEntity(event.getEntity())) {
+            MultiTenantDomainClass tenantEntity = (MultiTenantDomainClass) event.getEntity();
+            if (!belongsToCurrentTenant(tenantEntity)) {
+                log.warn("Tenant {} tried to delete another tenants entity {}", currentTenant.get(), tenantEntity);
+                shouldVetoDelete = true;
             }
         }
 
-        return reflectedCache.get(className);
+        return shouldVetoDelete;
+    }
+
+    private boolean belongsToCurrentTenant(MultiTenantDomainClass entity) {
+        Integer currentTenantId = currentTenant.get();
+        return currentTenantId.equals(entity.getTenantId());
     }
 
     private boolean isMultiTenantEntity(Object entity) {

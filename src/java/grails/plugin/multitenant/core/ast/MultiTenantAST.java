@@ -23,6 +23,10 @@ public class MultiTenantAST implements ASTTransformation {
 
     public final static String TENANT_ID_FIELD_NAME = "tenantId";
 
+    // TODO: ConstantExpression.NULL would be better,
+    // but that leads to all sorts of crazy problems with default GORM constraints
+    public final static Integer NO_TENANT_VALUE = Integer.MIN_VALUE;
+
     @Override
     public void visit(ASTNode[] astNodes, SourceUnit sourceUnit) {
         for (ClassNode classNode : getClassAstNodes(astNodes)) {
@@ -55,7 +59,7 @@ public class MultiTenantAST implements ASTTransformation {
 
     private void addTenantProperty(ClassNode node) {
         ClassNode integerType = new ClassNode(Integer.class);
-        ConstantExpression defaultValue = new ConstantExpression(0);
+        ConstantExpression defaultValue = new ConstantExpression(NO_TENANT_VALUE);
         Statement getterBlock = null;
         Statement setterBlock = null;
         node.addProperty(TENANT_ID_FIELD_NAME, Modifier.PUBLIC,
