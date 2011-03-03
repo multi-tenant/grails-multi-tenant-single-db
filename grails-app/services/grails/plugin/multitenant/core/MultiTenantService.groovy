@@ -57,6 +57,7 @@ class MultiTenantService {
     /**
      * Run a closure in a new session. Taken from HibernatePluginSupport 
      * so we can use it without having to know about a domain class at compile time.
+     * TODO: Consider moving this and withTransaction into Hibernate Hijacker
      */
     def withNewSession(Closure callback) {
         HibernateTemplate template = new HibernateTemplate(sessionFactory)

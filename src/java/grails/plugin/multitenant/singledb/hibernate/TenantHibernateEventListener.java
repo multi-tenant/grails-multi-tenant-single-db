@@ -120,14 +120,12 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         Object LoadedEntity = event.getResult();
         if (LoadedEntity != null && isMultiTenantEntity(LoadedEntity)) {
             MultiTenantDomainClass entity = (MultiTenantDomainClass) LoadedEntity;
-            System.out.println("Verifying loading of " + entity + " association fetch? " + event.isAssociationFetch() + ", type: "
-                    + loadType + ", tenant id: " + entity.getTenantId());
 
             // We won't be able to extract tenant-id from an association fetch.
             // TODO: This is a bit scary as it means that we potentially can load entities from
             // other tenants through various variants of Hibernate collection / lazy loading.
             if (!event.isAssociationFetch() && !allowEntityLoad(entity)) {
-                log.debug("Refusing tenant {} to load {}", currentTenant.get(), entity);
+                log.debug("Refusing tenant {} to load {}", currentTenant.get(), entity.getClass().getSimpleName());
                 event.setResult(null);
             }
         }
