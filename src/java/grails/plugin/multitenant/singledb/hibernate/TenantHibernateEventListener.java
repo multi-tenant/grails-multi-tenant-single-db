@@ -191,8 +191,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     }
 
     private boolean belongsToCurrentTenant(MultiTenantDomainClass entity) {
-        Integer currentTenantId = currentTenant.get();
-        return currentTenantId.equals(entity.getTenantId());
+        return currentTenant.isSet() && currentTenant.get().equals(entity.getTenantId());
     }
 
     private boolean isMultiTenantEntity(Object entity) {

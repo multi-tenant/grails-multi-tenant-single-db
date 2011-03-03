@@ -69,21 +69,19 @@ class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
         } != null
     }
     
+    @FailsWith(TenantSecurityException)
     def "should not be able to change tenant id"() {
         given:
         def productInstance = Tenant.withTenantId(2) {
             new DemoProduct(name: "another-product-name").save(flush: true, failOnError: true)
         }
         
-        when:
+        expect:
         Tenant.withTenantId(3) {
             productInstance.name = "another-product-name-version-2"
             productInstance.save(flush: true, failOnError: true)
             throw new Exception("Should not be able to do update entity with another tenant id")
         }
-        
-        then:
-        TenantSecurityException ex = thrown()
     }
     
     def "should be able to update with current id"() {

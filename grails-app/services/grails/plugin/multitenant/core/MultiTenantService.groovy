@@ -16,7 +16,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 
 /**
- * 
+ * Allows for temporary manipulation of the current tenant.
+ * Note: If you use this too often you're probably doing something wrong.
  * @author Kim A. Betti
  */
 class MultiTenantService {
@@ -29,40 +30,50 @@ class MultiTenantService {
     
     /**
      * Execute some code in the 'namespace' of the given tenant id. 
-     * The code will be executed in a new transaction to avoid other tenants 
-     * entities laying in the first level cache to leak in. 
-     * 
-     * @param tenantId
-     * @param closure
-     * @return
+     * The code will be executed in a new transaction with a new session 
+     * to avoid other tenants entities laying in the first level cache to leak in. 
      */
-    def doWithTenantId(Integer tenantId, Closure closure) {
-        log.debug "Running closure with as tenant $tenantId"
+    def doWithTenantId(Integer tenantId, Closure callback) {
+        withNewSession { Session hibernateSession ->
+            withTransaction { TransactionStatus status ->
+                withTenantIdInTransaction(tenantId, callback, status)
+            }    
+        }
+    }
+    
+    def withTenantIdInTransaction(Integer tenantId, Closure callback, TransactionStatus status) {
         Integer oldTenantId = currentTenant.get()
-        
+        try {
+            currentTenant.set(tenantId)
+            callback.call()
+        } catch (Throwable throwable) {
+            status.setRollbackOnly()
+            throw throwable
+        } finally {
+            currentTenant.set(oldTenantId)
+        }
+    }
+    
+    /**
+     * Run a closure in a new session. Taken from HibernatePluginSupport 
+     * so we can use it without having to know about a domain class at compile time.
+     */
+    def withNewSession(Closure callback) {
         HibernateTemplate template = new HibernateTemplate(sessionFactory)
         SessionHolder sessionHolder = TransactionSynchronizationManager.getResource(sessionFactory)
         Session previousSession = sessionHolder?.session
-        
         try {
             template.alwaysUseNewSession = true
             template.execute({ Session session ->
-                if (sessionHolder == null) {
+                if(sessionHolder == null) {
                     sessionHolder = new SessionHolder(session)
                     TransactionSynchronizationManager.bindResource(sessionFactory, sessionHolder)
                 } else {
                     sessionHolder.addSession(session)
                 }
-                
-                try {
-                    currentTenant.set(tenantId)
-                    TransactionCallback doWithTenantCallback = new DoWithTenantCallback(closure)
-                    transactionTemplate.execute doWithTenantCallback
-                } finally {
-                    currentTenant.set(oldTenantId)
-                }
+
+                callback(session)
             } as HibernateCallback)
-            
         } finally {
             if (previousSession) {
                 sessionHolder?.addSession(previousSession)
@@ -70,23 +81,19 @@ class MultiTenantService {
         }
     }
     
+    /**
+     * Injected by Spring
+     * @param transactionManager
+     */
     void setTransactionManager(PlatformTransactionManager transactionManager) {
         transactionTemplate = new TransactionTemplate(transactionManager);
         transactionTemplate.propagationBehavior = TransactionDefinition.PROPAGATION_REQUIRES_NEW
     }
     
-    private class DoWithTenantCallback implements TransactionCallback {
-        
-        private Closure closure
-        
-        public DoWithTenantCallback(Closure closure) {
-            this.closure = closure
-        }
-        
-        @Override
-        public Object doInTransaction(TransactionStatus status) {
-            closure.call()
-        }
+    def withTransaction(Closure callback) {
+        transactionTemplate.execute({ status ->
+            callback.call(status)
+        } as TransactionCallback)
     }
-
+    
 }
