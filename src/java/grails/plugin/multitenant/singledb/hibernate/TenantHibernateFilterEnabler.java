@@ -38,8 +38,6 @@ public class TenantHibernateFilterEnabler {
         if (hasSessionBoundToThread()) {
             Integer updatedTenantId = (Integer) event.getPayload();
             Session currentSession = sessionFactory.getCurrentSession();
-            currentSession.flush();
-            currentSession.clear();
             updateFilterParameter(currentSession, updatedTenantId);
         }
     }

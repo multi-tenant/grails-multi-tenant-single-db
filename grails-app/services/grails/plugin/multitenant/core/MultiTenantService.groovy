@@ -1,13 +1,19 @@
 package grails.plugin.multitenant.core
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
+
 
 /**
  * 
@@ -33,12 +39,34 @@ class MultiTenantService {
     def doWithTenantId(Integer tenantId, Closure closure) {
         log.debug "Running closure with as tenant $tenantId"
         Integer oldTenantId = currentTenant.get()
+        
+        HibernateTemplate template = new HibernateTemplate(sessionFactory)
+        SessionHolder sessionHolder = TransactionSynchronizationManager.getResource(sessionFactory)
+        Session previousSession = sessionHolder?.session
+        
         try {
-            currentTenant.set(tenantId)
-            TransactionCallback doWithTenantCallback = new DoWithTenantCallback(closure)
-            transactionTemplate.execute doWithTenantCallback
+            template.alwaysUseNewSession = true
+            template.execute({ Session session ->
+                if (sessionHolder == null) {
+                    sessionHolder = new SessionHolder(session)
+                    TransactionSynchronizationManager.bindResource(sessionFactory, sessionHolder)
+                } else {
+                    sessionHolder.addSession(session)
+                }
+                
+                try {
+                    currentTenant.set(tenantId)
+                    TransactionCallback doWithTenantCallback = new DoWithTenantCallback(closure)
+                    transactionTemplate.execute doWithTenantCallback
+                } finally {
+                    currentTenant.set(oldTenantId)
+                }
+            } as HibernateCallback)
+            
         } finally {
-            currentTenant.set(oldTenantId)
+            if (previousSession) {
+                sessionHolder?.addSession(previousSession)
+            }
         }
     }
     
