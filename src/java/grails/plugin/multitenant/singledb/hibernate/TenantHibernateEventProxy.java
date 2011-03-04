@@ -28,7 +28,7 @@ public class TenantHibernateEventProxy implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         if (tenantClass != null) {
-            log.info("Registering tenant event listeners for " + tenantClass.getSimpleName());
+            log.info("Registering tenant event listeners for {}", tenantClass.getSimpleName());
             registerTenantListeners(tenantClass);
         } else {
             log.warn("Tenant class not set. Add something like this to Config.groovy: multitenant.tenantClass = com.your-app.Customer");
@@ -36,7 +36,7 @@ public class TenantHibernateEventProxy implements InitializingBean {
     }
 
     public void registerTenantListeners(Class<? extends Tenant> tenantDomainClass) {
-        System.out.println("Subscribing to: " + tenantDomainClass);
+        log.debug("Subscribing to Hibernate events from {}", tenantDomainClass.getSimpleName());
         String tenantClassPropertyName = GrailsNameUtils.getPropertyName(tenantDomainClass);
         registerForPostInsertEvents(tenantClassPropertyName);
         registerForPostDeleteEvents(tenantClassPropertyName);

@@ -23,8 +23,9 @@ public class MultiTenantAST implements ASTTransformation {
 
     public final static String TENANT_ID_FIELD_NAME = "tenantId";
 
-    // TODO: ConstantExpression.NULL would be better,
-    // but that leads to all sorts of crazy problems with default GORM constraints
+    // TODO: ConstantExpression.NULL would be better, but that leads to all sorts of crazy problems
+    // with default GORM constraints. It looks like it will become easier to hook into this in Grails 1.4:
+    // https://github.com/grails/grails-core/blob/master/grails-core/src/main/groovy/org/codehaus/groovy/grails/validation/ConstraintsEvaluatorFactoryBean.java
     public final static Integer NO_TENANT_VALUE = Integer.MIN_VALUE;
 
     @Override

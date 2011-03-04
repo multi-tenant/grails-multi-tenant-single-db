@@ -120,20 +120,21 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         Object LoadedEntity = event.getResult();
         if (LoadedEntity != null && isMultiTenantEntity(LoadedEntity)) {
             MultiTenantDomainClass entity = (MultiTenantDomainClass) LoadedEntity;
+            Integer currentTenantId = currentTenant.get();
 
             // We won't be able to extract tenant-id from an association fetch.
             // TODO: This is a bit scary as it means that we potentially can load entities from
             // other tenants through various variants of Hibernate collection / lazy loading.
-            if (!event.isAssociationFetch() && !allowEntityLoad(entity)) {
+            if (!event.isAssociationFetch() && !allowEntityLoad(currentTenantId, entity)) {
                 log.debug("Refusing tenant {} to load {}", currentTenant.get(), entity.getClass().getSimpleName());
                 event.setResult(null);
             }
         }
     }
 
-    private boolean allowEntityLoad(MultiTenantDomainClass entity) {
-        if (currentTenant.isSet()) {
-            if (belongsToCurrentTenant(entity)) {
+    protected boolean allowEntityLoad(Integer currentTenantId, MultiTenantDomainClass entity) {
+        if (currentTenantId != null) {
+            if (belongsToCurrentTenant(currentTenantId, entity)) {
                 return true;
             } else {
                 log.warn("Tried to fetch an instance of {} belonging to {}", entity.getClass().getName(), entity.getTenantId());
@@ -143,8 +144,6 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
             return true; // No current tenant => no restrictions
         }
     }
-
-
 
     /**
      * This is our last chance to detect attempts to load entities belonging to
@@ -179,7 +178,9 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         boolean shouldVetoDelete = false;
         if (isMultiTenantEntity(event.getEntity())) {
             MultiTenantDomainClass tenantEntity = (MultiTenantDomainClass) event.getEntity();
-            if (!belongsToCurrentTenant(tenantEntity)) {
+            Integer currentTenantId = currentTenant.get();
+
+            if (!belongsToCurrentTenant(currentTenantId, tenantEntity)) {
                 log.warn("Tenant {} tried to delete another tenants entity {}", currentTenant.get(), tenantEntity);
                 shouldVetoDelete = true;
             }
@@ -188,11 +189,12 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         return shouldVetoDelete;
     }
 
-    private boolean belongsToCurrentTenant(MultiTenantDomainClass entity) {
-        return currentTenant.isSet() && currentTenant.get().equals(entity.getTenantId());
+    protected boolean belongsToCurrentTenant(Integer currentTenantId, MultiTenantDomainClass entity) {
+        Integer entityTenantId = entity.getTenantId();
+        return currentTenantId != null && currentTenantId.equals(entityTenantId);
     }
 
-    private boolean isMultiTenantEntity(Object entity) {
+    protected boolean isMultiTenantEntity(Object entity) {
         return entity instanceof MultiTenantDomainClass;
     }
 
