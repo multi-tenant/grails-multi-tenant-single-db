@@ -5,6 +5,7 @@ import org.hibernate.persister.entity.EntityPersister;
 
 import spock.lang.Unroll;
 
+import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventPropertyUpdater
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
 import grails.plugin.multitenant.core.Tenant;
@@ -37,10 +38,37 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         eventListener.onPreInsert(event)
         
         then: "currentTenant is asked and returns null"
-        eventListener.currentTenant.get() >> null
+        eventListener.currentTenant.isSet() >> false
         
         and: "exception is thrown"
         NoCurrentTenantException ex = thrown()
+    }
+    
+    def "tenant id is sat on the entity and event state on preInsert"() {
+        given:
+        DummyEntity entity = new DummyEntity()
+        PreInsertEvent event = new PreInsertEvent(entity, null, null, null, null)
+        
+        and: "current tenant returning 123 as tenant id" 
+        eventListener.currentTenant = Mock(CurrentTenant)
+        1 * eventListener.currentTenant.isSet() >> true
+        1 * eventListener.currentTenant.get() >> 123
+        
+        and: "mocked event state updater"
+        HibernateEventPropertyUpdater propertyUpdater = Mock()
+        eventListener.hibernateEventPropertyUpdater = propertyUpdater
+        
+        when: "we invoke the event method"
+        boolean vetoInsert = eventListener.onPreInsert(event)
+        
+        then: "event state is updated"
+        1 * propertyUpdater.updateProperty(event, "tenantId", 123)
+        
+        and: "the actual entity instance is updated"
+        entity.tenantId == 123
+        
+        and: "we dont veto the event"
+        vetoInsert == false
     }
     
     @Unroll("Allow #currentTenantId to allow an entity owned by #entityTenantId, #message")

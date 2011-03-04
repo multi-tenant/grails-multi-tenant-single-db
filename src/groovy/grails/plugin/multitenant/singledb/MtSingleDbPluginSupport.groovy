@@ -79,6 +79,7 @@ class MtSingleDbPluginSupport {
         // loading other tenant's data and so on
         tenantHibernateEventListener(HibernateEventSubscriptionFactory) {
             eventListener = { TenantHibernateEventListener listener ->
+                hibernateEventPropertyUpdater = ref("hibernateEventPropertyUpdater")
                 currentTenant = ref("currentTenant")
             }
         }

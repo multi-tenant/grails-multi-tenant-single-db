@@ -1,7 +1,6 @@
 package grails.plugin.multitenant.core
 
 import grails.plugin.hibernatehijacker.template.HibernateTemplates;
-
 import static org.springframework.transaction.TransactionDefinition.*
 
 /**

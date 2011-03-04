@@ -1,14 +1,11 @@
 package grails.plugin.multitenant.singledb.hibernate;
 
+import grails.plugin.hibernatehijacker.hibernate.events.HibernateEventPropertyUpdater;
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
 import grails.plugin.multitenant.core.ast.MultiTenantAST;
 import grails.plugin.multitenant.core.exception.NoCurrentTenantException;
-import grails.plugin.multitenant.core.exception.TenantException;
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.event.LoadEvent;
@@ -21,8 +18,6 @@ import org.hibernate.event.PreInsertEvent;
 import org.hibernate.event.PreInsertEventListener;
 import org.hibernate.event.PreUpdateEvent;
 import org.hibernate.event.PreUpdateEventListener;
-import org.hibernate.tuple.StandardProperty;
-import org.hibernate.tuple.entity.EntityMetamodel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +34,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     private static Logger log = LoggerFactory.getLogger(TenantHibernateFilterConfigurator.class);
 
     private CurrentTenant currentTenant;
-
-    // We need to get the index of the tenantId property.
-    // This is another expensive operation so the result is cached here.
-    private Map<Class<? extends MultiTenantDomainClass>, Integer> entityParamIndexCache = new HashMap<Class<? extends MultiTenantDomainClass>, Integer>();
+    private HibernateEventPropertyUpdater hibernateEventPropertyUpdater;
 
     /**
      * One important thing to know. It's not enough to update the entity
@@ -55,49 +47,18 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
         if (isMultiTenantEntity(event.getEntity())) {
-            Integer currentTenantId = currentTenant.get();
-            if (currentTenantId == null) {
+            if (!currentTenant.isSet()) {
                 throw new NoCurrentTenantException("Tried to save multi-tenant domain class '"
                         + event.getEntity().getClass().getSimpleName() + "', but no tenant is set");
             }
 
+            Integer currentTenantId = currentTenant.get();
+            hibernateEventPropertyUpdater.updateProperty(event, MultiTenantAST.TENANT_ID_FIELD_NAME, currentTenantId);
             MultiTenantDomainClass entity = (MultiTenantDomainClass) event.getEntity();
             entity.setTenantId(currentTenantId);
-            updateTenantIdOnEvent(event, currentTenantId);
         }
 
         return false;
-    }
-
-    private void updateTenantIdOnEvent(PreInsertEvent event, Integer currentTenantId) {
-        int paramIndex = getTenantIdParamIndex(event);
-        event.getState()[paramIndex] = currentTenantId;
-    }
-
-    @SuppressWarnings("unchecked")
-    private int getTenantIdParamIndex(PreInsertEvent event) {
-        Class<? extends MultiTenantDomainClass> entityClass = (Class<? extends MultiTenantDomainClass>) event.getEntity().getClass();
-        if (!entityParamIndexCache.containsKey(entityClass)) {
-            EntityMetamodel metaModel = event.getPersister().getEntityMetamodel();
-            int propertyIndex = getPropertyIndex(metaModel, MultiTenantAST.TENANT_ID_FIELD_NAME);
-            entityParamIndexCache.put(entityClass, propertyIndex);
-        }
-
-        return entityParamIndexCache.get(entityClass);
-    }
-
-    private int getPropertyIndex(EntityMetamodel metaModel, String propertyName) {
-        int i = 0;
-        StandardProperty[] properties = metaModel.getProperties();
-        for (StandardProperty property : properties) {
-            if (property.getName().equals(propertyName)) {
-                return i;
-            }
-
-            i++;
-        }
-
-        throw new TenantException("Unable to find property index for: " + propertyName);
     }
 
     @Override
@@ -200,6 +161,10 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
 
     public void setCurrentTenant(CurrentTenant currentTenant) {
         this.currentTenant = currentTenant;
+    }
+
+    public void setHibernateEventPropertyUpdater(HibernateEventPropertyUpdater updater) {
+        this.hibernateEventPropertyUpdater = updater;
     }
 
 }
