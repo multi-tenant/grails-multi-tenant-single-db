@@ -61,13 +61,17 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         return false;
     }
 
+    /**
+     * TODO: Decide what to do in case tenant X attempts to update an entity
+     * without a tenant id. Should we automatically assign this entity to tenant X?
+     */
     @Override
     public boolean onPreUpdate(PreUpdateEvent event) {
         if (isMultiTenantEntity(event.getEntity())) {
             Integer currentTenantId = currentTenant.get();
             MultiTenantDomainClass entity = (MultiTenantDomainClass) event.getEntity();
             Integer entityTenantId = entity.getTenantId();
-            if (!currentTenantId.equals(entityTenantId)) {
+            if (currentTenantId != null && !currentTenantId.equals(entityTenantId)) {
                 throw new TenantSecurityException("Tried to update '" + event.getEntity() + "' with another tenant id. Expected "
                         + currentTenantId + ", found " + entityTenantId, currentTenantId, entityTenantId);
             }

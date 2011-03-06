@@ -1,6 +1,7 @@
 package grails.plugin.multitenant.singledb.hibernate
 
 import org.hibernate.event.PreInsertEvent;
+import org.hibernate.event.PreUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 
 import spock.lang.Unroll;
@@ -11,6 +12,7 @@ import grails.plugin.multitenant.core.MultiTenantDomainClass;
 import grails.plugin.multitenant.core.Tenant;
 import grails.plugin.multitenant.core.exception.NoCurrentTenantException;
 import grails.plugin.multitenant.core.exception.TenantException;
+import grails.plugin.multitenant.core.exception.TenantSecurityException;
 import grails.plugin.spock.UnitSpec;
 
 
@@ -99,6 +101,31 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         null              | null            | false
     }
        
+    def "update without tenant id is allowed"() {
+        given: "a mocked currentTenant bean"
+        eventListener.currentTenant = Mock(CurrentTenant)
+        eventListener.currentTenant.get() >> null
+        
+        expect: "the listener should not veto the event"
+        def entity = new DummyEntity(tenantId: 123)
+        def preUpdateEvent = new PreUpdateEvent(entity, null, null, null, null, null)
+        eventListener.onPreUpdate(preUpdateEvent) == false
+    }
+    
+    def "attempts to update another tenants entity should throw an exception"() {
+        given: "a mocked currentTenant bean"
+        eventListener.currentTenant = Mock(CurrentTenant)
+        eventListener.currentTenant.get() >> 123
+        
+        when: "we try to update anther tenants entity"
+        def entity = new DummyEntity(tenantId: 456)
+        def preUpdateEvent = new PreUpdateEvent(entity, null, null, null, null, null)
+        eventListener.onPreUpdate(preUpdateEvent)
+        
+        then: "a tenant security exception is thrown"
+        thrown(TenantSecurityException)
+    }
+    
 }
 
 class DummyEntity implements MultiTenantDomainClass {
