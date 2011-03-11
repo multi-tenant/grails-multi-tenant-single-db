@@ -3,24 +3,19 @@ package grails.plugin.multitenant.singledb.hibernate
 import grails.plugin.multitenant.core.Tenant
 import grails.plugin.multitenant.core.exception.TenantSecurityException
 import grails.plugin.spock.IntegrationSpec
-import groovy.sql.Sql
 
+import org.hibernate.Session
 import org.hibernate.SessionFactory
-import org.hibernate.Session;
 
-import spock.lang.FailsWith;
-
-import demo.DemoAnimal;
-import demo.DemoPetOwner
+import spock.lang.FailsWith
 import demo.DemoProduct
 
 /**
- *
+ * These tests are also good for highlighting various aspects
+ * and side effects of the Hibernate filters and the plugin.
  * @author Kim A. Betti
  */
 class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
-    
-    static transactional = false
     
     SessionFactory sessionFactory
     
@@ -122,6 +117,38 @@ class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
         Tenant.withTenantId(200) {
             jaguar.delete();
         } == null
+    }
+    
+    def "filters should override where clause"() {
+        given: "a product"
+        DemoProduct hammer = Tenant.withTenantId(123) {
+            createAndPersistProduct("Hammer")
+        }
+        
+        expect: "the owning tenant should be able to find it"
+        Tenant.withTenantId(123) {
+            DemoProduct.findByNameAndTenantId("Hammer", 123)
+        } != null
+    
+        and: "other tenants should be able to fetch"
+        Tenant.withTenantId(321) {
+            DemoProduct.findByNameAndTenantId("Hammer", 123)
+        } == null
+    }
+    
+    def "plain old sql will not be filtered"() {
+        given: "the current Hibernate session to execute sql" 
+        Session currentSession = sessionFactory.getCurrentSession()
+        
+        and: "a product"
+        DemoProduct nail = Tenant.withTenantId(123) {
+            createAndPersistProduct("Nail")
+        }
+        
+        expect: "we're able to look it up by sql even in another tenant namespace"
+        Tenant.withTenantId(312) {
+            currentSession.createSQLQuery("select * from demo_product where tenant_id = 123").list()
+        }.size() > 0
     }
     
     protected DemoProduct createAndPersistProduct(String productName) {
