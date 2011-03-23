@@ -51,7 +51,7 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
     }
 
     private void enrichMultiTenantDomainClass(PersistentClass persistentClass, Configuration configuration) {
-        log.debug("Enabling multi-tenant mode for domain class {}", persistentClass.getClassName());
+        log.trace("Enabling multi-tenant mode for domain class {}", persistentClass.getClassName());
         addDomainFilter(persistentClass, configuration);
     }
 

@@ -130,7 +130,7 @@ class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
             DemoProduct.findByNameAndTenantId("Hammer", 123)
         } != null
     
-        and: "other tenants should be able to fetch"
+        and: "other tenants should not be able to find this by adding a tenant_id where clause"
         Tenant.withTenantId(321) {
             DemoProduct.findByNameAndTenantId("Hammer", 123)
         } == null

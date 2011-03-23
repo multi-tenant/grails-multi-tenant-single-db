@@ -49,8 +49,7 @@ class CurrentTenantServletFilterSpec extends UnitSpec {
         and: "current tenant is set to null"
         1 * filter.currentTenant.set(null)
     }
-    
-    
+
     private class ExceptionThrowingFilterChain implements FilterChain {
 
         @Override

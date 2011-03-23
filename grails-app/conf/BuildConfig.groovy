@@ -29,7 +29,7 @@ grails.project.dependency.resolution = {
     }
     
     plugins {
-        compile ':hibernate-hijacker:0.8'
+        compile ':hibernate-hijacker:0.8.1'
     }
     
 }
