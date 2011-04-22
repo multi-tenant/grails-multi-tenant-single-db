@@ -1,9 +1,8 @@
 package grails.plugin.multitenant.core.ast;
 
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
+
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.ClassNode;
@@ -30,28 +29,15 @@ public class MultiTenantAST implements ASTTransformation {
 
     @Override
     public void visit(ASTNode[] astNodes, SourceUnit sourceUnit) {
-        for (ClassNode classNode : getClassAstNodes(astNodes)) {
-            addTenantPropertyIfNecessary(classNode);
-            implementInterface(classNode, MultiTenantDomainClass.class);
-        }
+        ClassNode annotatedClassNode = (ClassNode) astNodes[1];
+        addTenantPropertyIfNecessary(annotatedClassNode);
+        implementInterface(annotatedClassNode, MultiTenantDomainClass.class);
     }
 
     private void addTenantPropertyIfNecessary(ClassNode classNode) {
         if (!hasTenantIdProperty(classNode)) {
             addTenantProperty(classNode);
         }
-    }
-
-    private List<ClassNode> getClassAstNodes(ASTNode[] astNodes) {
-        List<ClassNode> classAstNodes = new ArrayList<ClassNode>();
-        for (ASTNode astNode : astNodes) {
-            if (astNode instanceof ClassNode) {
-                ClassNode classAstNode = (ClassNode) astNode;
-                classAstNodes.add(classAstNode);
-            }
-        }
-
-        return classAstNodes;
     }
 
     private boolean hasTenantIdProperty(ClassNode node) {
