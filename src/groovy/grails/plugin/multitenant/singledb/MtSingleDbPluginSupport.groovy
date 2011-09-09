@@ -153,8 +153,10 @@ class MtSingleDbPluginSupport {
             }
         }
 
-        def filter = xml.'filter'
-        filter[filter.size() - 1] + {
+        def filterMappings = xml.'filter-mapping'
+        // insert tenantFilter just after grailsWebRequest and before the sitemesh filter
+        def grailsWebRequestFilterMapping = filterMappings.find  { it.'filter-name'.text() == 'grailsWebRequest' }
+        grailsWebRequestFilterMapping  + {
             'filter-mapping' {
                 'filter-name'('tenantFilter')
                 'url-pattern'('/*')
