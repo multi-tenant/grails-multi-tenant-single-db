@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="web" name="GrailsWeb">
+      <configuration>
+        <webroots>
+          <root url="file://$MODULE_DIR$/grails-app/views" relative="/" />
+          <root url="file://$MODULE_DIR$/web-app" relative="/" />
+        </webroots>
+        <sourceRoots />
+      </configuration>
+    </facet>
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="Grails" name="Grails" removed="false">
+          <file>file://$MODULE_DIR$/web-app/WEB-INF/applicationContext.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/domain" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/utils" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/taglib" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/target/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
+      <excludeFolder url="file://$MODULE_DIR$/web-app/plugins" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="grails-2.0.0.BUILD-SNAPSHOT" level="application" />
+    <orderEntry type="module-library" exported="">
+      <library name="Grails User Library (grails-multi-tenant-single-db)">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.liquibase/liquibase-core/jars/liquibase-core-2.0.1.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/com.h2database/h2/jars/h2-1.3.159.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/mysql/mysql-connector-java/jars/mysql-connector-java-5.1.5.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.codehaus.jackson/jackson-core-asl/jars/jackson-core-asl-1.4.1.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.codehaus.jackson/jackson-mapper-asl/jars/jackson-mapper-asl-1.4.1.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.springframework.security/spring-security-core/jars/spring-security-core-3.0.5.RELEASE.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.springframework.security/spring-security-web/jars/spring-security-web-3.0.5.RELEASE.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.w3c.css/sac/jars/sac-1.3.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/net.sourceforge.cssparser/cssparser/jars/cssparser-0.9.5.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/net.sourceforge.nekohtml/nekohtml/jars/nekohtml-1.9.14.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/xerces/xercesImpl/jars/xercesImpl-2.9.1.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/net.sourceforge.htmlunit/htmlunit-core-js/jars/htmlunit-core-js-2.8.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.apache.james/apache-mime4j/jars/apache-mime4j-0.6.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.apache.httpcomponents/httpmime/jars/httpmime-4.0.1.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.apache.httpcomponents/httpcore/jars/httpcore-4.0.1.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.apache.httpcomponents/httpclient/jars/httpclient-4.0.1.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/xalan/xalan/jars/xalan-2.7.1.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/net.sourceforge.htmlunit/htmlunit/jars/htmlunit-2.8.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.seleniumhq.selenium/selenium-common/jars/selenium-common-2.0a7.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.seleniumhq.selenium/selenium-htmlunit-driver/jars/selenium-htmlunit-driver-2.0a7.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/javax.activation/activation/jars/activation-1.1.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/javax.mail/mail/jars/mail-1.4.3.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/dumbster/dumbster/jars/dumbster-1.6.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.gmetrics/GMetrics/jars/GMetrics-0.3.jar!/" />
+          <root url="jar://$DOTGRAILS$/ivy-cache/org.codenarc/CodeNarc/jars/CodeNarc-0.15.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
+      </library>
+    </orderEntry>
+  </component>
+</module>
+
