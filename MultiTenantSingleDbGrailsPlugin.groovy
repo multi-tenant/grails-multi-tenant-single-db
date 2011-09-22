@@ -9,7 +9,8 @@ class MultiTenantSingleDbGrailsPlugin {
 
     def loadAfter = [
         'hawk-eventing',
-        'hibernate-hijacker'
+        'hibernate-hijacker',
+        'controllers'
     ]
 
     def pluginExcludes = [ "grails-app/views/error.gsp", "**/demo/**" ]
