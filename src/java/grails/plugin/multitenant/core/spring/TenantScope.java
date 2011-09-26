@@ -38,6 +38,9 @@ public class TenantScope implements Scope, ApplicationContextAware {
     @Override
     public Object get(String name, ObjectFactory<?> objectFactory) {
         Integer tenantId = currentTenant.get();
+        if (tenantId == null) { // ConcurrentHashMap does not allow nulls, so mapping to -1
+            tenantId = new Integer(-1);
+        }
         Map<String, Object> beanCache = getBeanCacheForTenant(tenantId);
         if (!beanCache.containsKey(name)) {
             beanCache.put(name, applicationContext.getBean(name + "_prototype"));
