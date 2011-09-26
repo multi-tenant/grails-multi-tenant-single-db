@@ -15,3 +15,5 @@ stacktrace.log
 .project
 .settings
 .idea
+*.iml
+*.ipr
