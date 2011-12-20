@@ -29,6 +29,7 @@ grails.project.dependency.resolution = {
     }
     
     plugins {
+        provided ':webxml:1.4'
         //compile ':hibernate-hijacker:0.8.1'
     }
     

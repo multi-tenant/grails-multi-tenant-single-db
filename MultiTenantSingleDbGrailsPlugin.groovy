@@ -22,6 +22,12 @@ class MultiTenantSingleDbGrailsPlugin {
 
     def documentation = "https://github.com/multi-tenant/grails-multi-tenant-single-db"
 
+    // make sure the filter chain filter is after the Grails filter
+    	def getWebXmlFilterOrder() {
+    		def FilterManager = getClass().getClassLoader().loadClass('grails.plugin.webxml.FilterManager')
+    		[tenantFilter: FilterManager.SITEMESH_POSITION - 100]
+    	}
+
     def doWithSpring = MtSingleDbPluginSupport.doWithSpring
     def doWithDynamicMethods = MtSingleDbPluginSupport.doWithDynamicMethods
     def doWithWebDescriptor = MtSingleDbPluginSupport.doWithWebDescriptor
