@@ -32,7 +32,7 @@ class TenantHibernateFilterEnablerSpec extends IntegrationSpec {
         enabledFilter == null
     }
     
-    @Unroll("Enabling multi-tenant Hibernate filter with tenant id #tenantId")
+    @Unroll({"Enabling multi-tenant Hibernate filter with tenant id #tenantId"})
     def "negative and positive numbers makes it to the filter"() {
         when:
         Event updatedTenantEvent = new BaseEvent("multitenant.set-current-tenant.after", tenantId)
