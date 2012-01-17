@@ -30,7 +30,7 @@ class TenantHibernateEventProxySpec extends UnitSpec {
     def "events are being re-published with new event name"() {
         given:
         EventBroker mockedEventBroker = Mock()
-        HawkEventProxy proxy = new HawkEventProxy(mockedEventBroker, "tenant.created")
+        def proxy = new HawkEventProxy(mockedEventBroker, "tenant.created")
         
         when:
         Event event = new BaseEvent("hibernate.postInsert.demoTenant", null)
