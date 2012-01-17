@@ -16,11 +16,11 @@ class MtSingleDbPluginSupportSpec extends UnitSpec {
     def "add withTenantId method"() {
         given:
         MultiTenantService mockedMtService = Mock()
-        MetaTenant tenant = new MetaTenant()
         
         when: "we add a withThisTenant method to the class"
         MtSingleDbPluginSupport.createWithThisTenantMethod(MetaTenant, mockedMtService)
-        
+		MetaTenant tenant = new MetaTenant()
+		
         and: "and invoke it"
         tenant.withThisTenant(null)
         
