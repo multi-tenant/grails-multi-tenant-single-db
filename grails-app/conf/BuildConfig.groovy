@@ -29,8 +29,24 @@ grails.project.dependency.resolution = {
     }
     
     plugins {
-        provided ':webxml:1.4'
-        //compile ':hibernate-hijacker:0.8.1'
+		build(':release:1.0.1'){ export = false }
+		build(':svn:1.0.2') { export = false }
+		build(":tomcat:$grailsVersion") { export = false }
+		
+		compile(":hibernate:$grailsVersion") { export = false }
+
+		provided ':webxml:1.4'
+		compile(':hawk-eventing:0.5.1'){
+			excludes 'svn'
+		}
+		
+		compile(':hibernate-hijacker:0.8.1'){
+			excludes 'svn'
+		}
+
+		test(':spock:0.6-SNAPSHOT'){
+			excludes 'svn'
+		}
     }
     
 }
