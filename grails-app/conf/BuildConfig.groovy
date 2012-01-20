@@ -46,6 +46,7 @@ grails.project.dependency.resolution = {
 
 		test(':spock:0.6-SNAPSHOT'){
 			excludes 'svn'
+			export = false
 		}
     }
     
