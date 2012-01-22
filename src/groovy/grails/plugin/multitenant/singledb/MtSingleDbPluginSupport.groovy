@@ -154,9 +154,8 @@ class MtSingleDbPluginSupport {
         }
 
         def filterMappings = xml.'filter-mapping'
-        // insert tenantFilter just after grailsWebRequest and before the sitemesh filter
-        def grailsWebRequestFilterMapping = filterMappings.find  { it.'filter-name'.text() == 'grailsWebRequest' }
-        grailsWebRequestFilterMapping  + {
+        // webxml plugin is responsible for filter mapping order.  Put the filter mapping anywhere.
+        filterMappings[filterMappings.size() - 1]  + {
             'filter-mapping' {
                 'filter-name'('tenantFilter')
                 'url-pattern'('/*')
