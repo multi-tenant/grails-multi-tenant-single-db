@@ -49,6 +49,7 @@ target(mtSpringSecurity: 'MultiTenant - SingleDB Spring Security Core integratio
     createTenantRepository()
     updateSpringResources()
     updateConfig()
+	messageUserChanges()
 }
 
 private void configure() {
@@ -67,7 +68,7 @@ private void createTenantResolver() {
     String destinationPath = "$basedir/src/groovy/${dir}${tenantResolverClassName}.groovy"
     generateFile templatePath, destinationPath
     
-    ant.echo message: "Created a Spring Security implementation of TenantResolver: ${destinationPath}"
+    printMessage "Created a Spring Security implementation of TenantResolver: ${destinationPath}"
 }
 
 private void createTenantDomainClass() {
@@ -77,7 +78,7 @@ private void createTenantDomainClass() {
     String destinationPath = "$basedir/grails-app/domain/${dir}${tenantDomainClassName}.groovy"
     generateFile templatePath, destinationPath
     
-    ant.echo message: "Created a tenant domain class: ${destinationPath}"
+    printMessage "Created a tenant domain class: ${destinationPath}"
 }
 
 private void createTenantRepository() {
@@ -87,13 +88,13 @@ private void createTenantRepository() {
     String destinationPath = "$basedir/src/groovy/${dir}${tenantRepositoryClassName}.groovy"
     generateFile templatePath, destinationPath
     
-    ant.echo message: "Created a Spring Security implementation of TenantRepository: ${destinationPath}"
+    printMessage "Created a Spring Security implementation of TenantRepository: ${destinationPath}"
 }
 
 private void updateSpringResources() {
     String resolverBeanDefinitionLine = """tenantResolver(${packageName}.${tenantResolverClassName}) {
-	springSecurityService = ref('springSecurityService')
-}"""
+//	springSecurityService = ref('springSecurityService')
+// }"""
     String repositoryBeanDefinitionLine = "tenantRepository(${packageName}.${tenantRepositoryClassName})"
     
     String springResourcesPath = "$basedir/grails-app/conf/spring/resources.groovy"
@@ -104,14 +105,14 @@ private void updateSpringResources() {
         springResourcesFile << "// ${resolverBeanDefinitionLine}\n"
         springResourcesFile << "// ${repositoryBeanDefinitionLine}\n"
         
-        ant.echo message: "--------------------- IMPORTANT ---------------------"
-        ant.echo message: "I've added some lines to: ${springResourcesPath}"
-        ant.echo message: "Open it and follow the instructions added to the bottom of file\n"
+        printMessage "--------------------- IMPORTANT ---------------------"
+        printMessage "I've added some lines to: ${springResourcesPath}"
+        printMessage "Open it and follow the instructions added to the bottom of file\n"
     } else {
-        ant.echo message: "ERROR: Could not find: ${springResourcesPath}", level: "error"
-        ant.echo message: "You'll have to create this file manually and add the following Spring beans:", level: "error"
-        ant.echo message: " => ${resolverBeanDefinitionLine}", level: "error"
-        ant.echo message: " => ${repositoryBeanDefinitionLine}", level: "error"
+        errorMessage "ERROR: Could not find: ${springResourcesPath}"
+        errorMessage "You'll have to create this file manually and add the following Spring beans:"
+        errorMessage " => ${resolverBeanDefinitionLine}"
+        errorMessage " => ${repositoryBeanDefinitionLine}"
     }
 }
 
@@ -124,24 +125,29 @@ private void updateConfig() {
         configFile << "\n\n// Added by the MultiTenant plugin\n// TODO: Verify that this is correct\n"
         configFile << "${configLines}\n"
         
-        ant.echo message: "--------------------- IMPORTANT ---------------------"
-        ant.echo message: "I've added some lines to: ${configPath}"
-        ant.echo message: "Open it and follow the instructions added to the bottom of file\n"
+        printMessage "--------------------- IMPORTANT ---------------------"
+        printMessage "I've added some lines to: ${configPath}"
+        printMessage "Open it and follow the instructions added to the bottom of file\n"
     } else {
-        ant.echo message: "ERROR: Could not find: ${configPath}", level: "error"
-        ant.echo message: "You'll have to create this file manually and add the following lines:", level: "error"
-        ant.echo message: "${configLines}", level: "error"
+        errorMessage "ERROR: Could not find: ${configPath}"
+        errorMessage "You'll have to create this file manually and add the following lines:"
+        errorMessage "${configLines}"
     }
+}
+private void messageUserChanges() {
+	printMessage "--------------------- IMPORTANT ---------------------"
+	printMessage "You must update your Spring Security User domain"
+	printMessage "You need to add 'Integer userTenantId' as a field\n"
 }
 
 private parseArgs() {
     args = args ? args.split('\n') : []
     switch (args.size()) {
         case 2:
-            ant.echo message: "Creating tenant classes in package ${args[0]}"
+            printMessage "Creating tenant classes in package ${args[0]}"
             return args
         default:
-            ant.echo message: USAGE, level: "error"
+            errorMessage USAGE
             System.exit(1)
             break
     }
