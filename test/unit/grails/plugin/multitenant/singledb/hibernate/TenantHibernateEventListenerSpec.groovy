@@ -1,5 +1,6 @@
 package grails.plugin.multitenant.singledb.hibernate
 
+import org.hibernate.event.PreDeleteEvent
 import org.hibernate.event.PreInsertEvent;
 import org.hibernate.event.PreUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
@@ -110,6 +111,17 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         def entity = new DummyEntity(tenantId: 123)
         def preUpdateEvent = new PreUpdateEvent(entity, null, null, null, null, null)
         eventListener.onPreUpdate(preUpdateEvent) == false
+    }
+       
+    def "delete without tenant id is allowed"() {
+        given: "a mocked currentTenant bean"
+        eventListener.currentTenant = Mock(CurrentTenant)
+        eventListener.currentTenant.get() >> null
+        
+        expect: "the listener should not veto the event"
+        def entity = new DummyEntity(tenantId: 123)
+        def preUpdateEvent = new PreDeleteEvent(entity, null, null, null, null)
+        eventListener.onPreDelete(preUpdateEvent) == false
     }
     
     def "attempts to update another tenants entity should throw an exception"() {
