@@ -112,3 +112,6 @@ copyFile = { String from, String to ->
 
         ant.copy file: from, tofile: to, overwrite: true
 }
+
+printMessage = { String message -> event('StatusFinal', [message]) }
+errorMessage = { String message -> event('StatusError', [message]) }

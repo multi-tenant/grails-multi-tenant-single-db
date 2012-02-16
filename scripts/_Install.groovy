@@ -1,10 +1,15 @@
-//
-// This script is executed by Grails after plugin was installed to project.
-// This script is a Gant script so you can use all special variables provided
-// by Gant (such as 'baseDir' which points on project base dir). You can
-// use 'ant' to access a global instance of AntBuilder
-//
-// For example you can create directory under project tree:
-//
-//    ant.mkdir(dir:"${basedir}/grails-app/jobs")
-//
+println '''
+*********************************************************
+* You've installed the Multi Tenant Single DB plugin.   *
+*                                                       *
+* The plugin requires some additional steps to enable   *
+* multi tenant behavior.                                *
+*                                                       *
+* Run the "mt-quickstart" script to initialize a simple *
+*     tenant, repository and resolver.                  *
+* Or, run the "mt-spring-security" script to generate a *
+*     tenant, repository and resolver that work with    *
+*     the spring-security-core plugin.                  *
+*                                                       *
+*********************************************************
+'''

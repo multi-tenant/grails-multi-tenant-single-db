@@ -1,0 +1,17 @@
+This script is intended to help users integrate multi-tenant-single-db with spring-security-core.
+
+More specifically, this will generate the required multi-tenant-single-db classes for you to support multiple Spring Security users within a single tenant.
+
+This will not help you if you intend to mark the Spring Security class with the @MultiTenant@ annotation (these classes use the User domain to store the multi-tenant id.
+
+This script will generate: 
+
+# A tenant resolver that integrates with Spring Securty
+# Domain class to represent tenants
+# A tenant repository implementation that integrates with Spring Security
+
+You will have to update @grails-app/conf/Config.groovy@ and @grails-app/conf/spring/resources.groovy@ after running this script. 
+
+{code}
+Example: grails mt-spring-security com.yourapp Customer 
+{code}
