@@ -145,7 +145,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
             MultiTenantDomainClass tenantEntity = (MultiTenantDomainClass) event.getEntity();
             Integer currentTenantId = currentTenant.get();
 
-            if (!belongsToCurrentTenant(currentTenantId, tenantEntity)) {
+            if (currentTenantId != null && !belongsToCurrentTenant(currentTenantId, tenantEntity)) {
                 log.warn("Tenant {} tried to delete another tenants entity {}", currentTenant.get(), tenantEntity);
                 shouldVetoDelete = true;
             }
