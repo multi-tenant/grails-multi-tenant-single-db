@@ -21,7 +21,14 @@ class MultiTenantSingleDbGrailsPlugin {
     def description = "Multi tenant setup focused on single database mode"
 
     def documentation = "https://github.com/multi-tenant/grails-multi-tenant-single-db"
-
+	
+	def license = "APACHE"
+	def developers = [
+	        [ name: "Steve Ronderos", email: "steve.ronderos@gmail.com" ]
+		]
+	def issueManagement = [ system: "github", url: "https://github.com/multi-tenant/grails-multi-tenant-single-db/issues" ]
+	def scm = [ url: "https://github.com/multi-tenant/grails-multi-tenant-single-db" ]
+	
     // make sure the filter chain filter is after the Grails filter
     	def getWebXmlFilterOrder() {
     		def FilterManager = getClass().getClassLoader().loadClass('grails.plugin.webxml.FilterManager')
