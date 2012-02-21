@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>2.1 Tenant class 0.8.2</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/1.%20Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/2.%20Plugin%20concepts.html"><strong>2</strong><span>Plugin concepts</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/3.%20Testing.html"><strong>3</strong><span>Testing</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/4.%20Scripts.html"><strong>4</strong><span>Scripts</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/5.%20Changelog.html"><strong>5</strong><span>Changelog</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Multi tenant setup focused on single database mode</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../../guide/1.%20Introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/3.%20Testing.html"><strong>3</strong><span>Testing</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>2.1 Tenant class - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Kim A. Betti</p>
+
+                    <p><strong>Version:</strong> 0.8.2</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="2.1. Tenant class">2.1 Tenant class</h2>
+Most applications will have a domain class where you store tenant data. This will probably be named something like <code>User</code>, <code>Customer</code> or <code>Tenant</code>.
+By implementing the interface <code>grails.plugin.multitenant.core.Tenant</code> and overriding the <code>Integer tenantId()</code> method, 
+the plugin will give you some benefits out of the box.<p class="paragraph"/>The examples below assumes that you have a tenant class similar to this.<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> grails.plugin.multitenant.core.Tenant<p class="paragraph"/>class Customer <span class="java&#45;keyword">implements</span> Tenant &#123;<p class="paragraph"/>    <span class="java&#45;object">String</span> name<p class="paragraph"/>    <span class="java&#45;object">Integer</span> tenantId() &#123;
+        <span class="java&#45;keyword">return</span> <span class="java&#45;keyword">this</span>.id
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/><h3>Automatic tenant events</h3><p class="paragraph"/>The plugin will trigger a few custom events when changes are made to your tenant domain class. 
+This can be very useful for things like maintaining a cache for fast lookups.<p class="paragraph"/>The following events are published when a tenant has been added, updated or deleted: <code>tenant.created</code>, <code>tenant.updated</code> and <code>tenant.deleted</code>.<p class="paragraph"/><div class="code"><pre>class MyTenantService <span class="java&#45;keyword">implements</span> InitializingBean &#123;<p class="paragraph"/>    def eventBroker<p class="paragraph"/>    void afterPropertiesSet() &#123;
+        eventBroker.subscribe(<span class="java&#45;quote">"tenant.createed"</span>) &#123; evt &#45;&#62;
+            println <span class="java&#45;quote">"New tenant created: "</span> + evt.payload
+        &#125;    
+    &#125;<p class="paragraph"/>&#125;</pre></div><p class="paragraph"/>Have a look at the <a href="http://multi-tenant.github.com/grails-hawk-eventing/" target="blank">documentation for Hawk Eventing</a> for information on how to subscribe to these events.<p class="paragraph"/><h4>Dynamic methods</h4><p class="paragraph"/>The plugin adds a few methods to your <code>Tenant</code> class.<p class="paragraph"/><h5>withThisTenant</h5><p class="paragraph"/>Normally you want as much as possible of the multi-tenant stuff to happen transparently behind the scenes, but there are cases where it's useful to be able to run operations on a specific tenant. This is often useful during testing and bootstrapping of the application during development.<p class="paragraph"/><div class="code"><pre>def customerX = <span class="java&#45;keyword">new</span> Customer(name: <span class="java&#45;quote">"Customer X"</span>)
+customerX.save()<p class="paragraph"/>customerX.withThisTenant &#123;
+    // All Hibernate related operations executed here
+    // will happen with 'Customer X' as current tenant. 
+&#125;</pre></div><p class="paragraph"/><h5>withTenantId</h5><p class="paragraph"/>This is method is similar to <code>withThisTenant</code>, but is added to the static meta class. 
+It's useful when you don't have the tenant instance available, but you know the tenant-id.<p class="paragraph"/><div class="code"><pre>Customer.withTenantId(123) &#123;
+    // All Hibernate related operations executed here
+    // will be executed with tenant id 123. 
+&#125;</pre></div><p class="paragraph"/>This method is added to the Tenant interface either, so, whatever you Tenant class is named (<code>Customer</code>, <code>User</code>, etc), you can always use:<p class="paragraph"/><div class="code"><pre>Tenant.withTenantId(123) &#123;
+    // All Hibernate related operations executed here
+    // will be executed with tenant id 123. 
+&#125;</pre></div><p class="paragraph"/><h5>withoutTenantRestriction</h5><p class="paragraph"/>This method does the opposite of others. The plugin executes the closure passed as parameter without any tenant restrictions.
+For example, if you're running on tenant 1, and run the following code:<p class="paragraph"/><div class="code"><pre>def messages = &#91;&#93;<p class="paragraph"/>Customer.withoutTenantRestriction &#123;
+    // All Hibernate related operations executed here
+    // will be executed without any tenant restriction.
+    messages = Message.list()
+&#125;</pre></div><p class="paragraph"/>It will return all messages in the database, even <code>Message</code> being a <code>&#64;MultiTenant</code> annotated class.<p class="paragraph"/>This method, as <code>withTenantId</code>, is added to the Tenant interface, so, whatever you can use:<p class="paragraph"/><div class="code"><pre>Customer.withoutTenantRestriction &#123;
+    // All Hibernate related operations executed here
+    // will be executed without any tenant restriction.
+&#125;</pre></div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../../guide/1.%20Introduction.html">&lt;&lt; <strong>1</strong><span>Introduction</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/3.%20Testing.html"><strong>3</strong><span>Testing</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    Have a nice day!
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
