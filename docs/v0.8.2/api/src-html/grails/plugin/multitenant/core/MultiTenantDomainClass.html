@@ -1,0 +1,86 @@
+<HTML>
+<BODY BGCOLOR="white">
+<PRE>
+<FONT color="green">001</FONT>    package grails.plugin.multitenant.core;<a name="line.1"></a>
+<FONT color="green">002</FONT>    <a name="line.2"></a>
+<FONT color="green">003</FONT>    /**<a name="line.3"></a>
+<FONT color="green">004</FONT>     * All multi tenant domain classes should implement this interface. <a name="line.4"></a>
+<FONT color="green">005</FONT>     * If a @MultiTenant annotated domain class doesn't implement this<a name="line.5"></a>
+<FONT color="green">006</FONT>     * interface it will be added by an AST transformation. <a name="line.6"></a>
+<FONT color="green">007</FONT>     * <a name="line.7"></a>
+<FONT color="green">008</FONT>     * There is no need to add the methods defined by this interface <a name="line.8"></a>
+<FONT color="green">009</FONT>     * manually as a tenantId property is added to all @MultiTenant annotated<a name="line.9"></a>
+<FONT color="green">010</FONT>     * domain classes. Groovy will create the get and set method for us. <a name="line.10"></a>
+<FONT color="green">011</FONT>     * <a name="line.11"></a>
+<FONT color="green">012</FONT>     * @author Kim A. Betti<a name="line.12"></a>
+<FONT color="green">013</FONT>     */<a name="line.13"></a>
+<FONT color="green">014</FONT>    public interface MultiTenantDomainClass {<a name="line.14"></a>
+<FONT color="green">015</FONT>    <a name="line.15"></a>
+<FONT color="green">016</FONT>        Integer getTenantId();<a name="line.16"></a>
+<FONT color="green">017</FONT>        <a name="line.17"></a>
+<FONT color="green">018</FONT>        void setTenantId(Integer tenantId);<a name="line.18"></a>
+<FONT color="green">019</FONT>        <a name="line.19"></a>
+<FONT color="green">020</FONT>    }<a name="line.20"></a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+</BODY>
+</HTML>
