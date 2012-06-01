@@ -74,7 +74,7 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         vetoInsert == false
     }
     
-    @Unroll({"Allow #currentTenantId to allow an entity owned by #entityTenantId, #message"})
+    @Unroll("Allow #currentTenantId to allow an entity owned by #entityTenantId, #message")
     def "allowEntityLoad tests"() {
         expect:
         def entity = new DummyEntity(tenantId: entityTenantId)
@@ -88,7 +88,7 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         123               | null            | false         | "We dont allow loading of entities without tenant id" // Can be discussed..
     }
     
-    @Unroll({"Tenant id #tenantId, current tenant #currentTenantId, belongs to current tenant #belongsToCurrent"})
+    @Unroll("Tenant id #tenantId, current tenant #currentTenantId, belongs to current tenant #belongsToCurrent")
     def "belongsToCurrentTenant tests"() {
         expect:
         def entity = new DummyEntity(tenantId: entityTenantId)
