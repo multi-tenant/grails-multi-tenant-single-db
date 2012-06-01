@@ -15,19 +15,19 @@ environments {
     development {
         dataSource {
             dbCreate = "create-drop" // one of 'create', 'create-drop','update'
-            url = "jdbc:h2:mem:devDB"
+            url = "jdbc:h2:mem:devDB;MVCC=TRUE"
         }
     }
     test {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:h2:mem:testDb"
+            url = "jdbc:h2:mem:testDb;MVCC=TRUE"
         }
     }
     production {
         dataSource {
             dbCreate = "update"
-            url = "jdbc:h2:file:prodDb;shutdown=true"
+            url = "jdbc:h2:file:prodDb;shutdown=true;MVCC=TRUE"
         }
     }
 }
