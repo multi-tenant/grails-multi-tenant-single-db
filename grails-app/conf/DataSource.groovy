@@ -1,6 +1,10 @@
 dataSource {
     pooled = true
-    driverClassName = "org.h2.Driver"
+/*    driverClassName = 'com.mysql.jdbc.Driver'
+    username = 'root'
+    password = 'xxx'*/
+  
+  driverClassName = "org.h2.Driver"
     username = "sa"
     password = ""
 }
@@ -8,6 +12,9 @@ hibernate {
     cache.use_second_level_cache = true
     cache.use_query_cache = true
     cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
+    format_sql = false
+	//naming_strategy = 'org.hibernate.cfg.DefaultNamingStrategy'
+	show_sql = false
 }
 
 // environment specific settings
@@ -20,8 +27,9 @@ environments {
     }
     test {
         dataSource {
-            dbCreate = "update"
+            dbCreate = "create-drop"
             url = "jdbc:h2:mem:testDb;MVCC=TRUE"
+            //url = 'jdbc:mysql://127.0.0.1/multi'
         }
     }
     production {
