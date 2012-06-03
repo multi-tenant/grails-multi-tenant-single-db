@@ -20,20 +20,22 @@ class MultiTenantService {
      * The code will be executed in a new transaction with a new session 
      * to avoid other tenants entities laying in the first level cache to leak in. 
      */
-    def doWithTenantId(Integer tenantId, Closure callback) {
-        Integer oldTenantId = currentTenant.get()
-        if(log.debugEnabled) log.debug "doWithTenantId oldTenantId - $oldTenantId"
-        hibernateTemplates.withNewSession { 
-            hibernateTemplates.withTransaction(PROPAGATION_REQUIRES_NEW) {
-                try {
-                    currentTenant.set(tenantId)
-                    if(log.debugEnabled) log.debug "doWithTenantId runin with tenant - $tenantId"
-                    callback.call()
-                } finally {
-                    currentTenant.set(oldTenantId)
-                }
-            }    
-        }
-    }
+     def doWithTenantId(Integer tenantId, Closure callback) {
+         Integer oldTenantId = currentTenant.get()
+         try{
+             if(log.debugEnabled) log.debug "doWithTenantId oldTenantId - $oldTenantId"
+             currentTenant.set(tenantId)
+             if(log.debugEnabled) log.debug "doWithTenantId runin with tenant - $tenantId"
+
+             hibernateTemplates.withNewSession { 
+                 hibernateTemplates.withTransaction(PROPAGATION_REQUIRES_NEW) {
+                     callback.call()
+                 }    
+             }
+         }
+         finally{
+             currentTenant.set(oldTenantId)
+         }
+     }
     
 }

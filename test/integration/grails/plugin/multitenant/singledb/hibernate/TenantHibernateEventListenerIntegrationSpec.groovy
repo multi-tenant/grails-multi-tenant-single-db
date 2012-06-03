@@ -16,10 +16,7 @@ import demo.DemoProduct
  * @author Kim A. Betti
  */
 class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
-    //FIXME I really think this should work without needing to turn transactional off. It worked in 137
-    //if its transactional then the session in the withThisTenant cannot see the customer
-    static transactional = false
-    
+
     SessionFactory sessionFactory
     
     def "tenant id should be injected"() {
@@ -103,7 +100,7 @@ class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
         
         when: "we try to create it in the namespace of another tenant"
         Tenant.withTenantId(200) {
-            jaguar.delete(flush:true);
+            jaguar.delete();
         }
 
         then: "the product still exists in the database"
@@ -113,7 +110,7 @@ class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
     
         when: "we try to delete it in the namespace of the owning tenant"
         Tenant.withTenantId(100) {
-            jaguar.delete(flush:true);
+            jaguar.delete();
         }
         
         then: "it is deleted from the database"
