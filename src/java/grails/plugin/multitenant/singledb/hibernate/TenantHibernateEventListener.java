@@ -35,7 +35,8 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
 
     private CurrentTenant currentTenant;
     private HibernateEventPropertyUpdater hibernateEventPropertyUpdater;
-
+    private String tenantFieldName = "tenantId";
+    
     /**
      * One important thing to know. It's not enough to update the entity
      * instance with the new tenant-id. Hibernate will _not_ pick up on this and
@@ -53,7 +54,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
             }
 
             Integer currentTenantId = currentTenant.get();
-            hibernateEventPropertyUpdater.updateProperty(event, MultiTenantAST.TENANT_ID_FIELD_NAME, currentTenantId);
+            hibernateEventPropertyUpdater.updateProperty(event, tenantFieldName, currentTenantId);
             MultiTenantDomainClass entity = (MultiTenantDomainClass) event.getEntity();
             entity.setTenantId(currentTenantId);
         }
@@ -86,7 +87,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         if (LoadedEntity != null && isMultiTenantEntity(LoadedEntity)) {
             MultiTenantDomainClass entity = (MultiTenantDomainClass) LoadedEntity;
             Integer currentTenantId = currentTenant.get();
-
+            if(log.isDebugEnabled()) log.debug("onLoad and isMultiTenantEntity id - "+ currentTenantId);
             // We won't be able to extract tenant-id from an association fetch.
             // TODO: This is a bit scary as it means that we potentially can load entities from
             // other tenants through various variants of Hibernate collection / lazy loading.
@@ -144,7 +145,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         if (isMultiTenantEntity(event.getEntity())) {
             MultiTenantDomainClass tenantEntity = (MultiTenantDomainClass) event.getEntity();
             Integer currentTenantId = currentTenant.get();
-
+            if(log.isDebugEnabled()) log.debug("onPreDelete and isMultiTenantEntity id - "+ currentTenantId);
             if (currentTenantId != null && !belongsToCurrentTenant(currentTenantId, tenantEntity)) {
                 log.warn("Tenant {} tried to delete another tenants entity {}", currentTenant.get(), tenantEntity);
                 shouldVetoDelete = true;
@@ -169,6 +170,10 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
 
     public void setHibernateEventPropertyUpdater(HibernateEventPropertyUpdater updater) {
         this.hibernateEventPropertyUpdater = updater;
+    }
+    
+    public void setTenantFieldName(String val) {
+        this.tenantFieldName = val;
     }
 
 }

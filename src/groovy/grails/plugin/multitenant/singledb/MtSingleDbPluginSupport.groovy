@@ -33,6 +33,8 @@ class MtSingleDbPluginSupport {
     static doWithSpring = {
         
         def multiTenantConfig = ConfigurationHolder.config?.multiTenant
+        def tenantColumnName = multiTenantConfig.tenantField.column?:'tenant_id'
+        def tenantFieldName = multiTenantConfig.tenantField.name?:'tenantId'
                 
         // Default CurrentTenant implementation storing
         // the current tenant id in a ThreadLocal variable.
@@ -63,7 +65,7 @@ class MtSingleDbPluginSupport {
         // Definition of the Hibernate filter making sure that
         // each tenant only sees and touches its own data.
         multiTenantHibernateFilter(FilterDefinitionFactoryBean) {
-            defaultFilterCondition = ":tenantId = tenant_id"
+            defaultFilterCondition = ":tenantId = $tenantColumnName" 
             parameterTypes = [ tenantId: "java.lang.Integer" ]
         }
         
@@ -79,6 +81,7 @@ class MtSingleDbPluginSupport {
         // loading other tenant's data and so on
         tenantHibernateEventListener(HibernateEventSubscriptionFactory) {
             eventListener = { TenantHibernateEventListener listener ->
+                tenantFieldName = tenantFieldName
                 hibernateEventPropertyUpdater = ref("hibernateEventPropertyUpdater")
                 currentTenant = ref("currentTenant")
             }
