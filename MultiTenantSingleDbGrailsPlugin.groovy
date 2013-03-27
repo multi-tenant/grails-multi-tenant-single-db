@@ -2,7 +2,7 @@ import grails.plugin.multitenant.singledb.MtSingleDbPluginSupport
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.8.2"
+    def version = "0.8.3-SNAPSHOT"
     def grailsVersion = "1.3.5 > *"
 
     def dependsOn = [:] // does not play well with Maven repositories
@@ -30,10 +30,18 @@ class MultiTenantSingleDbGrailsPlugin {
 	def scm = [ url: "https://github.com/multi-tenant/grails-multi-tenant-single-db" ]
 	
     // make sure the filter chain filter is after the Grails filter
-    	def getWebXmlFilterOrder() {
+	def getWebXmlFilterOrder() {
+        def slurper = new ConfigSlurper(Environment.getCurrent().getName())
+        def config = slurper.parse(getClass().getClassLoader().loadClass(GrailsApplication.CONFIG_CLASS))
+
+        if(config.multiTenant.resolveTenantBeforeLogin) {
+    		def SecurityFilterPosition = getClass().getClassLoader().loadClass('org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition')
+    		[tenantFilter: SecurityFilterPosition.FORM_LOGIN_FILTER.order - 100]
+        } else {
     		def FilterManager = getClass().getClassLoader().loadClass('grails.plugin.webxml.FilterManager')
     		[tenantFilter: FilterManager.SITEMESH_POSITION - 100]
-    	}
+        }
+	}
 
     def doWithSpring = MtSingleDbPluginSupport.doWithSpring
     def doWithDynamicMethods = MtSingleDbPluginSupport.doWithDynamicMethods
