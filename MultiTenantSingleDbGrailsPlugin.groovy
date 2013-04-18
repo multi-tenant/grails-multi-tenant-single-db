@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 class MultiTenantSingleDbGrailsPlugin {
     private Logger log = LoggerFactory.getLogger('grails.plugin.multiTenant.MultiTenantSingleDbPlugin')
 
-    def version = "0.8.3-SNAPSHOT"
+    def version = "0.8.3"
     def grailsVersion = "1.3.5 > *"
 
     def loadAfter = [
