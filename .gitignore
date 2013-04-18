@@ -17,3 +17,4 @@ stacktrace.log
 .idea
 *.iml
 *.ipr
+.grails
