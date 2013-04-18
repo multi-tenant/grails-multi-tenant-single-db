@@ -1,7 +1,5 @@
 package demo
 
 class ProductController {
-
-    def scaffold = DemoProduct
-    
+	static scaffold = DemoProduct
 }

@@ -1,22 +1,17 @@
 package demo
 
-import grails.plugin.multitenant.core.Tenant;
-import grails.plugin.multitenant.singledb.hibernate.TenantHibernateEventProxy;
-import grails.plugin.spock.*
+import grails.plugin.spock.IntegrationSpec
 import grails.plugins.hawkeventing.Event
-import grails.plugins.hawkeventing.EventBroker;
+import grails.plugins.hawkeventing.EventBroker
 import grails.plugins.hawkeventing.EventConsumer
-import spock.lang.*
-import spock.util.mop.ConfineMetaClassChanges;
 
 /**
- * 
  * @author Kim A. Betti
  */
 class DemoTenantSpec extends IntegrationSpec {
 
     EventBroker eventBroker
- 
+
     def "New tenants triggers events" () {
         given: "Subscription to the expected event"
         def newTenantConsumer = Mock(EventConsumer)

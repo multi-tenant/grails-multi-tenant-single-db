@@ -10,13 +10,12 @@ import grails.plugin.multitenant.core.Tenant
 class ${tenantDomainClassName} implements Tenant {
 
     String name
-    
+
     static constraints = {
         name blank: false, unique: true
     }
-    
-    Integer tenantId() {
-        return this.id
-    }
 
+    Integer tenantId() {
+        id
+    }
 }

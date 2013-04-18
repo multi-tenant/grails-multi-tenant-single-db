@@ -14,11 +14,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Defines the Hibernate filter.
- * 
+ *
  * The Hibernate Hijacker detects beans implementing
  * HibernateConfigPostProcessor and will make sure that the Configuration
  * instances is passed through this instance when the application is starting.
- * 
+ *
  * @author Kim A. Betti <kim@developer-b.com>
  */
 public class TenantHibernateFilterConfigurator implements HibernateConfigPostProcessor {
@@ -39,27 +39,26 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
         configuration.addFilterDefinition(multiTenantHibernateFilter);
     }
 
-    @SuppressWarnings("unchecked")
     private void enrichMultiTenantDomainClasses(Configuration configuration) {
         Iterator<PersistentClass> mappingIterator = configuration.getClassMappings();
         while (mappingIterator.hasNext()) {
             PersistentClass persistentClass = mappingIterator.next();
             if (isMultiTenantClass(persistentClass.getMappedClass())) {
-                enrichMultiTenantDomainClass(persistentClass, configuration);
+                enrichMultiTenantDomainClass(persistentClass);
             }
         }
     }
 
-    private void enrichMultiTenantDomainClass(PersistentClass persistentClass, Configuration configuration) {
+    private void enrichMultiTenantDomainClass(PersistentClass persistentClass) {
         log.trace("Enabling multi-tenant mode for domain class {}", persistentClass.getClassName());
-        addDomainFilter(persistentClass, configuration);
+        addDomainFilter(persistentClass);
     }
 
     private boolean isMultiTenantClass(Class<?> mappedClass) {
         return MultiTenantDomainClass.class.isAssignableFrom(mappedClass);
     }
 
-    private void addDomainFilter(PersistentClass persistentClass, Configuration configuration) {
+    private void addDomainFilter(PersistentClass persistentClass) {
         String filterName = multiTenantHibernateFilter.getFilterName();
         String condition = multiTenantHibernateFilter.getDefaultFilterCondition();
         persistentClass.addFilter(filterName, condition);

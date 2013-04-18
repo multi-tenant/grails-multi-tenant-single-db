@@ -1,6 +1,7 @@
 package grails.plugin.multitenant.core.spring;
 
 import grails.plugin.multitenant.core.CurrentTenant;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,15 +12,15 @@ import org.springframework.context.ApplicationContextAware;
 
 /**
  * Custom Spring scope for per-tenant Spring beans.
- * 
+ *
  * Important: There is currently no listener making sure
  * to remove any per-tenant beans when you delete a tenant.
  * So if you delete a tenant this class will potentially
  * hold a strong reference to tenant scoped beans belonging
  * to the deleted tenant.
- * 
+ *
  * Important: This class is expected to be thread-safe!
- * 
+ *
  * @author Kim A. Betti
  */
 public class TenantScope implements Scope, ApplicationContextAware {
@@ -39,7 +40,7 @@ public class TenantScope implements Scope, ApplicationContextAware {
     public Object get(String name, ObjectFactory<?> objectFactory) {
         Integer tenantId = currentTenant.get();
         if (tenantId == null) { // ConcurrentHashMap does not allow nulls, so mapping to -1
-            tenantId = new Integer(-1);
+            tenantId = -1;
         }
         Map<String, Object> beanCache = getBeanCacheForTenant(tenantId);
         if (!beanCache.containsKey(name)) {

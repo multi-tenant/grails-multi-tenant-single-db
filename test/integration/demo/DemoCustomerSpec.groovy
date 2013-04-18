@@ -13,18 +13,18 @@ class DemoCustomerSpec extends IntegrationSpec {
     static transactional = false
 
     def testTenant
-    
+
     def setup() {
         testTenant = new DemoTenant(name: "DemoCustomerSpec tenant", domain: "DemoCustomerSpec.com")
         testTenant.save(flush: true, failOnError: true)
     }
-    
+
     def "instances are available for tenants"() {
         given: "a customer instance created outside a tenant namespace"
         def c = new DemoCustomer(name: "DemoCustomerSpec A").save(failOnError: true, flush: true)
         assert c
         println c.id
-        
+
         expect: "we should be able to look up the customer inside a tenant namespace"
         assert DemoCustomer.findByName("DemoCustomerSpec A")
         testTenant.withThisTenant {
@@ -34,5 +34,4 @@ class DemoCustomerSpec extends IntegrationSpec {
             DemoCustomer.findByName("DemoCustomerSpec A")
         }
     }
-
 }

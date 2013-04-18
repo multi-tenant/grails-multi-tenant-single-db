@@ -1,7 +1,7 @@
 package grails.plugin.multitenant.core
 
-import grails.plugin.hibernatehijacker.template.HibernateTemplates;
-import static org.springframework.transaction.TransactionDefinition.*
+import static org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW
+import grails.plugin.hibernatehijacker.template.HibernateTemplates
 
 /**
  * Allows for temporary manipulation of the current tenant.
@@ -11,31 +11,30 @@ import static org.springframework.transaction.TransactionDefinition.*
 class MultiTenantService {
 
     static transactional = false
-    
+
     CurrentTenant currentTenant
     HibernateTemplates hibernateTemplates
 
     /**
-     * Execute some code in the 'namespace' of the given tenant id. 
-     * The code will be executed in a new transaction with a new session 
-     * to avoid other tenants entities laying in the first level cache to leak in. 
+     * Execute some code in the 'namespace' of the given tenant id.
+     * The code will be executed in a new transaction with a new session
+     * to avoid other tenants entities laying in the first level cache to leak in.
      */
-     def doWithTenantId(Integer tenantId, Closure callback) {
-         Integer oldTenantId = currentTenant.get()
-         try{
-             if(log.debugEnabled) log.debug "doWithTenantId oldTenantId - $oldTenantId"
-             currentTenant.set(tenantId)
-             if(log.debugEnabled) log.debug "doWithTenantId runin with tenant - $tenantId"
+    def doWithTenantId(Integer tenantId, Closure callback) {
+        Integer oldTenantId = currentTenant.get()
+        try {
+            if(log.debugEnabled) log.debug "doWithTenantId oldTenantId - $oldTenantId"
+            currentTenant.set(tenantId)
+            if(log.debugEnabled) log.debug "doWithTenantId runin with tenant - $tenantId"
 
-             hibernateTemplates.withNewSession { 
-                 hibernateTemplates.withTransaction(PROPAGATION_REQUIRES_NEW) {
-                     callback.call()
-                 }    
-             }
-         }
-         finally{
-             currentTenant.set(oldTenantId)
-         }
-     }
-    
+            hibernateTemplates.withNewSession {
+                hibernateTemplates.withTransaction(PROPAGATION_REQUIRES_NEW) {
+                    callback.call()
+                }
+            }
+        }
+        finally{
+            currentTenant.set(oldTenantId)
+        }
+    }
 }

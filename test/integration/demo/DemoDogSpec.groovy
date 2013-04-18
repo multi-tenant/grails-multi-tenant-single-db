@@ -1,17 +1,17 @@
 package demo
 
-import grails.plugin.multitenant.core.MultiTenantDomainClass;
+import grails.plugin.multitenant.core.MultiTenantDomainClass
 import grails.plugin.multitenant.core.Tenant
 import grails.plugin.spock.IntegrationSpec
 
 /**
  * Dog extends Animal, but it's not stamped with the @MultiTenant
- * annotation as Aminal is. These test cases makes sure that this works. 
- * 
+ * annotation as Aminal is. These test cases makes sure that this works.
+ *
  * @author Kim A. Betti
  */
 class DemoDogSpec extends IntegrationSpec {
-    
+
     def "dog should implement the MultiTenantDomainClass interface"() {
         expect:
         MultiTenantDomainClass.isAssignableFrom DemoDog
@@ -28,11 +28,10 @@ class DemoDogSpec extends IntegrationSpec {
         Tenant.withTenantId(1) {
             DemoDog.findByName("Pluto")
         } != null
-        
+
         and: "it should not be visible from another tenants namespace"
         Tenant.withTenantId(2) {
             DemoDog.findByName("Pluto")
         } == null
     }
-    
 }
