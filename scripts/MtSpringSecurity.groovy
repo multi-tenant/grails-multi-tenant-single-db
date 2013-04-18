@@ -13,14 +13,14 @@
  * limitations under the License.
  *
  * --------------
- * This script is based on the quickstart script in the 
- * excellent Spring Security Plugin by Burt Beckwith: 
+ * This script is based on the quickstart script in the
+ * excellent Spring Security Plugin by Burt Beckwith:
  * http://grails.org/plugin/spring-security-core
  */
 
 import grails.util.GrailsNameUtils
 
-includeTargets << new File("$multiTenantSingleDbPluginDir/scripts/_MTCommon.groovy")
+includeTargets << new File(multiTenantSingleDbPluginDir, "scripts/_MTCommon.groovy")
 
 USAGE = """
 Usage: grails mt-spring-security <package> <tenant-domain-class-name>
@@ -29,11 +29,9 @@ This script will generate
  * A tenant resolver that integrates with Spring Securty
  * Domain class to represent tenants
  * A tenant repository implementation that integrates with Spring Security
- 
-Example: grails mt-spring-security com.yourapp Customer 
-"""
 
-includeTargets << grailsScript('_GrailsBootstrap')
+Example: grails mt-spring-security com.yourapp Customer
+"""
 
 packageName = ''
 tenantResolverClassName = 'SpringSecurityTenantResolver'
@@ -49,7 +47,7 @@ target(mtSpringSecurity: 'MultiTenant - SingleDB Spring Security Core integratio
     createTenantRepository()
     updateSpringResources()
     updateConfig()
-	messageUserChanges()
+    messageUserChanges()
 }
 
 private void configure() {
@@ -63,31 +61,31 @@ private void configure() {
 
 private void createTenantResolver() {
     String dir = packageToDir(packageName)
-    
+
     String templatePath = "$templateDir/SpringSecurityTenantResolverSkeleton.groovy.template"
     String destinationPath = "$basedir/src/groovy/${dir}${tenantResolverClassName}.groovy"
     generateFile templatePath, destinationPath
-    
+
     printMessage "Created a Spring Security implementation of TenantResolver: ${destinationPath}"
 }
 
 private void createTenantDomainClass() {
     String dir = packageToDir(packageName)
-    
+
     String templatePath = "$templateDir/TenantDomainClass.groovy.template"
     String destinationPath = "$basedir/grails-app/domain/${dir}${tenantDomainClassName}.groovy"
     generateFile templatePath, destinationPath
-    
+
     printMessage "Created a tenant domain class: ${destinationPath}"
 }
 
 private void createTenantRepository() {
     String dir = packageToDir(packageName)
-    
+
     String templatePath = "$templateDir/SpringSecurityTenantRepository.groovy.template"
     String destinationPath = "$basedir/src/groovy/${dir}${tenantRepositoryClassName}.groovy"
     generateFile templatePath, destinationPath
-    
+
     printMessage "Created a Spring Security implementation of TenantRepository: ${destinationPath}"
 }
 
@@ -96,7 +94,7 @@ private void updateSpringResources() {
 //	springSecurityService = ref('springSecurityService')
 // }"""
     String repositoryBeanDefinitionLine = "tenantRepository(${packageName}.${tenantRepositoryClassName})"
-    
+
     String springResourcesPath = "$basedir/grails-app/conf/spring/resources.groovy"
     File springResourcesFile = new File(springResourcesPath)
     if (springResourcesFile.exists()) {
@@ -104,7 +102,7 @@ private void updateSpringResources() {
         springResourcesFile << "// Documentation http://grails.org/doc/latest/guide/single.html#14.2%20Configuring%20Additional%20Beans\n"
         springResourcesFile << "// ${resolverBeanDefinitionLine}\n"
         springResourcesFile << "// ${repositoryBeanDefinitionLine}\n"
-        
+
         printMessage "--------------------- IMPORTANT ---------------------"
         printMessage "I've added some lines to: ${springResourcesPath}"
         printMessage "Open it and follow the instructions added to the bottom of file\n"
@@ -118,13 +116,13 @@ private void updateSpringResources() {
 
 private void updateConfig() {
     String configLines = "multiTenant {\n    tenantClass = ${packageName}.${tenantDomainClassName}\n}"
-    
+
     String configPath = "$basedir/grails-app/conf/Config.groovy"
     File configFile = new File(configPath)
     if (configFile.exists()) {
         configFile << "\n\n// Added by the MultiTenant plugin\n// TODO: Verify that this is correct\n"
         configFile << "${configLines}\n"
-        
+
         printMessage "--------------------- IMPORTANT ---------------------"
         printMessage "I've added some lines to: ${configPath}"
         printMessage "Open it and follow the instructions added to the bottom of file\n"

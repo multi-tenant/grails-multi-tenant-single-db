@@ -2,10 +2,9 @@ package demo
 
 import grails.plugin.multitenant.core.annotation.MultiTenant
 
-
 @MultiTenant
 class DemoAnimal {
-    
+
     static belongsTo = [ owner: DemoPetOwner ]
 
     String name

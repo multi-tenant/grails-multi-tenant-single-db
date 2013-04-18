@@ -1,29 +1,28 @@
 package demo
 
-import grails.plugin.multitenant.core.Tenant;
-import grails.plugin.spock.IntegrationSpec;
+import grails.plugin.multitenant.core.Tenant
+import grails.plugin.spock.IntegrationSpec
 
 import org.springframework.dao.DataIntegrityViolationException
 
 /**
- * 
  * @author Kim A. Betti
  */
 class DemoProductSpec extends IntegrationSpec {
 
     static transactional = false
-    
+
     def "different tenants can use the same value for unique properties"() {
         when:
         Tenant.withTenantId(1) {
             new DemoProduct(name: 'bPhone').save(flush: true, failOnError: true)
         }
-        
+
         then:
         Tenant.withTenantId(1) {
             DemoProduct.findAllByName("bPhone").size()
         } == 1
-        
+
         and:
         Tenant.withTenantId(2) {
             new DemoProduct(name: 'bPhone').save(flush: true, failOnError: true)
@@ -38,10 +37,10 @@ class DemoProductSpec extends IntegrationSpec {
 
         when:
         Tenant.withTenantId(1) {
-            new DemoProduct(name: 'bPad').save(flush: true, failOnError: true);
+            new DemoProduct(name: 'bPad').save(flush: true, failOnError: true)
             assert false, "This should not be allowed"
         }
-        
+
         then:
         DataIntegrityViolationException ex = thrown()
     }
@@ -53,18 +52,17 @@ class DemoProductSpec extends IntegrationSpec {
 
         when:
         Tenant.withTenantId(1) {
-            new DemoProduct(name: 'Flying car').save(flush: true, failOnError: true);
+            new DemoProduct(name: 'Flying car').save(flush: true, failOnError: true)
         }
-        
+
         then:
         Tenant.withTenantId(1) {
             DemoProduct.findAll(hql).size()
         } == 1
-        
+
         and:
         Tenant.withTenantId(2) {
             DemoProduct.findAll(hql).size()
         } == 0
     }
-
 }
