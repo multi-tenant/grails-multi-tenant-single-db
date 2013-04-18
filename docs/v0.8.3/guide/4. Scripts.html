@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>4 Scripts 0.8.3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/1.%20Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/2.%20Plugin%20concepts.html"><strong>2</strong><span>Plugin concepts</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/3.%20Testing.html"><strong>3</strong><span>Testing</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/4.%20Scripts.html"><strong>4</strong><span>Scripts</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/5.%20Configuration.html"><strong>5</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/6.%20Changelog.html"><strong>6</strong><span>Changelog</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Multi tenant setup focused on single database mode</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/3.%20Testing.html">&lt;&lt; <strong>3</strong><span>Testing</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/5.%20Configuration.html"><strong>5</strong><span>Configuration</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>4 Scripts - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Kim A. Betti</p>
+
+                    <p><strong>Version:</strong> 0.8.3</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#4.1.%20mt-quickstart"><strong>4.1</strong><span>mt-quickstart</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#4.2.%20mt-spring-security"><strong>4.2</strong><span>mt-spring-security</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="4. Scripts">4 Scripts</h1>
+<blockquote class="warning">
+Important! Some of the scripts will make changes to existing files! 
+Make sure to commit any changes before running a script! 
+This way you can roll back if something goes wrong. 
+</blockquote>
+
+
+<h2 id="4.1. mt-quickstart">4.1 mt-quickstart</h2>
+This script will generate:
+<ol>
+<li>The skeleton of a tenant resolver</li>
+<li>Domain class to represent tenants</li>
+<li>Simple tenant repository implementation</li>
+</ol><p class="paragraph"/> 
+You will have to update <code>grails-app/conf/Config.groovy</code> and <code>grails-app/conf/spring/resources.groovy</code> after running this script.<p class="paragraph"/><div class="code"><pre>Example: grails mt&#45;quickstart com.yourapp DomainTenantResolver CachingTenantRepository Customer</pre></div>
+
+
+<h2 id="4.2. mt-spring-security">4.2 mt-spring-security</h2>
+This script is intended to help users integrate multi-tenant-single-db with spring-security-core.<p class="paragraph"/>More specifically, this will generate the required multi-tenant-single-db classes for you to support multiple Spring Security users within a single tenant.<p class="paragraph"/>This will not help you if you intend to mark the Spring Security class with the <code>MultiTenant</code> annotation (these classes use the User domain to store the multi-tenant id.<p class="paragraph"/>This script will generate: 
+<ol>
+<li>A tenant resolver that integrates with Spring Securty</li>
+<li>Domain class to represent tenants</li>
+<li>A tenant repository implementation that integrates with Spring Security</li>
+</ol><p class="paragraph"/>You will have to update <code>grails-app/conf/Config.groovy</code> and <code>grails-app/conf/spring/resources.groovy</code> after running this script.<p class="paragraph"/><div class="code"><pre>Example: grails mt&#45;spring&#45;security com.yourapp Customer</pre></div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/3.%20Testing.html">&lt;&lt; <strong>3</strong><span>Testing</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/5.%20Configuration.html"><strong>5</strong><span>Configuration</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    Have a nice day!
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

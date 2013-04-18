@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>1.1 This plugin vs. multi-tenant-core 0.8.3</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/1.%20Introduction.html"><strong>1</strong><span>Introduction</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/2.%20Plugin%20concepts.html"><strong>2</strong><span>Plugin concepts</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/3.%20Testing.html"><strong>3</strong><span>Testing</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/4.%20Scripts.html"><strong>4</strong><span>Scripts</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/5.%20Configuration.html"><strong>5</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../../guide/6.%20Changelog.html"><strong>6</strong><span>Changelog</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>Multi tenant setup focused on single database mode</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../../guide/2.%20Plugin%20concepts.html"><strong>2</strong><span>Plugin concepts</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>1.1 This plugin vs. multi-tenant-core - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Kim A. Betti</p>
+
+                    <p><strong>Version:</strong> 0.8.3</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h2 id="1.1 This plugin vs. multi-tenant-core">1.1 This plugin vs. multi-tenant-core</h2>
+Those of you who has been using the multi-tenant plugin for a while are probably using multi-tenant-core. 
+This great plugin was unmaintained for a long time and suffered from a list of minor and major problems. 
+The plugin made use of some classes from the unofficial <code>sun.*</code> package, had compatibility problems with recent 
+versions of Grails and used some intrusive means in order to intercepting Hibernate Sessions and criteria. 
+Another problem was that webflow support added a compile-time dependency to the webflow plugin. 
+This caused web flow support to be dropped from the multi-tenant-core plugin.<p class="paragraph"/>At some point Scott Ryan took over maintenance of the plugin. 
+A few months later the multi-tenant organization was formed on GitHub by a group of developers invested in the plugin.
+The organization was formed to drive the plugin development forward. The most serious problems mentioned above has been fixed
+in the current version of multi-tenant-core.<p class="paragraph"/>Kim A. Betti started working on webflow support without compile time dependency and a less intrusive way of intercepting Hibernate sessions. 
+The result of this work was this plugin (multi-tenant-single-db). The original plan was to merge at least some of the solutions in this plugin back into 
+<a href="http://github.com/multi-tenant/grails-multi-tenant-core" target="blank">multi-tenant-core</a>, but the plugins has drifted further apart while refactoring and 
+improving single-database mode. 
+<ol>
+<li>Merging the changes back into multi-tenant-core would introduce unnecessary dependencies (Hawk Eventing and Hibernate Hijacker) for those using the plugin in multi-database mode.</li>
+<li>Some of the changes in this plugin would break existing applications.</li>
+<li>Align the plugin more closely with the most common use cases.</li>
+</ol><p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Feature</strong></th><th><strong class="bold">multi-tenant-single-db</strong></th><th><strong class="bold">multi-tenant-core</strong></th></tr><tr class="table-odd"><td>Multi database mode</td><td>No</td><td>Yes</td></tr><tr class="table-even"><td>Single database mode</td><td>Yes, based on Hibernate Filters</td><td>Yes, based on Criteria / Query manipulation</td></tr><tr class="table-odd"><td>HQL support</td><td>Yes, based on Hibernate Filters</td><td>No</td></tr><tr class="table-even"><td>Webflow support</td><td>Yes, without compile time dependency</td><td>No</td></tr></table><p class="paragraph"/>
+<strong class="bold">Short version:</strong> If you want support for multi database mode then your only option is to go with multi-tenant-core. 
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item next-right"><a href="../../guide/2.%20Plugin%20concepts.html"><strong>2</strong><span>Plugin concepts</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    Have a nice day!
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>
