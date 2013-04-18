@@ -25,13 +25,12 @@ public class ${tenantRepositoryClassName} implements CurrentTenantAwareRepositor
         if (currentTenantId != null) {
             tenantInstance = findByTenantId(currentTenantId)
         }
-        
+
         tenantInstance
-    } 
+    }
 
     @Override
     Tenant findByTenantId(Integer tenantId) {
         ${tenantDomainClassName}.get(tenantId); // Assuming that you use ${tenantDomainClassName}'s primary key as tenant id
     }
-
 }

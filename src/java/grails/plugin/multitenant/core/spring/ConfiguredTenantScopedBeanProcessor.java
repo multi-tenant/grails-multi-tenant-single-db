@@ -18,15 +18,15 @@ import org.springframework.beans.factory.support.GenericBeanDefinition;
 
 /**
  * Creates a tenant scoped proxy around beans configured to be unique per tenant.
- * In short terms, this works by lazily creating a new prototyped definition of 
- * each per-tenant bean for each tenant. 
+ * In short terms, this works by lazily creating a new prototyped definition of
+ * each per-tenant bean for each tenant.
  * @author Kim A. Betti
  */
 public class ConfiguredTenantScopedBeanProcessor implements BeanFactoryPostProcessor {
 
     private static final Log log = LogFactory.getLog(ConfiguredTenantScopedBeanProcessor.class);
     private List<String> perTenantBeans;
-    
+
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         BeanDefinitionRegistry appCtx = (DefaultListableBeanFactory) beanFactory;
@@ -50,7 +50,7 @@ public class ConfiguredTenantScopedBeanProcessor implements BeanFactoryPostProce
         List<String> perTenantBeanNames = new ArrayList<String>();
         for (String beanName : beanFactory.getBeanDefinitionNames()) {
             BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
-            
+
             if (perTenantBeans.contains(beanName)) {
                 perTenantBeanNames.add(beanName);
             } else if (beanDefinition.getScope() == TenantScope.NAME) {

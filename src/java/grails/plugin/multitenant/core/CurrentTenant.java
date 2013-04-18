@@ -7,8 +7,8 @@ package grails.plugin.multitenant.core;
  */
 public interface CurrentTenant {
 
-    static final String TENANT_BEFORE_CHANGE_EVENT = "multitenant.set-current-tenant.before";
-    static final String TENANT_AFTER_CHANGE_EVENT = "multitenant.set-current-tenant.after";
+    String TENANT_BEFORE_CHANGE_EVENT = "multitenant.set-current-tenant.before";
+    String TENANT_AFTER_CHANGE_EVENT = "multitenant.set-current-tenant.after";
 
     Integer get();
 

@@ -3,7 +3,6 @@ package demo
 import grails.plugin.multitenant.core.Tenant
 
 /**
- * 
  * @author Kim A. Betti
  */
 class DemoTenant implements Tenant {
@@ -15,9 +14,8 @@ class DemoTenant implements Tenant {
         name blank: false, unique: true
         domain blank: false, unique: true
     }
-    
+
     Integer tenantId() {
-        return this.id
+        id
     }
-    
 }
