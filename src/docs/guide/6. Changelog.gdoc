@@ -1,0 +1,18 @@
+h3. v0.8.3 April 17th 2013
+
+* Configurable Filter Position
+
+h3. v0.8.2 February 21st 2012
+
+* Add webXml plugin dependency and filter mapping
+* Script: mt-sprint-security
+
+h3. v0.8.1
+
+* Moved to Release Plugin
+
+h3. v0.7 - February 28th 2011
+
+* TenantRepository
+* CurrentTenantAware
+* Script: mt-quickstart

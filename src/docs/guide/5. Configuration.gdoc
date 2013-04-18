@@ -1,0 +1,11 @@
+h3. Location of tenant filter
+
+Many users of this plugin also use Spring Security.  The desired order of the Spring Security filter and Tenant filter depend on whether you use your Spring Security User domain to determine your tenant or the tenant to narrow the available users.
+
+The default filter position is after Spring Security.  This is in alignment with the @mt-spring-security@ script, which assumes that your Spring Security User domain has a @userTenantId@ field.
+
+If you would rather have Spring Security Users unique within each tenant (such as the case if you use a domain name tenant resolver) you will need to add the following property to your @Config.groovy@.
+
+{code}
+multiTenant.resolveTenantBeforeLogin=true
+{code}
