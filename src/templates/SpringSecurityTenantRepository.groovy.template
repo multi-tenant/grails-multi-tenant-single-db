@@ -34,7 +34,7 @@ public class ${tenantRepositoryClassName} implements CurrentTenantAwareRepositor
 
     @Override
     Tenant findByTenantId(Integer tenantId) {
-        def tenantClass = grailsApplication.getDomainClass(grailsApplication.config.multiTenant.tenantClass)
+        def tenantClass = grailsApplication.getDomainClass(grailsApplication.config.multiTenant.tenantClass.getName())
         tenantClass.clazz.get(tenantId); // Assumes that you use Tenant's primary key as tenant id
     }
 }
