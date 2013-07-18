@@ -93,7 +93,9 @@ private void updateSpringResources() {
     String resolverBeanDefinitionLine = """tenantResolver(${packageName}.${tenantResolverClassName}) {
 //	springSecurityService = ref('springSecurityService')
 // }"""
-    String repositoryBeanDefinitionLine = "tenantRepository(${packageName}.${tenantRepositoryClassName})"
+    String repositoryBeanDefinitionLine = """tenantRepository(${packageName}.${tenantRepositoryClassName}) {
+//	grailsApplication = ref('grailsApplication')
+// }"""
 
     String springResourcesPath = "$basedir/grails-app/conf/spring/resources.groovy"
     File springResourcesFile = new File(springResourcesPath)
