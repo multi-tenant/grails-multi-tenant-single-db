@@ -93,7 +93,7 @@ private void updateSpringResources() {
     String resolverBeanDefinitionLine = """tenantResolver(${packageName}.${tenantResolverClassName}) {
 //	springSecurityService = ref('springSecurityService')
 // }"""
-    String repositoryBeanDefinitionLine = """tenantRepository(${packageName}.${tenantRepositoryClassName})
+    String repositoryBeanDefinitionLine = """tenantRepository(${packageName}.${tenantRepositoryClassName}) {
 //	grailsApplication = ref('grailsApplication')
 // }"""
 
