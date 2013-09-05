@@ -25,7 +25,7 @@ public class MultiTenantAST implements ASTTransformation {
     // TODO: ConstantExpression.NULL would be better, but that leads to all sorts of crazy problems
     // with default GORM constraints. It looks like it will become easier to hook into this in Grails 1.4:
     // https://github.com/grails/grails-core/blob/master/grails-core/src/main/groovy/org/codehaus/groovy/grails/validation/ConstraintsEvaluatorFactoryBean.java
-    public final static Integer NO_TENANT_VALUE = Integer.MIN_VALUE;
+    public final static Long NO_TENANT_VALUE = Long.MIN_VALUE;
 
     @Override
     public void visit(ASTNode[] astNodes, SourceUnit sourceUnit) {
@@ -45,7 +45,7 @@ public class MultiTenantAST implements ASTTransformation {
     }
 
     private void addTenantProperty(ClassNode node) {
-        ClassNode integerType = new ClassNode(Integer.class);
+        ClassNode integerType = new ClassNode(Long.class);
         ConstantExpression defaultValue = new ConstantExpression(NO_TENANT_VALUE);
         Statement getterBlock = null;
         Statement setterBlock = null;

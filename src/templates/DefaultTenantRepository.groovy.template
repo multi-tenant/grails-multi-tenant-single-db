@@ -21,7 +21,7 @@ public class ${tenantRepositoryClassName} implements CurrentTenantAwareRepositor
     @Override
     Tenant getCurrentTenant() {
         Tenant tenantInstance = null
-        Integer currentTenantId = currentTenant.get()
+        Long currentTenantId = currentTenant.get()
         if (currentTenantId != null) {
             tenantInstance = findByTenantId(currentTenantId)
         }
@@ -30,7 +30,7 @@ public class ${tenantRepositoryClassName} implements CurrentTenantAwareRepositor
     }
 
     @Override
-    Tenant findByTenantId(Integer tenantId) {
+    Tenant findByTenantId(Long tenantId) {
         ${tenantDomainClassName}.get(tenantId); // Assuming that you use ${tenantDomainClassName}'s primary key as tenant id
     }
 }

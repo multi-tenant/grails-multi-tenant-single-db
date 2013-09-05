@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest
 class ${tenantResolverClassName} implements TenantResolver {
     def springSecurityService
 
-    Integer resolve(HttpServletRequest request) throws TenantResolveException {
+    Long resolve(HttpServletRequest request) throws TenantResolveException {
         def user = springSecurityService.getCurrentUser()
         /*
         if (!user) {

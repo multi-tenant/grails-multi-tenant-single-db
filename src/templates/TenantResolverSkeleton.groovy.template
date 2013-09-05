@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest
  */
 class ${tenantResolverClassName} implements TenantResolver {
 
-    Integer resolve(HttpServletRequest request) throws TenantResolveException {
+    Long resolve(HttpServletRequest request) throws TenantResolveException {
         String host = request.getServerName()
         switch (host) {
             case "john.greatapp.com":

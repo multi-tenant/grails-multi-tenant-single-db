@@ -46,7 +46,7 @@ public class CurrentTenantServletFilter implements Filter {
         try {
             if (request instanceof HttpServletRequest) {
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
-                Integer currentTenantId = tenantResolver.resolve(httpRequest);
+                Long currentTenantId = tenantResolver.resolve(httpRequest);
                 currentTenant.set(currentTenantId);
             }
 

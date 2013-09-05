@@ -20,8 +20,8 @@ class MultiTenantService {
      * The code will be executed in a new transaction with a new session
      * to avoid other tenants entities laying in the first level cache to leak in.
      */
-    def doWithTenantId(Integer tenantId, Closure callback) {
-        Integer oldTenantId = currentTenant.get()
+    def doWithTenantId(Long tenantId, Closure callback) {
+        Long oldTenantId = currentTenant.get()
         try {
             if(log.debugEnabled) log.debug "doWithTenantId oldTenantId - $oldTenantId"
             currentTenant.set(tenantId)

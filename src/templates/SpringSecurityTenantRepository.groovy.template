@@ -24,7 +24,7 @@ public class ${tenantRepositoryClassName} implements CurrentTenantAwareRepositor
     @Override
     Tenant getCurrentTenant() {
         Tenant tenantInstance = null
-        Integer currentTenantId = currentTenant.get()
+        Long currentTenantId = currentTenant.get()
         if (currentTenantId != null) {
             tenantInstance = findByTenantId(currentTenantId)
         }
@@ -33,7 +33,7 @@ public class ${tenantRepositoryClassName} implements CurrentTenantAwareRepositor
     }
 
     @Override
-    Tenant findByTenantId(Integer tenantId) {
+    Tenant findByTenantId(Long tenantId) {
         def tenantClass = grailsApplication.getDomainClass(grailsApplication.config.multiTenant.tenantClass)
         tenantClass.clazz.get(tenantId); // Assumes that you use Tenant's primary key as tenant id
     }

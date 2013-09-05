@@ -7,9 +7,9 @@ package grails.plugin.multitenant.core.exception;
 @SuppressWarnings("serial")
 public class TenantNotFoundException extends TenantException {
 
-    private Integer missingTenantId;
+    private Long missingTenantId;
 
-    public TenantNotFoundException(Integer tenantId) {
+    public TenantNotFoundException(Long tenantId) {
         super("Unable to find tenant with id " + tenantId);
         this.missingTenantId = tenantId;
     }
@@ -22,7 +22,7 @@ public class TenantNotFoundException extends TenantException {
         super(message, cause);
     }
 
-    public Integer getMissingTenantId() {
+    public Long getMissingTenantId() {
         return missingTenantId;
     }
 

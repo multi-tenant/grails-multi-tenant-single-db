@@ -52,7 +52,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
                         + event.getEntity().getClass().getSimpleName() + "', but no tenant is set");
             }
 
-            Integer currentTenantId = currentTenant.get();
+            Long currentTenantId = currentTenant.get();
             hibernateEventPropertyUpdater.updateProperty(event, MultiTenantAST.TENANT_ID_FIELD_NAME, currentTenantId);
             MultiTenantDomainClass entity = (MultiTenantDomainClass) event.getEntity();
             entity.setTenantId(currentTenantId);
@@ -68,9 +68,9 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     @Override
     public boolean onPreUpdate(PreUpdateEvent event) {
         if (isMultiTenantEntity(event.getEntity())) {
-            Integer currentTenantId = currentTenant.get();
+            Long currentTenantId = currentTenant.get();
             MultiTenantDomainClass entity = (MultiTenantDomainClass) event.getEntity();
-            Integer entityTenantId = entity.getTenantId();
+            Long entityTenantId = entity.getTenantId();
             if (currentTenantId != null && !currentTenantId.equals(entityTenantId)) {
                 throw new TenantSecurityException("Tried to update '" + event.getEntity() + "' with another tenant id. Expected "
                         + currentTenantId + ", found " + entityTenantId, currentTenantId, entityTenantId);
@@ -85,7 +85,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         Object LoadedEntity = event.getResult();
         if (LoadedEntity != null && isMultiTenantEntity(LoadedEntity)) {
             MultiTenantDomainClass entity = (MultiTenantDomainClass) LoadedEntity;
-            Integer currentTenantId = currentTenant.get();
+            Long currentTenantId = currentTenant.get();
 
             // We won't be able to extract tenant-id from an association fetch.
             // TODO: This is a bit scary as it means that we potentially can load entities from
@@ -97,7 +97,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         }
     }
 
-    protected boolean allowEntityLoad(Integer currentTenantId, MultiTenantDomainClass entity) {
+    protected boolean allowEntityLoad(Long currentTenantId, MultiTenantDomainClass entity) {
         if (currentTenantId != null) {
             if (belongsToCurrentTenant(currentTenantId, entity)) {
                 return true;
@@ -127,7 +127,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         //                MultiTenantDomainClass tenantEntity = (MultiTenantDomainClass) entity;
         //                System.out.println(" -> post load tenant id: " + tenantEntity.getTenantId());
         //
-        //                Integer tenantEntityId = tenantEntity.getTenantId();
+        //                Long tenantEntityId = tenantEntity.getTenantId();
         //                if (!currentTenant.get().equals(tenantEntityId)) {
         //                    System.out.println(" -> Warning! Detected another tenant");
         //                    throw new TenantSecurityException("Tried to load '" + tenantEntity + "' with another tenant id. Expected "
@@ -143,7 +143,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         boolean shouldVetoDelete = false;
         if (isMultiTenantEntity(event.getEntity())) {
             MultiTenantDomainClass tenantEntity = (MultiTenantDomainClass) event.getEntity();
-            Integer currentTenantId = currentTenant.get();
+            Long currentTenantId = currentTenant.get();
 
             if (currentTenantId != null && !belongsToCurrentTenant(currentTenantId, tenantEntity)) {
                 log.warn("Tenant {} tried to delete another tenants entity {}", currentTenant.get(), tenantEntity);
@@ -154,8 +154,8 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
         return shouldVetoDelete;
     }
 
-    protected boolean belongsToCurrentTenant(Integer currentTenantId, MultiTenantDomainClass entity) {
-        Integer entityTenantId = entity.getTenantId();
+    protected boolean belongsToCurrentTenant(Long currentTenantId, MultiTenantDomainClass entity) {
+        Long entityTenantId = entity.getTenantId();
         return currentTenantId != null && currentTenantId.equals(entityTenantId);
     }
 

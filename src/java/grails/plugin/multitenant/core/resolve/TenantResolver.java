@@ -23,6 +23,6 @@ public interface TenantResolver {
      * @return tenant id, don't return 'null' unless you know what you're doing
      * @throws TenantResolveException
      */
-    Integer resolve(HttpServletRequest request) throws TenantResolveException;
+    Long resolve(HttpServletRequest request) throws TenantResolveException;
 
 }

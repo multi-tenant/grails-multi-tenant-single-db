@@ -20,7 +20,7 @@ public class TenantMDC {
 
     @Consuming(CurrentTenant.TENANT_AFTER_CHANGE_EVENT)
     public void currentTenantUpdated(Event event) {
-        Integer tenantId = (Integer) event.getPayload();
+        Long tenantId = (Long) event.getPayload();
         String tenant = (tenantId == null) ? "no-tenant" : "tenant-" + tenantId;
         MDC.put("tenant", tenant);
     }
