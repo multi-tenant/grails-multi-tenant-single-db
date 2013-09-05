@@ -16,7 +16,7 @@ class TenantHibernateFilterEnablerUnitSpec extends UnitSpec {
 
     TenantHibernateFilterEnabler filterEnabler
     FilterDefinition filterDefinition = new FilterDefinition (
-        "multiTenantHibernateFilter", ":tenantId = tennatId", [ "tenantId": "java.lang.Integer" ])
+        "multiTenantHibernateFilter", ":tenantId = tennatId", [ "tenantId": "java.lang.Long" ])
 
     def setup() {
         filterEnabler = new TenantHibernateFilterEnabler()

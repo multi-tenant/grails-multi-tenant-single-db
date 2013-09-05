@@ -17,6 +17,6 @@ public interface TenantRepository {
      * @return The tenant instance associated with the tenant id
      * @throws TenantNotFoundException
      */
-    Tenant findByTenantId(Integer tenantId) throws TenantNotFoundException;
+    Tenant findByTenantId(Long tenantId) throws TenantNotFoundException;
 
 }

@@ -10,11 +10,11 @@ import grails.plugins.hawkeventing.EventBroker;
  */
 public class CurrentTenantThreadLocal implements CurrentTenant {
 
-    private static ThreadLocal<Integer> currentTenant = new ThreadLocal<Integer>();
+    private static ThreadLocal<Long> currentTenant = new ThreadLocal<Long>();
     private EventBroker eventBroker;
 
     @Override
-    public Integer get() {
+    public Long get() {
         return currentTenant.get();
     }
 
@@ -24,7 +24,7 @@ public class CurrentTenantThreadLocal implements CurrentTenant {
     }
 
     @Override
-    public void set(Integer tenantId) {
+    public void set(Long tenantId) {
         eventBroker.publish(TENANT_BEFORE_CHANGE_EVENT, tenantId);
         currentTenant.set(tenantId);
         eventBroker.publish(TENANT_AFTER_CHANGE_EVENT, tenantId);

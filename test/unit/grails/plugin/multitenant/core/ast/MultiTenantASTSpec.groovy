@@ -15,7 +15,7 @@ class MultiTenantASTSpec extends UnitSpec {
         expect:
         SampleDomainClass.declaredFields.find { Field field ->
             field.name == "tenantId"
-            field.type == Integer
+            field.type == Long
         }
     }
 

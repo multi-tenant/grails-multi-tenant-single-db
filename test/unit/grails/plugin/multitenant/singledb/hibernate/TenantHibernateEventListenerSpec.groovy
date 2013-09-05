@@ -135,5 +135,5 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
 }
 
 class DummyEntity implements MultiTenantDomainClass {
-    Integer tenantId
+    Long tenantId
 }

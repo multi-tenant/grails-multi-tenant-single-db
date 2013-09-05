@@ -16,6 +16,6 @@ public interface Tenant {
      * GORM to mistake it for a property and fail.
      * @return tenant id, will often be a database PK
      */
-    Integer tenantId();
+    Long tenantId();
 
 }

@@ -71,8 +71,8 @@ class MtSingleDbPluginSupportSpec extends UnitSpec {
     }
 
     private class MetaTenant implements Tenant {
-        Integer id
-        Integer tenantId = 123
-        Integer tenantId() { tenantId }
+        Long id
+        Long tenantId = 123
+        Long tenantId() { tenantId }
     }
 }

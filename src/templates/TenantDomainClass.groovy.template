@@ -15,7 +15,7 @@ class ${tenantDomainClassName} implements Tenant {
         name blank: false, unique: true
     }
 
-    Integer tenantId() {
+    Long tenantId() {
         id
     }
 }

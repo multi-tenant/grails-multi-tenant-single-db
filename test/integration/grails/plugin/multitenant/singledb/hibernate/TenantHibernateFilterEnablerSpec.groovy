@@ -47,6 +47,6 @@ class TenantHibernateFilterEnablerSpec extends IntegrationSpec {
         enabledFilter.getParameter("tenantId") == tenantId
 
         where:
-        tenantId << [ -1, 0, 1 ]
+        tenantId << [ -1L, 0L, 1L ]
     }
 }

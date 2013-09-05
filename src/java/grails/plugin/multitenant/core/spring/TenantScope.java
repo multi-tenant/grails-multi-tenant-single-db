@@ -30,7 +30,7 @@ public class TenantScope implements Scope, ApplicationContextAware {
     private CurrentTenant currentTenant;
     private ApplicationContext applicationContext;
 
-    private ConcurrentHashMap<Integer, Map<String, Object>> tenantBeanCache = new ConcurrentHashMap<Integer, Map<String, Object>>(50);
+    private ConcurrentHashMap<Long, Map<String, Object>> tenantBeanCache = new ConcurrentHashMap<Long, Map<String, Object>>(50);
 
     /**
      * Return the object with the given name from the underlying scope, creating
@@ -38,9 +38,9 @@ public class TenantScope implements Scope, ApplicationContextAware {
      */
     @Override
     public Object get(String name, ObjectFactory<?> objectFactory) {
-        Integer tenantId = currentTenant.get();
+        Long tenantId = currentTenant.get();
         if (tenantId == null) { // ConcurrentHashMap does not allow nulls, so mapping to -1
-            tenantId = -1;
+            tenantId = -1L;
         }
         Map<String, Object> beanCache = getBeanCacheForTenant(tenantId);
         if (!beanCache.containsKey(name)) {
@@ -50,7 +50,7 @@ public class TenantScope implements Scope, ApplicationContextAware {
         return beanCache.get(name);
     }
 
-    private Map<String, Object> getBeanCacheForTenant(Integer tenantId) {
+    private Map<String, Object> getBeanCacheForTenant(Long tenantId) {
         if (!tenantBeanCache.containsKey(tenantId)) {
             tenantBeanCache.put(tenantId, new ConcurrentHashMap<String, Object>(10));
         }

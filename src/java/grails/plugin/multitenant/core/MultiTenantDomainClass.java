@@ -13,8 +13,8 @@ package grails.plugin.multitenant.core;
  */
 public interface MultiTenantDomainClass {
 
-    Integer getTenantId();
+    Long getTenantId();
 
-    void setTenantId(Integer tenantId);
+    void setTenantId(Long tenantId);
 
 }

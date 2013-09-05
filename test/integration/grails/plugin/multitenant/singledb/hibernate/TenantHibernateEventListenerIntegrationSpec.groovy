@@ -164,7 +164,7 @@ class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
 //        assert session.createSQLQuery("insert into demo_pet_owner(version, name, tenant_id) values(0, 'Mickey Mouse', 567)").executeUpdate() == 1
 //
 //        when:
-//        Integer mickeyId = Tenant.withTenantId(567) {
+//        Long mickeyId = Tenant.withTenantId(567) {
 //            DemoPetOwner.findByName("Mickey Mouse")?.id
 //        }
 //

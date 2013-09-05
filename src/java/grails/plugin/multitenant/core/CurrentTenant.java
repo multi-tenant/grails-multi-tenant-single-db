@@ -10,9 +10,9 @@ public interface CurrentTenant {
     String TENANT_BEFORE_CHANGE_EVENT = "multitenant.set-current-tenant.before";
     String TENANT_AFTER_CHANGE_EVENT = "multitenant.set-current-tenant.after";
 
-    Integer get();
+    Long get();
 
-    void set(Integer tenantId);
+    void set(Long tenantId);
 
     boolean isSet();
 
