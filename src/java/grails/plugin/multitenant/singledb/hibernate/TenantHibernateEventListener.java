@@ -47,6 +47,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
     @Override
     public boolean onPreInsert(PreInsertEvent event) {
         if (isMultiTenantEntity(event.getEntity())) {
+            
             if (!currentTenant.isSet()) {
                 throw new NoCurrentTenantException("Tried to save multi-tenant domain class '"
                         + event.getEntity().getClass().getSimpleName() + "', but no tenant is set");
