@@ -7,6 +7,13 @@ grails.project.dependency.resolution = {
 
 	repositories {
 		grailsCentral()
+                mavenLocal()
+	}
+
+	dependencies {
+		test('org.spockframework:spock-grails-support:0.7-groovy-2.0') {
+			excludes 'groovy', 'groovy-all'
+		}
 	}
 
 	plugins {
@@ -27,7 +34,7 @@ grails.project.dependency.resolution = {
 		}
 
 		test(':spock:0.7') {
-			excludes 'svn'
+			excludes 'svn', 'spock-grails-support'
 			export = false
 		}
 	}
