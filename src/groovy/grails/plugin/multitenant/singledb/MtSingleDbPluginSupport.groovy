@@ -13,13 +13,14 @@ import grails.plugin.multitenant.singledb.hibernate.TenantHibernateEventListener
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateEventProxy
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterEnabler
-
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.config.CustomScopeConfigurer
 import org.springframework.context.ApplicationContext
 import org.springframework.orm.hibernate3.FilterDefinitionFactoryBean
+
+import static org.codehaus.groovy.grails.commons.GrailsDomainClassProperty.DEFAULT_DATA_SOURCE
 
 /**
  * Used by the plugin descriptor.
@@ -37,6 +38,14 @@ class MtSingleDbPluginSupport {
     static doWithSpring = { GrailsApplication application ->
 
         def multiTenantConfig = application.config?.multiTenant
+
+		String dataSource = application.config.hibernate.hijacker.datasource ?: DEFAULT_DATA_SOURCE
+
+		String sessionFactoryBeanName = 'sessionFactory'
+
+		if (dataSource != DEFAULT_DATA_SOURCE) {
+			sessionFactoryBeanName += "_$dataSource"
+		}
 
         // Default CurrentTenant implementation storing
         // the current tenant id in a ThreadLocal variable.
@@ -76,7 +85,7 @@ class MtSingleDbPluginSupport {
         tenantHibernateFilterEnabler(TenantHibernateFilterEnabler) {
             multiTenantHibernateFilter = ref("multiTenantHibernateFilter")
             currentTenant = ref("currentTenant")
-            sessionFactory = ref("sessionFactory")
+            sessionFactory = ref(sessionFactoryBeanName)
         }
 
         // Inserts tenantId, makes sure that we're not

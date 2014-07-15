@@ -29,7 +29,7 @@ grails.project.dependency.resolution = {
 			excludes 'svn'
 		}
 
-		compile(':hibernate-hijacker:0.8.1') {
+		compile(':hibernate-hijacker:0.8.2-SNAPSHOT') {
 			excludes 'svn'
 		}
 
