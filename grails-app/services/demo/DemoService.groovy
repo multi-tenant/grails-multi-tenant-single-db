@@ -6,6 +6,7 @@ package demo
  * @author Kim A. Betti <kim@developer-b.com>
  */
 class DemoService {
+	static scope = 'tenant'
 
     static transactional = false
 
