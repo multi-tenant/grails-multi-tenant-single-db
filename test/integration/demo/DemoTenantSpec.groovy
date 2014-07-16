@@ -4,6 +4,7 @@ import grails.plugin.spock.IntegrationSpec
 import grails.plugins.hawkeventing.Event
 import grails.plugins.hawkeventing.EventBroker
 import grails.plugins.hawkeventing.EventConsumer
+import org.springframework.transaction.support.DefaultTransactionDefinition
 
 /**
  * @author Kim A. Betti
@@ -11,6 +12,18 @@ import grails.plugins.hawkeventing.EventConsumer
 class DemoTenantSpec extends IntegrationSpec {
 
     EventBroker eventBroker
+
+    // Workaround for GRAILS-9771
+    def transactionManager_secondary
+    def transactionStatus
+
+    def setup() {
+        transactionStatus = transactionManager_secondary.getTransaction(new DefaultTransactionDefinition())
+    }
+
+    def cleanup() {
+        transactionManager_secondary.rollback(transactionStatus)
+    }
 
     def "New tenants triggers events" () {
         given: "Subscription to the expected event"

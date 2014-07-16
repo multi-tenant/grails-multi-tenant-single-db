@@ -10,8 +10,6 @@ import org.springframework.dao.DataIntegrityViolationException
  */
 class DemoProductSpec extends IntegrationSpec {
 
-    static transactional = false
-
     def "different tenants can use the same value for unique properties"() {
         when:
         Tenant.withTenantId(1) {

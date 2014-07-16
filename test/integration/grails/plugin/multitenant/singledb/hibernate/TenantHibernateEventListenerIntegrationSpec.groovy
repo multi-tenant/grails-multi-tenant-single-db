@@ -17,7 +17,7 @@ import demo.DemoProduct
  */
 class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
 
-    SessionFactory sessionFactory
+    SessionFactory sessionFactory_secondary
 
     def "tenant id should be injected"() {
         when:
@@ -138,7 +138,7 @@ class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
 
     def "plain old sql will not be filtered"() {
         given: "the current Hibernate session to execute sql"
-        Session currentSession = sessionFactory.getCurrentSession()
+        Session currentSession = sessionFactory_secondary.getCurrentSession()
 
         and: "a product"
         DemoProduct nail = Tenant.withTenantId(123) {

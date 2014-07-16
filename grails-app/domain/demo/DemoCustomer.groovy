@@ -7,4 +7,9 @@ package demo
  */
 class DemoCustomer {
     String name
+
+    static mapping = {
+        datasource 'secondary'
+    }
+
 }

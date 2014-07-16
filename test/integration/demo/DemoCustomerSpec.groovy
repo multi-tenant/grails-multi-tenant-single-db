@@ -8,10 +8,6 @@ import grails.plugin.spock.IntegrationSpec
  * @author Kim A. Betti
  */
 class DemoCustomerSpec extends IntegrationSpec {
-    //FIXME This used to work? I think this should work without needing to turn transactional off but it does not.
-    //if its transactional then the session in the withThisTenant cannot see the customer
-    static transactional = false
-
     def testTenant
 
     def setup() {

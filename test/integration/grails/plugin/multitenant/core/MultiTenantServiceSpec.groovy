@@ -5,6 +5,7 @@ import grails.plugin.spock.IntegrationSpec
 import demo.DemoAnimal
 import demo.DemoProduct
 import demo.DemoTenant
+import org.springframework.transaction.support.DefaultTransactionDefinition
 
 /**
  * @author Kim A. Betti
@@ -14,9 +15,18 @@ class MultiTenantServiceSpec extends IntegrationSpec {
     def testTenant
     def multiTenantService
 
+	// Workaround for GRAILS-9771
+    def transactionManager_secondary
+    def transactionStatus
+
     def setup() {
+        transactionStatus = transactionManager_secondary.getTransaction(new DefaultTransactionDefinition())
         testTenant = new DemoTenant(name: "test tenant", domain: "test.com")
         testTenant.save flush: true, failOnError: true
+    }
+
+    def cleanup() {
+        transactionManager_secondary.rollback(transactionStatus)
     }
 
     def "checked exceptions should roll back transaction"() {

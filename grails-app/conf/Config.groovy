@@ -22,6 +22,6 @@ grails.views.gsp.encoding = "UTF-8"
 
 hibernate {
     hijacker {
-        datasource = 'DEFAULT'
+        datasource = 'secondary'
     }
 }

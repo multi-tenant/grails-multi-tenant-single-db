@@ -7,6 +7,10 @@ class DemoAnimal {
 
     static belongsTo = [ owner: DemoPetOwner ]
 
+    static mapping = {
+        datasource 'secondary'
+    }
+
     String name
 
     static constraints = {

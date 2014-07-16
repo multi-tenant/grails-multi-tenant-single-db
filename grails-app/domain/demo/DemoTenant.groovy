@@ -15,6 +15,11 @@ class DemoTenant implements Tenant {
         domain blank: false, unique: true
     }
 
+    static mapping = {
+        datasource 'secondary'
+    }
+
+
     Integer tenantId() {
         id
     }

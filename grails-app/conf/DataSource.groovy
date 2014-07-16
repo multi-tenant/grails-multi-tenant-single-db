@@ -1,4 +1,4 @@
-dataSource {
+dataSource_secondary {
 	pooled = true
 	driverClassName = 'org.h2.Driver'
 	username = 'sa'

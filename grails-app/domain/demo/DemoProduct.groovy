@@ -10,4 +10,9 @@ class DemoProduct {
     static constraints = {
         name unique: 'tenantId', blank: false
     }
+
+    static mapping = {
+        datasource 'secondary'
+    }
+
 }

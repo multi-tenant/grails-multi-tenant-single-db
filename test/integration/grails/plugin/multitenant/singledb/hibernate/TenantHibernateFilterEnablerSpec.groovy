@@ -3,20 +3,24 @@ package grails.plugin.multitenant.singledb.hibernate
 import grails.plugin.spock.IntegrationSpec
 import grails.plugins.hawkeventing.BaseEvent
 import grails.plugins.hawkeventing.Event
-
+import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsHibernateUtil
 import org.hibernate.Filter
 import org.hibernate.SessionFactory
 import org.hibernate.classic.Session
 import org.hibernate.engine.FilterDefinition
 import org.hibernate.impl.FilterImpl
-
 import spock.lang.Unroll
 
 class TenantHibernateFilterEnablerSpec extends IntegrationSpec {
 
     FilterDefinition multiTenantHibernateFilter
     TenantHibernateFilterEnabler tenantHibernateFilterEnabler
-    SessionFactory sessionFactory
+    SessionFactory sessionFactory_secondary
+
+    def setup() {
+        def session = sessionFactory_secondary.currentSession
+        GrailsHibernateUtil.enableDynamicFilterEnablerIfPresent(sessionFactory_secondary, session)
+    }
 
     def "a null tenant id disables the filter"() {
         given:
@@ -26,7 +30,7 @@ class TenantHibernateFilterEnablerSpec extends IntegrationSpec {
         tenantHibernateFilterEnabler.currentTenantUpdated(updatedTenantEvent)
 
         then:
-        Session session = sessionFactory.getCurrentSession()
+        Session session = sessionFactory_secondary.currentSession
         String multiTenantFilterName = multiTenantHibernateFilter.filterName
         Filter enabledFilter = session.getEnabledFilter(multiTenantFilterName)
         enabledFilter == null
@@ -39,14 +43,14 @@ class TenantHibernateFilterEnablerSpec extends IntegrationSpec {
         tenantHibernateFilterEnabler.currentTenantUpdated(updatedTenantEvent)
 
         then:
-        Session session = sessionFactory.getCurrentSession()
+        Session session = sessionFactory_secondary.currentSession
         String multiTenantFilterName = multiTenantHibernateFilter.filterName
-        FilterImpl enabledFilter = session.getEnabledFilter(multiTenantFilterName)
+        FilterImpl enabledFilter = session.getEnabledFilter(multiTenantFilterName) as FilterImpl
 
         and:
         enabledFilter.getParameter("tenantId") == tenantId
 
         where:
-        tenantId << [ -1, 0, 1 ]
+        tenantId << [-1, 0, 1]
     }
 }
