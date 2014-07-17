@@ -1,6 +1,6 @@
 package demo
 
-import grails.plugin.spock.IntegrationSpec
+
 import grails.plugins.hawkeventing.Event
 import grails.plugins.hawkeventing.EventBroker
 import grails.plugins.hawkeventing.EventConsumer
@@ -8,7 +8,14 @@ import grails.plugins.hawkeventing.EventConsumer
 /**
  * @author Kim A. Betti
  */
-class DemoTenantSpec extends IntegrationSpec {
+import grails.test.mixin.TestFor
+import spock.lang.Specification
+
+/**
+ * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ */
+@TestFor(DemoTenant)
+class DemoTenantSpec extends Specification {
 
     EventBroker eventBroker
 

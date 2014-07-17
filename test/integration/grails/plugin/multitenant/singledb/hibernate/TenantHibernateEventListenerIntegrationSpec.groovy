@@ -2,7 +2,7 @@ package grails.plugin.multitenant.singledb.hibernate
 
 import grails.plugin.multitenant.core.Tenant
 import grails.plugin.multitenant.core.exception.TenantSecurityException
-import grails.plugin.spock.IntegrationSpec
+
 
 import org.hibernate.Session
 import org.hibernate.SessionFactory
@@ -15,7 +15,14 @@ import demo.DemoProduct
  * and side effects of the Hibernate filters and the plugin.
  * @author Kim A. Betti
  */
-class TenantHibernateEventListenerIntegrationSpec extends IntegrationSpec {
+import grails.test.mixin.TestFor
+import spock.lang.Specification
+
+/**
+ * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ */
+//@TestFor(TenantHibernateEventListenerIntegration)
+class TenantHibernateEventListenerIntegrationSpec extends Specification {
 
     SessionFactory sessionFactory
 
