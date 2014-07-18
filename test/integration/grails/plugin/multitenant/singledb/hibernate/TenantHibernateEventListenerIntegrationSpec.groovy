@@ -15,13 +15,8 @@ import demo.DemoProduct
  * and side effects of the Hibernate filters and the plugin.
  * @author Kim A. Betti
  */
-import grails.test.mixin.TestFor
-import spock.lang.Specification
 
-/**
- * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
- */
-//@TestFor(TenantHibernateEventListenerIntegration)
+import spock.lang.*
 class TenantHibernateEventListenerIntegrationSpec extends Specification {
 
     SessionFactory sessionFactory

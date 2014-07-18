@@ -6,14 +6,12 @@
 
 package demo
 import grails.plugin.multitenant.core.Tenant
-
-import grails.test.mixin.TestFor
-import spock.lang.Specification
+import spock.lang.*
 /**
  *
  * @author Omasirichukwu
  */
-@TestFor(AnotherDemoService)
+
 class AnotherDemoServiceSpec extends Specification {
      def anotherDemoService
      

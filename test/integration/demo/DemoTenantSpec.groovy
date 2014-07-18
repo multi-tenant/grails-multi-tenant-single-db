@@ -8,13 +8,12 @@ import grails.plugins.hawkeventing.EventConsumer
 /**
  * @author Kim A. Betti
  */
-import grails.test.mixin.TestFor
-import spock.lang.Specification
+import spock.lang.*
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
-@TestFor(DemoTenant)
+
 class DemoTenantSpec extends Specification {
 
     EventBroker eventBroker

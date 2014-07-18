@@ -7,14 +7,12 @@ import grails.plugin.multitenant.core.Tenant
  * code affects regular domain classes.
  * @author Kim A. Betti
  */
-import grails.test.mixin.TestFor
-import spock.lang.Specification
+import spock.lang.*
 
 /**
  * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
  */
-@TestFor(DemoService)
-//@TestFor(AnotherDemoService)
+
 class DemoServiceSpec extends Specification {
 
     def demoService
@@ -22,6 +20,7 @@ class DemoServiceSpec extends Specification {
 
     def "tenant scope is working from config"() {
         given: "each tenant set a val on service"
+            
             Tenant.withTenantId 1, {
                 assert "none" == demoService.touchedByTenant
                 demoService.touchedByTenant = "Tenant-1"

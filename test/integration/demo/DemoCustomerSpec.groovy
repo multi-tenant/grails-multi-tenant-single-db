@@ -1,42 +1,37 @@
 package demo
 
-import grails.test.mixin.TestFor
-import spock.lang.Specification
+import spock.lang.*
 
 /**
- * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ * Mostly as a smoke test to detect if any multi-tenant
+ * code affects regular domain classes.
+ * @author Kim A. Betti
  */
-@TestFor(DemoCustomer)
 class DemoCustomerSpec extends Specification {
-    def tenant
-    
-    def setup() {
-        tenant = new DemoTenant(name:'Demo Tenant',domain:'demotenant.org')
-        tenant.save(failOnError:true,flush:true)
-        def customer = new DemoCustomer(name:'Demo Customer')
-        customer.save(failOnError:true,flush:true)
-    }
+    //FIXME This used to work? I think this should work without needing to turn transactional off but it does not.
+    //if its transactional then the session in the withThisTenant cannot see the customer
+    static transactional = false
 
-    
+    def testTenant
+
+    def setup() {
+        testTenant = new DemoTenant(name: "DemoCustomerSpec tenant", domain: "DemoCustomerSpec.com")
+        testTenant.save(flush: true, failOnError: true)
+    }
 
     def "instances are available for tenants"() {
         given: "a customer instance created outside a tenant namespace"
-            
-                
+        def c = new DemoCustomer(name: "DemoCustomerSpec A").save(failOnError: true, flush: true)
+        assert c
+        println c.id
+
         expect: "we should be able to look up the customer inside a tenant namespace"
-            
-            assert DemoCustomer.findByName("Demo Customer")
-            tenant.withThisTenant{
-                DemoCustomer.get(1)
-            }
-        
-            tenant.withThisTenant{
-                DemoCustomer.findByName("Demo Customer")
-            }
-    }
-	
-	def cleanup() {
-		tenant = null
-		customer = null
+        assert DemoCustomer.findByName("DemoCustomerSpec A")
+        testTenant.withThisTenant {
+            DemoCustomer.get(1)
+        }
+        testTenant.withThisTenant {
+            DemoCustomer.findByName("DemoCustomerSpec A")
+        }
     }
 }
