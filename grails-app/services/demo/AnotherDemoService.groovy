@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Scope
 class AnotherDemoService {
 
     static transactional = false
-    static scope = "tenant"
+    static scope = "prototype"
 
     def touchedByTenant = "none"
 }
