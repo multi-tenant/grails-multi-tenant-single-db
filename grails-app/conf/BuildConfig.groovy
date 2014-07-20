@@ -59,11 +59,11 @@ grails.project.dependency.resolution = {
 		compile (":hibernate4:4.3.5.4") { export = false }
                 
                 compile ':cache:1.1.6'
-		compile(':hawk-eventing:0.5.1') {
+		compile(':hawk-eventing:0.5.2') {
 			excludes 'svn'
 		}
 
-		compile(':hibernate-hijacker:0.8.1') {
+		compile(':hibernate-hijacker:0.8.2') {
 			excludes 'svn'
 		}
                 
