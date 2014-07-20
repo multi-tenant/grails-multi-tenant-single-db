@@ -8,8 +8,8 @@ import grails.plugins.hawkeventing.annotation.HawkEventConsumer;
 import java.util.Set;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
-import org.hibernate.engine.FilterDefinition;
+import org.hibernate.Session;
+import org.hibernate.engine.spi.FilterDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**

@@ -8,9 +8,9 @@ import grails.plugin.multitenant.core.exception.TenantSecurityException
 import grails.test.mixin.TestFor
 import spock.lang.Specification
 
-import org.hibernate.event.PreDeleteEvent
-import org.hibernate.event.PreInsertEvent
-import org.hibernate.event.PreUpdateEvent
+import org.hibernate.event.spi.PreDeleteEvent
+import org.hibernate.event.spi.PreInsertEvent
+import org.hibernate.event.spi.PreUpdateEvent
 
 import spock.lang.Unroll
 

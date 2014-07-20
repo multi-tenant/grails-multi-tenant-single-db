@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.engine.FilterDefinition;
+import org.hibernate.engine.spi.FilterDefinition;
 import org.hibernate.mapping.PersistentClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,10 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
     private void addDomainFilter(PersistentClass persistentClass) {
         String filterName = multiTenantHibernateFilter.getFilterName();
         String condition = multiTenantHibernateFilter.getDefaultFilterCondition();
-        persistentClass.addFilter(filterName, condition);
+        //addFilter(String name, String condition, boolean autoAliasInjection, Map<String,String> aliasTableMap, Map<String,String> aliasEntityMap) 
+        java.util.HashMap aliasTableMap = new java.util.HashMap(); // empty map :(
+        java.util.HashMap aliasEntityMap = new java.util.HashMap(); // empty map :(
+        persistentClass.addFilter(filterName, condition,false,aliasTableMap,aliasEntityMap);
     }
 
     public void setMultiTenantHibernateFilter(FilterDefinition multiTenantHibernateFilter) {

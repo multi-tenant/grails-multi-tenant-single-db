@@ -7,8 +7,8 @@ import grails.plugins.hawkeventing.BaseEvent
 import grails.plugins.hawkeventing.Event
 
 import org.hibernate.Filter
-import org.hibernate.classic.Session
-import org.hibernate.engine.FilterDefinition
+import org.hibernate.Session
+import org.hibernate.engine.spi.FilterDefinition
 
 /**
  * @author Kim A. Betti
