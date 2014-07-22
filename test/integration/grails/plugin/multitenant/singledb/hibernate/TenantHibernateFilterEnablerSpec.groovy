@@ -5,9 +5,8 @@ import grails.plugins.hawkeventing.Event
 
 import org.hibernate.Filter
 import org.hibernate.SessionFactory
-import org.hibernate.Session
-import org.hibernate.engine.spi.FilterDefinition
-
+import org.hibernate.classic.Session
+import org.hibernate.engine.FilterDefinition
 import org.hibernate.impl.FilterImpl
 
 import spock.lang.Unroll

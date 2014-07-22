@@ -36,8 +36,6 @@ class ScopedServicesSpec extends Specification {
                 "Tenant-2" == demoService.touchedByTenant
             }
     }
-    
-    // TRY TO AVOID STORING VARS IN SERVICES!!!
 
 //    def "tenant scope is working in service"() {
 //        given: "each tenant set a val on service"

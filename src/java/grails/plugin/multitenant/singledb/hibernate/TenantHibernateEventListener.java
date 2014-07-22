@@ -8,16 +8,16 @@ import grails.plugin.multitenant.core.exception.NoCurrentTenantException;
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
 
 import org.hibernate.HibernateException;
-import org.hibernate.event.spi.LoadEvent;
-import org.hibernate.event.spi.LoadEventListener;
-import org.hibernate.event.spi.PostLoadEvent;
-import org.hibernate.event.spi.PostLoadEventListener;
-import org.hibernate.event.spi.PreDeleteEvent;
-import org.hibernate.event.spi.PreDeleteEventListener;
-import org.hibernate.event.spi.PreInsertEvent;
-import org.hibernate.event.spi.PreInsertEventListener;
-import org.hibernate.event.spi.PreUpdateEvent;
-import org.hibernate.event.spi.PreUpdateEventListener;
+import org.hibernate.event.LoadEvent;
+import org.hibernate.event.LoadEventListener;
+import org.hibernate.event.PostLoadEvent;
+import org.hibernate.event.PostLoadEventListener;
+import org.hibernate.event.PreDeleteEvent;
+import org.hibernate.event.PreDeleteEventListener;
+import org.hibernate.event.PreInsertEvent;
+import org.hibernate.event.PreInsertEventListener;
+import org.hibernate.event.PreUpdateEvent;
+import org.hibernate.event.PreUpdateEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -46,24 +46,22 @@ grails.project.dependency.resolution = {
 
             //compile "org.springframework:spring-orm:$springVersion"
             //test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
-           // compile("org.grails:grails-datastore-gorm-hibernate4:3.0.0.RELEASE")
         }
 
 	plugins {
-		build ':release:2.2.1', ':rest-client-builder:1.0.3'{
+		build ':release:2.2.1', ':rest-client-builder:1.0.3', {
 			export = false
 		}
 //                build ":tomcat:7.0.53"
 		provided ':webxml:1.4.1'
 
-		compile (":hibernate4:4.3.5.4") { export = false }
-                
+		compile(":hibernate:3.6.10.15") { export = false }
                 compile ':cache:1.1.6'
-		compile(':hawk-eventing:0.5.2') {
+		compile(':hawk-eventing:0.5.1') {
 			excludes 'svn'
 		}
 
-		compile(':hibernate-hijacker:0.8.2') {
+		compile(':hibernate-hijacker:0.8.1') {
 			excludes 'svn'
 		}
                 
