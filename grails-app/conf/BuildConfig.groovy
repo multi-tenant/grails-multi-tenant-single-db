@@ -1,10 +1,6 @@
-grails.servlet.version = "3.0" // Change depending on target container compliance (2.5 or 3.0)
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-grails.project.work.dir = "target/work"
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
 
 //
 //grails.project.fork = [
@@ -22,7 +18,6 @@ grails.project.source.level = 1.6
 //]
 
 grails.project.dependency.resolver = "maven" // or ivy
-
 grails.project.dependency.resolution = {
 
 	// inherit Grails' default dependencies
@@ -33,11 +28,9 @@ grails.project.dependency.resolution = {
 	log 'warn'
 
 	repositories {
-		grailsPlugins()
-                grailsHome()
-                mavenLocal()
-                grailsCentral()
-                mavenCentral()
+            grailsCentral()
+            mavenLocal()
+            mavenCentral()
 	}
         dependencies {
             // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
@@ -49,9 +42,9 @@ grails.project.dependency.resolution = {
         }
 
 	plugins {
-		build ':release:2.2.1', ':rest-client-builder:1.0.3', {
-			export = false
-		}
+		build(":release:3.0.1",":rest-client-builder:1.0.3") {
+                    export = false
+                }
 //                build ":tomcat:7.0.53"
 		provided ':webxml:1.4.1'
 
