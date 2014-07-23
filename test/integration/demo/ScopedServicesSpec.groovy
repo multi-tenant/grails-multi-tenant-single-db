@@ -22,41 +22,37 @@ class ScopedServicesSpec extends Specification {
             }
 
             Tenant.withTenantId 2, {
-                assert "Tenant-1" == demoService.touchedByTenant
+                assert "none" == demoService.touchedByTenant
                 demoService.touchedByTenant = "Tenant-2"
             }
 
         expect: "we should get values that were set"
             Tenant.withTenantId 1, {
-                println demoService.touchedByTenant
-                "Tenant-2" == demoService.touchedByTenant
+                "Tenant-1" == demoService.touchedByTenant
             }
             Tenant.withTenantId 2, {
-                println demoService.touchedByTenant
                 "Tenant-2" == demoService.touchedByTenant
             }
     }
 
-//    def "tenant scope is working in service"() {
-//        given: "each tenant set a val on service"
-//            Tenant.withTenantId 1, {
-//                assert "none" == anotherDemoService.touchedByTenant
-//                anotherDemoService.touchedByTenant = "Tenant-1"
-//            }
-//
-//            Tenant.withTenantId 2, {
-//                assert "none" == anotherDemoService.touchedByTenant
-//                anotherDemoService.touchedByTenant = "Tenant-2"
-//            }
-//
-//        expect: "we should get values that were set"
-//            Tenant.withTenantId 1, {
-//                println anotherDemoService.touchedByTenant
-//                "Tenant-1" == anotherDemoService.touchedByTenant
-//            }
-//            Tenant.withTenantId 2, {
-//                println anotherDemoService.touchedByTenant
-//                "Tenant-2" == anotherDemoService.touchedByTenant
-//            }
-//    }
+    def "tenant scope is working in service"() {
+        given: "each tenant set a val on service"
+            Tenant.withTenantId 1, {
+                assert "none" == anotherDemoService.touchedByTenant
+                anotherDemoService.touchedByTenant = "Tenant-1"
+            }
+
+            Tenant.withTenantId 2, {
+                assert "none" == anotherDemoService.touchedByTenant
+                anotherDemoService.touchedByTenant = "Tenant-2"
+            }
+
+        expect: "we should get values that were set"
+            Tenant.withTenantId 1, {
+                "Tenant-1" == anotherDemoService.touchedByTenant
+            }
+            Tenant.withTenantId 2, {
+                "Tenant-2" == anotherDemoService.touchedByTenant
+            }
+    }
 }
