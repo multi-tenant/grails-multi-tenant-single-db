@@ -9,7 +9,6 @@ log4j = {
 }
 
 multiTenant {
-    perTenantBeans = [ "demoService" ]
     tenantClass = demo.DemoTenant
 }
 

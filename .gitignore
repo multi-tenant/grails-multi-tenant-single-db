@@ -14,7 +14,8 @@ stacktrace.log
 .classpath
 .project
 .settings
-.idea
+/.idea
 *.iml
 *.ipr
 .grails
+/out
