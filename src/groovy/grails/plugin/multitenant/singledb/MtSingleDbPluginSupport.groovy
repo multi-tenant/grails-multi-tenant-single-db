@@ -6,9 +6,7 @@ import grails.plugin.multitenant.core.Tenant
 import grails.plugin.multitenant.core.exception.TenantException
 import grails.plugin.multitenant.core.impl.CurrentTenantThreadLocal
 import grails.plugin.multitenant.core.servlet.CurrentTenantServletFilter
-import grails.plugin.multitenant.core.spring.ConfiguredTenantScopedBeanProcessor
 import grails.plugin.multitenant.core.spring.CurrentTenantAwarePostProcessor
-import grails.plugin.multitenant.core.spring.TenantScope
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateEventListener
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateEventProxy
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator
@@ -17,7 +15,6 @@ import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterEnabler
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.config.CustomScopeConfigurer
 import org.springframework.context.ApplicationContext
 import org.springframework.orm.hibernate3.FilterDefinitionFactoryBean
 
@@ -47,21 +44,6 @@ class MtSingleDbPluginSupport {
         // Injects currentTenant into beans implementing CurrentTenantAware
         currentTenantAwarePostProcessor(CurrentTenantAwarePostProcessor) {
             currentTenant = ref("currentTenant")
-        }
-
-        // A custom Spring scope for beans.
-        tenantScope(TenantScope) {
-            currentTenant = ref("currentTenant")
-        }
-
-        // Set per-tenant beans up in the custom tenant scope
-        configuredTenantBeanProcessor(ConfiguredTenantScopedBeanProcessor) {
-            perTenantBeans = multiTenantConfig?.perTenantBeans ?: []
-        }
-
-        // Responsible for registering the custom 'tenant' scope with Spring.
-        tenantScopeConfigurer(CustomScopeConfigurer) {
-            scopes = [ tenant: ref("tenantScope") ]
         }
 
         // Definition of the Hibernate filter making sure that
