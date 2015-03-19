@@ -2,7 +2,7 @@ package demo
 
 import grails.plugin.multitenant.core.MultiTenantDomainClass
 import grails.plugin.multitenant.core.Tenant
-import grails.plugin.spock.IntegrationSpec
+import spock.lang.*
 
 /**
  * Dog extends Animal, but it's not stamped with the @MultiTenant
@@ -10,7 +10,7 @@ import grails.plugin.spock.IntegrationSpec
  *
  * @author Kim A. Betti
  */
-class DemoDogSpec extends IntegrationSpec {
+class DemoDogSpec extends Specification {
 
     def "dog should implement the MultiTenantDomainClass interface"() {
         expect:

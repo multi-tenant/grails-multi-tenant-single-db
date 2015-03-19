@@ -5,7 +5,8 @@ import grails.plugin.multitenant.core.CurrentTenant
 import grails.plugin.multitenant.core.MultiTenantDomainClass
 import grails.plugin.multitenant.core.exception.NoCurrentTenantException
 import grails.plugin.multitenant.core.exception.TenantSecurityException
-import grails.plugin.spock.UnitSpec
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 
 import org.hibernate.event.PreDeleteEvent
 import org.hibernate.event.PreInsertEvent
@@ -16,7 +17,7 @@ import spock.lang.Unroll
 /**
  * @author Kim A. Betti
  */
-class TenantHibernateEventListenerSpec extends UnitSpec {
+class TenantHibernateEventListenerSpec extends Specification {
 
     TenantHibernateEventListener eventListener
 

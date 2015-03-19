@@ -1,6 +1,7 @@
 package grails.plugin.multitenant.singledb.hibernate
 
-import grails.plugin.spock.UnitSpec
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 import grails.plugins.hawkeventing.BaseEvent
 import grails.plugins.hawkeventing.Event
 import grails.plugins.hawkeventing.EventBroker
@@ -11,7 +12,7 @@ import demo.DemoTenant
 /**
  * @author Kim A. Betti
  */
-class TenantHibernateEventProxySpec extends UnitSpec {
+class TenantHibernateEventProxySpec extends Specification {
 
     def "subscriptions are added for relevant tenant events"() {
         given:

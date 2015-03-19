@@ -1,13 +1,13 @@
 package demo
 
-import grails.plugin.spock.IntegrationSpec
+import spock.lang.*
 
 /**
  * Mostly as a smoke test to detect if any multi-tenant
  * code affects regular domain classes.
  * @author Kim A. Betti
  */
-class DemoCustomerSpec extends IntegrationSpec {
+class DemoCustomerSpec extends Specification {
     //FIXME This used to work? I think this should work without needing to turn transactional off but it does not.
     //if its transactional then the session in the withThisTenant cannot see the customer
     static transactional = false

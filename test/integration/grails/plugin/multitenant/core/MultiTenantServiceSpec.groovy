@@ -1,6 +1,5 @@
 package grails.plugin.multitenant.core
 
-import grails.plugin.spock.IntegrationSpec
 
 import demo.DemoAnimal
 import demo.DemoProduct
@@ -9,7 +8,9 @@ import demo.DemoTenant
 /**
  * @author Kim A. Betti
  */
-class MultiTenantServiceSpec extends IntegrationSpec {
+
+import spock.lang.*
+class MultiTenantServiceSpec extends Specification {
 
     def testTenant
     def multiTenantService

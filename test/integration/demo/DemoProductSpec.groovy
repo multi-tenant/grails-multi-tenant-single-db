@@ -1,14 +1,19 @@
 package demo
 
 import grails.plugin.multitenant.core.Tenant
-import grails.plugin.spock.IntegrationSpec
 
 import org.springframework.dao.DataIntegrityViolationException
 
 /**
  * @author Kim A. Betti
  */
-class DemoProductSpec extends IntegrationSpec {
+import spock.lang.*
+
+/**
+ * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ */
+
+class DemoProductSpec extends Specification {
 
     static transactional = false
 

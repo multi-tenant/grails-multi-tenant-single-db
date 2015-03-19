@@ -2,14 +2,15 @@ package grails.plugin.multitenant.core.ast
 
 import grails.plugin.multitenant.core.MultiTenantDomainClass
 import grails.plugin.multitenant.core.annotation.MultiTenant
-import grails.plugin.spock.UnitSpec
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 
 import java.lang.reflect.Field
 
 /**
  * @author Kim A. Betti
  */
-class MultiTenantASTSpec extends UnitSpec {
+class MultiTenantASTSpec extends Specification {
 
     def "should have a tenantId field"() {
         expect:

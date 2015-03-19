@@ -1,34 +1,42 @@
-grails.project.work.dir = 'target'
+grails.project.class.dir = "target/classes"
+grails.project.test.class.dir = "target/test-classes"
+grails.project.test.reports.dir = "target/test-reports"
 
+grails.project.dependency.resolver = "maven" // or ivy
 grails.project.dependency.resolution = {
 
-	inherits 'global'
+	// inherit Grails' default dependencies
+	inherits("global") {
+	}
+	
 	log 'warn'
 
 	repositories {
-		grailsCentral()
+			grailsCentral()
+			mavenLocal()
+			mavenCentral()
+	}
+	
+	dependencies {
 	}
 
 	plugins {
-		build ':release:2.2.1', ':rest-client-builder:1.0.3', {
+		build(":release:3.0.1",":rest-client-builder:1.0.3") {
 			export = false
 		}
-
+		
 		provided ':webxml:1.4.1'
 
-		compile(":hibernate:$grailsVersion") { export = false }
-
+		compile(":hibernate:3.6.10.15") { export = false }
+		
+		compile ':cache:1.1.6'
+		
 		compile(':hawk-eventing:0.5.1') {
 			excludes 'svn'
 		}
 
 		compile(':hibernate-hijacker:0.8.1') {
 			excludes 'svn'
-		}
-
-		test(':spock:0.7') {
-			excludes 'svn'
-			export = false
-		}
+		}		
 	}
 }

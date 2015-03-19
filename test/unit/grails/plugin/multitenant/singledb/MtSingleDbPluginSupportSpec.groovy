@@ -3,12 +3,13 @@ package grails.plugin.multitenant.singledb
 import grails.plugin.multitenant.core.MultiTenantService
 import grails.plugin.multitenant.core.Tenant
 import grails.plugin.multitenant.core.exception.TenantException
-import grails.plugin.spock.UnitSpec
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 
 /**
  * @author Kim A. Betti
  */
-class MtSingleDbPluginSupportSpec extends UnitSpec {
+class MtSingleDbPluginSupportSpec extends Specification {
 
     def "add withTenantId method"() {
         given:

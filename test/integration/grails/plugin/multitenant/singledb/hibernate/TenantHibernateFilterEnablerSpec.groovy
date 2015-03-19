@@ -1,6 +1,5 @@
 package grails.plugin.multitenant.singledb.hibernate
 
-import grails.plugin.spock.IntegrationSpec
 import grails.plugins.hawkeventing.BaseEvent
 import grails.plugins.hawkeventing.Event
 
@@ -12,7 +11,8 @@ import org.hibernate.impl.FilterImpl
 
 import spock.lang.Unroll
 
-class TenantHibernateFilterEnablerSpec extends IntegrationSpec {
+import spock.lang.*
+class TenantHibernateFilterEnablerSpec extends Specification {
 
     FilterDefinition multiTenantHibernateFilter
     TenantHibernateFilterEnabler tenantHibernateFilterEnabler
