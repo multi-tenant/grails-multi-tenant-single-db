@@ -1,11 +1,11 @@
 package demo
 
-import grails.plugin.spock.IntegrationSpec
+import spock.lang.Specification
 
 /**
  * @author Steve Ronderos
  */
-class CurrentTenantAwareSpec extends IntegrationSpec {
+class CurrentTenantAwareSpec extends Specification {
 
     def demoStore
 
