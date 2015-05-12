@@ -18,3 +18,4 @@ stacktrace.log
 *.iml
 *.ipr
 .grails
+/.nb-gradle/private/
