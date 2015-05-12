@@ -6,7 +6,7 @@ h3. Trivial example
 If you just want to index your tenantId property to allow faster scans in your table, this would fit:
 
 {code:java}
-import grails.plugin.multitenant.core.annotation.MultiTenant
+//import grails.plugin.multitenant.core.annotation.MultiTenant
 
 @MultiTenant
 class Animal {
@@ -29,7 +29,7 @@ If you want to define multi-column indexes on your domain classes you may take a
 to understand how its DLS achieves it.
 
 {code:java}
-import grails.plugin.multitenant.core.annotation.MultiTenant
+//import grails.plugin.multitenant.core.annotation.MultiTenant
 
 @MultiTenant
 class User {

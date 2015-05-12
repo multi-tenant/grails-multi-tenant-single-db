@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 /**
  * Spring Security Tenant Resolver
  * Extracts the userTenantId
- * @see http://multi-tenant.github.com/grails-multi-tenant-single-db/
+ * see http://multi-tenant.github.com/grails-multi-tenant-single-db/
  */
 class ${tenantResolverClassName} implements TenantResolver {
     def springSecurityService
