@@ -11,15 +11,17 @@ import grails.transaction.*
 import spock.lang.*
 
 @Integration
+//@Rollback
 class DemoCustomerSpec extends Specification {
     //FIXME This used to work? I think this should work without needing to turn transactional off but it does not.
     //if its transactional then the session in the withThisTenant cannot see the customer
-    static transactional = false
+//    static transactional = false
+    
 
-    def testTenant
+    //def testTenant
 
     def setup() {
-        testTenant = new DemoTenant(name: "DemoCustomerSpec tenant", domain: "DemoCustomerSpec.com")
+        def testTenant = new DemoTenant(name: "DemoCustomerSpec tenant", domain: "DemoCustomerSpec.com")
         testTenant.save(flush: true, failOnError: true)
     }
 

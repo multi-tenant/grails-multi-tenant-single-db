@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.*
 
 @Integration
-@Rollback
+//@Rollback
 class MultiTenantServiceSpec extends Specification {
 
     def testTenant

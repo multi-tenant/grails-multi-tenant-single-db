@@ -9,7 +9,6 @@ import org.hibernate.classic.Session
 import org.hibernate.engine.FilterDefinition
 import org.hibernate.impl.FilterImpl
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Autowired
 
 import spock.lang.Unroll
 
@@ -18,7 +17,7 @@ import grails.transaction.*
 import spock.lang.*
 
 @Integration
-@Rollback
+//@Rollback
 class TenantHibernateFilterEnablerSpec extends Specification {
 
     FilterDefinition multiTenantHibernateFilter

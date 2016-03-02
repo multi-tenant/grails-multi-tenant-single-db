@@ -22,7 +22,7 @@ import grails.transaction.*
 import spock.lang.*
 
 @Integration
-@Rollback
+//@Rollback
 class TenantHibernateEventListenerIntegrationSpec extends Specification {
 
     

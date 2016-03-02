@@ -15,9 +15,12 @@ import grails.transaction.*
 import spock.lang.*
 
 @Integration
-@Rollback
+//@Rollback
 class DemoDogSpec extends Specification {
 
+    def setup() {
+        
+    }
     def "dog should implement the MultiTenantDomainClass interface"() {
         expect:
         MultiTenantDomainClass.isAssignableFrom DemoDog
