@@ -3,7 +3,7 @@ package demo
 /**
  * This Spring bean is configured as per-tenant and used to
  * verify that each tenant will see a different instance.
- * @author Kim A. Betti <kim@developer-b.com>
+ * @author Kim A. Betti email:kim@developer-b.com
  */
 class DemoService {
 

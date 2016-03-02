@@ -5,7 +5,7 @@ import grails.plugin.multitenant.core.Tenant
 /**
  * TODO: Implement me!
  *
- * @see http://multi-tenant.github.com/grails-multi-tenant-single-db/
+ * see http://multi-tenant.github.com/grails-multi-tenant-single-db/
  */
 class ${tenantDomainClassName} implements Tenant {
 
