@@ -9,7 +9,7 @@ The application will look for Hibernate domain classes annotated with \@MultiTen
 Hibernate operations against these domain classes will be filtered to only affect data belonging to the current tenant.
 
 {code:java}
-import grails.plugin.multitenant.core.annotation.MultiTenant
+//import grails.plugin.multitenant.core.annotation.MultiTenant
 
 @MultiTenant
 class Animal {
@@ -25,7 +25,7 @@ You must take some extra care with the unique constraint as all tenants will sha
 In the future we might add this automatically during application startup. 
 
 {code:java}
-import grails.plugin.multitenant.core.annotation.MultiTenant
+//import grails.plugin.multitenant.core.annotation.MultiTenant
 
 @MultiTenant
 class Animal {

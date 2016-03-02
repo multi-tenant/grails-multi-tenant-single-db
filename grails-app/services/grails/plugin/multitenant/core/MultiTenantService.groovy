@@ -2,6 +2,7 @@ package grails.plugin.multitenant.core
 
 import static org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW
 import grails.plugin.hibernatehijacker.template.HibernateTemplates
+import org.springframework.beans.factory.annotation.Autowired
 
 /**
  * Allows for temporary manipulation of the current tenant.
