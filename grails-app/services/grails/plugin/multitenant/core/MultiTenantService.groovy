@@ -1,6 +1,6 @@
 package grails.plugin.multitenant.core
 
-import static org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW
+import static org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRED
 import grails.plugin.hibernatehijacker.template.HibernateTemplates
 
 /**
@@ -28,7 +28,7 @@ class MultiTenantService {
             if(log.debugEnabled) log.debug "doWithTenantId runin with tenant - $tenantId"
 
             hibernateTemplates.withNewSession {
-                hibernateTemplates.withTransaction(PROPAGATION_REQUIRES_NEW) {
+                hibernateTemplates.withTransaction(PROPAGATION_REQUIRED) {
                     callback.call()
                 }
             }
