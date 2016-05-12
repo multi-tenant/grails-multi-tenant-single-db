@@ -3,7 +3,7 @@ import grails.util.Holders
 
 class MultiTenantSingleDbGrailsPlugin {
 
-    def version = "0.8.4"
+    def version = "0.8.5-ZG"
     def grailsVersion = "1.3.5 > *"
 
     def loadAfter = [
