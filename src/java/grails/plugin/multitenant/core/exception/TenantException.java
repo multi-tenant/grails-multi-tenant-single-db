@@ -2,6 +2,7 @@ package grails.plugin.multitenant.core.exception;
 
 /**
  * Superclass for all multi tenant related exceptions.
+ *
  * @author Kim A. Betti
  */
 @SuppressWarnings("serial")

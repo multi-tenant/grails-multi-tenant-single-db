@@ -1,7 +1,8 @@
 package grails.plugin.multitenant.core
 
-import static org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW
 import grails.plugin.hibernatehijacker.template.HibernateTemplates
+
+import static org.springframework.transaction.TransactionDefinition.PROPAGATION_REQUIRES_NEW
 
 /**
  * Allows for temporary manipulation of the current tenant.
@@ -23,17 +24,18 @@ class MultiTenantService {
     def doWithTenantId(Integer tenantId, Closure callback) {
         Integer oldTenantId = currentTenant.get()
         try {
-            if(log.debugEnabled) log.debug "doWithTenantId oldTenantId - $oldTenantId"
+            if (log.debugEnabled) log.debug "doWithTenantId oldTenantId - $oldTenantId"
+
             currentTenant.set(tenantId)
-            if(log.debugEnabled) log.debug "doWithTenantId runin with tenant - $tenantId"
+
+            if (log.debugEnabled) log.debug "doWithTenantId runin with tenant - $tenantId"
 
             hibernateTemplates.withNewSession {
                 hibernateTemplates.withTransaction(PROPAGATION_REQUIRES_NEW) {
                     callback.call()
                 }
             }
-        }
-        finally{
+        } finally {
             currentTenant.set(oldTenantId)
         }
     }

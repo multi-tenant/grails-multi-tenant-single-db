@@ -1,18 +1,17 @@
 package grails.plugin.multitenant.core
 
-import grails.plugin.spock.IntegrationSpec
-
 import demo.DemoAnimal
 import demo.DemoProduct
 import demo.DemoTenant
+import grails.test.spock.IntegrationSpec
 
 /**
  * @author Kim A. Betti
  */
 class MultiTenantServiceSpec extends IntegrationSpec {
 
-    def testTenant
-    def multiTenantService
+    DemoTenant testTenant
+    MultiTenantService multiTenantService
 
     def setup() {
         testTenant = new DemoTenant(name: "test tenant", domain: "test.com")
@@ -21,7 +20,7 @@ class MultiTenantServiceSpec extends IntegrationSpec {
 
     def "checked exceptions should roll back transaction"() {
         given:
-        def product = null
+        DemoProduct product = null
         multiTenantService.doWithTenantId(123) {
             product = new DemoProduct(name: "Some product")
             product.save flush: true, failOnError: true
@@ -44,14 +43,14 @@ class MultiTenantServiceSpec extends IntegrationSpec {
 
     def "unchecked exception should also roll back exception"() {
         given:
-        def product = null
+        DemoProduct product = null
         multiTenantService.doWithTenantId(123) {
             product = new DemoProduct(name: "Another product")
             product.save flush: true, failOnError: true
         }
 
         when:
-        tmultiTenantService.doWithTenantId(123) {
+        multiTenantService.doWithTenantId(123) {
             product.name = "Another name"
             product.save failOnError: true, flush: true
             throw new RuntimeException("Should cause exception rollback")

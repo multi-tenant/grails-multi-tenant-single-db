@@ -2,19 +2,18 @@ package grails.plugin.multitenant.singledb.hibernate;
 
 import grails.plugin.hibernatehijacker.hibernate.HibernateConfigPostProcessor;
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
-
-import java.util.Iterator;
-
 import org.hibernate.HibernateException;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.engine.FilterDefinition;
+import org.hibernate.engine.spi.FilterDefinition;
 import org.hibernate.mapping.PersistentClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
+
 /**
  * Defines the Hibernate filter.
- *
+ * <p>
  * The Hibernate Hijacker detects beans implementing
  * HibernateConfigPostProcessor and will make sure that the Configuration
  * instances is passed through this instance when the application is starting.
@@ -29,13 +28,13 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
 
     @Override
     public void doPostProcessing(Configuration configuration) throws HibernateException {
-        log.debug("Configuring multi-tenant Hibernate filter");
+        log.debug("Defining MultiTenant Hibernate filter");
         addMultiTenantFilterDefinition(configuration);
+        log.debug("Configuring multi-tenant Hibernate filter");
         enrichMultiTenantDomainClasses(configuration);
     }
 
     private void addMultiTenantFilterDefinition(Configuration configuration) {
-        log.debug("Defining Multi Tenant Hibernate filer");
         configuration.addFilterDefinition(multiTenantHibernateFilter);
     }
 
@@ -50,7 +49,7 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
     }
 
     private void enrichMultiTenantDomainClass(PersistentClass persistentClass) {
-        log.trace("Enabling multi-tenant mode for domain class {}", persistentClass.getClassName());
+        log.debug("Enabling multi-tenant mode for domain class {}", persistentClass.getClassName());
         addDomainFilter(persistentClass);
     }
 
@@ -61,7 +60,7 @@ public class TenantHibernateFilterConfigurator implements HibernateConfigPostPro
     private void addDomainFilter(PersistentClass persistentClass) {
         String filterName = multiTenantHibernateFilter.getFilterName();
         String condition = multiTenantHibernateFilter.getDefaultFilterCondition();
-        persistentClass.addFilter(filterName, condition);
+        persistentClass.addFilter(filterName, condition, false, null, null);
     }
 
     public void setMultiTenantHibernateFilter(FilterDefinition multiTenantHibernateFilter) {

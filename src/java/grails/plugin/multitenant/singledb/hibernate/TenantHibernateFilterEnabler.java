@@ -4,19 +4,19 @@ import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugins.hawkeventing.Event;
 import grails.plugins.hawkeventing.annotation.Consuming;
 import grails.plugins.hawkeventing.annotation.HawkEventConsumer;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.engine.spi.FilterDefinition;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.Set;
-
-import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
-import org.hibernate.engine.FilterDefinition;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * Subscribes itself to hibernate.sessionCreated events. Enables the tenant
  * Hibernate filter with the current tenant id (if any).
- *
+ * <p>
  * Important: tenantId = null will disable the Hibernate filter!
+ *
  * @author Kim A. Betti
  */
 @HawkEventConsumer

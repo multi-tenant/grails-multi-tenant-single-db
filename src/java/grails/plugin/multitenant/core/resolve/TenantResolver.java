@@ -10,15 +10,14 @@ import javax.servlet.http.HttpServletRequest;
  * The implementation then have to be registered as a Spring bean
  * named 'tenantResolver'. Have a look at the documentation on the
  * bean dsl for more information on how to do this.
- * 
+ * <p>
  * TODO: Make a more pluggable / configurable approach to how the current tenant is looked up
- * 
+ *
  * @see http://grails.org/doc/latest/guide/single.html#14.%20Grails%20and%20Spring
  */
 public interface TenantResolver {
 
     /**
-     * 
      * @param request
      * @return tenant id, don't return 'null' unless you know what you're doing
      * @throws TenantResolveException

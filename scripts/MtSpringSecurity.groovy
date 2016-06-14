@@ -17,9 +17,6 @@
  * excellent Spring Security Plugin by Burt Beckwith:
  * http://grails.org/plugin/spring-security-core
  */
-
-import grails.util.GrailsNameUtils
-
 includeTargets << new File(multiTenantSingleDbPluginDir, "scripts/_MTCommon.groovy")
 
 USAGE = """

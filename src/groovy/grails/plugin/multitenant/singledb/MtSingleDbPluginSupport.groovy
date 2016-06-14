@@ -1,6 +1,6 @@
 package grails.plugin.multitenant.singledb
 
-import grails.plugin.hibernatehijacker.hibernate.HibernateEventSubscriptionFactory
+import grails.plugin.hibernatehijacker.spring.HibernateEventSubscriptionFactory
 import grails.plugin.multitenant.core.MultiTenantService
 import grails.plugin.multitenant.core.Tenant
 import grails.plugin.multitenant.core.exception.TenantException
@@ -13,13 +13,12 @@ import grails.plugin.multitenant.singledb.hibernate.TenantHibernateEventListener
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateEventProxy
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterConfigurator
 import grails.plugin.multitenant.singledb.hibernate.TenantHibernateFilterEnabler
-
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.config.CustomScopeConfigurer
 import org.springframework.context.ApplicationContext
-import org.springframework.orm.hibernate3.FilterDefinitionFactoryBean
+import grails.plugin.multitenant.spring.FilterDefinitionFactoryBean
 
 /**
  * Used by the plugin descriptor.
@@ -61,14 +60,15 @@ class MtSingleDbPluginSupport {
 
         // Responsible for registering the custom 'tenant' scope with Spring.
         tenantScopeConfigurer(CustomScopeConfigurer) {
-            scopes = [ tenant: ref("tenantScope") ]
+            scopes = [tenant: ref("tenantScope")]
         }
 
         // Definition of the Hibernate filter making sure that
         // each tenant only sees and touches its own data.
         multiTenantHibernateFilter(FilterDefinitionFactoryBean) {
+            filterName = "multiTenantHibernateFilter"
             defaultFilterCondition = ":tenantId = tenant_id"
-            parameterTypes = [ tenantId: "java.lang.Integer" ]
+            parameterTypes = [tenantId: "java.lang.Integer"]
         }
 
         // Listens for new Hibernate sessions and enables the
@@ -126,8 +126,8 @@ class MtSingleDbPluginSupport {
             Integer tenantId = tenantId()
             if (tenantId == null) {
                 String exMessage = ("Can't execute closure in tenent namespace without a tenant id. "
-                    + "Make sure that the domain instance has been saved to database "
-                    + "(if you're using Hibernate and primary key as tenant id)")
+                        + "Make sure that the domain instance has been saved to database "
+                        + "(if you're using Hibernate and primary key as tenant id)")
 
                 throw new TenantException(exMessage)
             } else {
@@ -159,7 +159,7 @@ class MtSingleDbPluginSupport {
 
         def filterMappings = xml.'filter-mapping'
         // webxml plugin is responsible for filter mapping order.  Put the filter mapping anywhere.
-        filterMappings[filterMappings.size() - 1]  + {
+        filterMappings[filterMappings.size() - 1] + {
             'filter-mapping' {
                 'filter-name'('tenantFilter')
                 'url-pattern'('/*')

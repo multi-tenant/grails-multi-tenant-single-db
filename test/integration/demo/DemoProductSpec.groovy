@@ -1,8 +1,7 @@
 package demo
 
 import grails.plugin.multitenant.core.Tenant
-import grails.plugin.spock.IntegrationSpec
-
+import grails.test.spock.IntegrationSpec
 import org.springframework.dao.DataIntegrityViolationException
 
 /**

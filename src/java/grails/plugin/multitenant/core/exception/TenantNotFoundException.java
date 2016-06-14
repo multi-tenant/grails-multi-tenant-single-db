@@ -2,6 +2,7 @@ package grails.plugin.multitenant.core.exception;
 
 /**
  * Thrown when a tenant can't be found.
+ *
  * @author Kim A. Betti
  */
 @SuppressWarnings("serial")

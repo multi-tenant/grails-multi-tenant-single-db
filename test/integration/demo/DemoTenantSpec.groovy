@@ -1,9 +1,9 @@
 package demo
 
-import grails.plugin.spock.IntegrationSpec
 import grails.plugins.hawkeventing.Event
 import grails.plugins.hawkeventing.EventBroker
 import grails.plugins.hawkeventing.EventConsumer
+import grails.test.spock.IntegrationSpec
 
 /**
  * @author Kim A. Betti
@@ -12,7 +12,7 @@ class DemoTenantSpec extends IntegrationSpec {
 
     EventBroker eventBroker
 
-    def "New tenants triggers events" () {
+    def "New tenants triggers events"() {
         given: "Subscription to the expected event"
         def newTenantConsumer = Mock(EventConsumer)
         eventBroker.subscribe("tenant.created", newTenantConsumer)
@@ -25,7 +25,7 @@ class DemoTenantSpec extends IntegrationSpec {
         1 * newTenantConsumer.consume(_ as Event)
     }
 
-    def "Changes to a tenant triggers event" () {
+    def "Changes to a tenant triggers event"() {
         given: "Subscription to the expected event"
         def updatedTenantConsumer = Mock(EventConsumer)
         eventBroker.subscribe("tenant.updated", updatedTenantConsumer)
@@ -42,7 +42,7 @@ class DemoTenantSpec extends IntegrationSpec {
         1 * updatedTenantConsumer.consume(_ as Event)
     }
 
-    def "Deleting a tenant triggers event" () {
+    def "Deleting a tenant triggers event"() {
         given: "Subscription to the expected event"
         def deletedTenantConsumer = Mock(EventConsumer)
         eventBroker.subscribe("tenant.deleted", deletedTenantConsumer)

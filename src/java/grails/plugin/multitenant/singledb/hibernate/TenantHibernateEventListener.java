@@ -6,18 +6,8 @@ import grails.plugin.multitenant.core.MultiTenantDomainClass;
 import grails.plugin.multitenant.core.ast.MultiTenantAST;
 import grails.plugin.multitenant.core.exception.NoCurrentTenantException;
 import grails.plugin.multitenant.core.exception.TenantSecurityException;
-
 import org.hibernate.HibernateException;
-import org.hibernate.event.LoadEvent;
-import org.hibernate.event.LoadEventListener;
-import org.hibernate.event.PostLoadEvent;
-import org.hibernate.event.PostLoadEventListener;
-import org.hibernate.event.PreDeleteEvent;
-import org.hibernate.event.PreDeleteEventListener;
-import org.hibernate.event.PreInsertEvent;
-import org.hibernate.event.PreInsertEventListener;
-import org.hibernate.event.PreUpdateEvent;
-import org.hibernate.event.PreUpdateEventListener;
+import org.hibernate.event.spi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * Listens for pre-insert, pre-update and load / fetch Hibernate events. If the
  * domain class related to the event is a multi-tenant class we apply the
  * relevant constraints.
- * 
+ *
  * @author Kim A. Betti
  */
 @SuppressWarnings("serial")
@@ -40,7 +30,7 @@ public class TenantHibernateEventListener implements PreInsertEventListener, Pre
      * One important thing to know. It's not enough to update the entity
      * instance with the new tenant-id. Hibernate will _not_ pick up on this and
      * will therefore not save the updated tenant id to database.
-     * 
+     * <p>
      * We have to get hold of the JPA meta model, find the index of the tenantId
      * field and update the entity state in the event.
      */
