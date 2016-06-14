@@ -10,7 +10,7 @@ A few months later the multi-tenant organization was formed on GitHub by a group
 The organization was formed to drive the plugin development forward. The most serious problems mentioned above has been fixed
 in the current version of multi-tenant-core. 
 
-Kim A. Betti started working on webflow support without compile time dependency and a less intrusive way of intercepting Hibernate sessions. 
+Kim A. Betti started working on webflow support without compile time dependency and a less intrusive way of intercepting Hibernate sessions.
 The result of this work was this plugin (multi-tenant-single-db). The original plan was to merge at least some of the solutions in this plugin back into 
 [multi-tenant-core|http://github.com/multi-tenant/grails-multi-tenant-core], but the plugins has drifted further apart while refactoring and 
 improving single-database mode. 

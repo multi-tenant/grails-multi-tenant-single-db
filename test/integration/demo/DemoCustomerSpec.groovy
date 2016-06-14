@@ -1,6 +1,6 @@
 package demo
 
-import grails.plugin.spock.IntegrationSpec
+import grails.test.spock.IntegrationSpec
 
 /**
  * Mostly as a smoke test to detect if any multi-tenant

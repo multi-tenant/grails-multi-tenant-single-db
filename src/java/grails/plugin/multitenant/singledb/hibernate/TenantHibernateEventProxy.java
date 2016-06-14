@@ -5,7 +5,6 @@ import grails.plugins.hawkeventing.Event;
 import grails.plugins.hawkeventing.EventBroker;
 import grails.plugins.hawkeventing.EventConsumer;
 import grails.util.GrailsNameUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.InitializingBean;
  * Works as proxy translating Hibernate events to non-Hibernate
  * specific events. This class will have to be moved if we want
  * to make a -core plugin completely independent of Hibernate.
- * 
+ *
  * @author Kim A. Betti
  */
 public class TenantHibernateEventProxy implements InitializingBean {
@@ -73,8 +72,8 @@ public class TenantHibernateEventProxy implements InitializingBean {
  */
 class HawkEventProxy implements EventConsumer {
 
-    EventBroker eventBroker;
-    String eventName;
+    private EventBroker eventBroker;
+    private String eventName;
 
     public HawkEventProxy(EventBroker eventBroker, String eventName) {
         this.eventBroker = eventBroker;

@@ -1,15 +1,13 @@
 package grails.plugin.multitenant.singledb.hibernate
 
-import grails.plugin.spock.IntegrationSpec
 import grails.plugins.hawkeventing.BaseEvent
 import grails.plugins.hawkeventing.Event
-
+import grails.test.spock.IntegrationSpec
 import org.hibernate.Filter
+import org.hibernate.Session
 import org.hibernate.SessionFactory
-import org.hibernate.classic.Session
-import org.hibernate.engine.FilterDefinition
-import org.hibernate.impl.FilterImpl
-
+import org.hibernate.engine.spi.FilterDefinition
+import org.hibernate.internal.FilterImpl
 import spock.lang.Unroll
 
 class TenantHibernateFilterEnablerSpec extends IntegrationSpec {
@@ -41,12 +39,12 @@ class TenantHibernateFilterEnablerSpec extends IntegrationSpec {
         then:
         Session session = sessionFactory.getCurrentSession()
         String multiTenantFilterName = multiTenantHibernateFilter.filterName
-        FilterImpl enabledFilter = session.getEnabledFilter(multiTenantFilterName)
+        FilterImpl enabledFilter = session.getEnabledFilter(multiTenantFilterName) as FilterImpl
 
         and:
         enabledFilter.getParameter("tenantId") == tenantId
 
         where:
-        tenantId << [ -1, 0, 1 ]
+        tenantId << [-1, 0, 1]
     }
 }

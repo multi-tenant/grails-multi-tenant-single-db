@@ -1,8 +1,5 @@
 package grails.plugin.multitenant.core.spring;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.spring.BeanConfiguration;
@@ -16,10 +13,14 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Creates a tenant scoped proxy around beans configured to be unique per tenant.
  * In short terms, this works by lazily creating a new prototyped definition of
  * each per-tenant bean for each tenant.
+ *
  * @author Kim A. Betti
  */
 public class ConfiguredTenantScopedBeanProcessor implements BeanFactoryPostProcessor {
@@ -53,7 +54,7 @@ public class ConfiguredTenantScopedBeanProcessor implements BeanFactoryPostProce
 
             if (perTenantBeans.contains(beanName)) {
                 perTenantBeanNames.add(beanName);
-            } else if (beanDefinition.getScope() == TenantScope.NAME) {
+            } else if (beanDefinition.getScope().equals(TenantScope.NAME)) {
                 perTenantBeanNames.add(beanName);
             }
         }
@@ -89,6 +90,7 @@ public class ConfiguredTenantScopedBeanProcessor implements BeanFactoryPostProce
 
     /**
      * Usually configured in the Grails bean DSL
+     *
      * @param perTenantBeans
      */
     public void setPerTenantBeans(List<String> perTenantBeans) {

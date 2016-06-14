@@ -2,7 +2,7 @@ package demo
 
 import grails.plugin.multitenant.core.MultiTenantDomainClass
 import grails.plugin.multitenant.core.Tenant
-import grails.plugin.spock.IntegrationSpec
+import grails.test.spock.IntegrationSpec
 
 /**
  * Dog extends Animal, but it's not stamped with the @MultiTenant

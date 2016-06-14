@@ -1,9 +1,6 @@
 package grails.plugin.multitenant.core.ast;
 
 import grails.plugin.multitenant.core.MultiTenantDomainClass;
-
-import java.lang.reflect.Modifier;
-
 import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.ast.expr.ConstantExpression;
@@ -13,6 +10,8 @@ import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.grails.compiler.injection.GrailsASTUtils;
 import org.codehaus.groovy.transform.ASTTransformation;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
+
+import java.lang.reflect.Modifier;
 
 /**
  * Adds a tenantId property to domain classes annotated MultiTenant.

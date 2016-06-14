@@ -5,7 +5,7 @@ import grails.plugin.multitenant.core.annotation.MultiTenant
 @MultiTenant
 class DemoAnimal {
 
-    static belongsTo = [ owner: DemoPetOwner ]
+    static belongsTo = [owner: DemoPetOwner]
 
     String name
 
@@ -13,7 +13,9 @@ class DemoAnimal {
         owner nullable: true
     }
 
-    String toString() {
+
+    @Override
+    public String toString() {
         "Animal[name: $name, tenantId: $tenantId]"
     }
 }

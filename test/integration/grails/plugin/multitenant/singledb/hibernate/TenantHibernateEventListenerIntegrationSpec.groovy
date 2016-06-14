@@ -1,14 +1,12 @@
 package grails.plugin.multitenant.singledb.hibernate
 
+import demo.DemoProduct
 import grails.plugin.multitenant.core.Tenant
 import grails.plugin.multitenant.core.exception.TenantSecurityException
-import grails.plugin.spock.IntegrationSpec
-
+import grails.test.spock.IntegrationSpec
 import org.hibernate.Session
 import org.hibernate.SessionFactory
-
 import spock.lang.FailsWith
-import demo.DemoProduct
 
 /**
  * These tests are also good for highlighting various aspects

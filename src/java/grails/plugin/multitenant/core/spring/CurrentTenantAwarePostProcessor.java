@@ -2,13 +2,13 @@ package grails.plugin.multitenant.core.spring;
 
 import grails.plugin.multitenant.core.CurrentTenant;
 import grails.plugin.multitenant.core.CurrentTenantAware;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 /**
  * Inject the currentTenant bean into beans
  * implementing the CurrentTenantAware interface.
+ *
  * @author Kim A. Betti
  */
 public class CurrentTenantAwarePostProcessor implements BeanPostProcessor {

@@ -2,20 +2,19 @@ package grails.plugin.multitenant.core.servlet
 
 import grails.plugin.multitenant.core.CurrentTenant
 import grails.plugin.multitenant.core.resolve.TenantResolver
-import grails.plugin.spock.UnitSpec
+import org.springframework.mock.web.MockHttpServletRequest
+import org.springframework.mock.web.MockHttpServletResponse
+import spock.lang.Specification
 
 import javax.servlet.FilterChain
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 
-import org.springframework.mock.web.MockHttpServletRequest
-import org.springframework.mock.web.MockHttpServletResponse
-
 /**
  * @author Kim A. Betti
  */
-class CurrentTenantServletFilterSpec extends UnitSpec {
+class CurrentTenantServletFilterSpec extends Specification {
 
     def "current tenant should be sat to null after an exception in the filter chain"() {
         given: "a filter instance and mocked tenant classes"

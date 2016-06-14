@@ -1,7 +1,8 @@
 package grails.plugin.multitenant.core.exception;
 
 /**
- * Thrown when a tenant can't be resolved. 
+ * Thrown when a tenant can't be resolved.
+ *
  * @author Kim A. Betti
  */
 @SuppressWarnings("serial")

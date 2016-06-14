@@ -5,18 +5,16 @@ import grails.plugin.multitenant.core.CurrentTenant
 import grails.plugin.multitenant.core.MultiTenantDomainClass
 import grails.plugin.multitenant.core.exception.NoCurrentTenantException
 import grails.plugin.multitenant.core.exception.TenantSecurityException
-import grails.plugin.spock.UnitSpec
-
-import org.hibernate.event.PreDeleteEvent
-import org.hibernate.event.PreInsertEvent
-import org.hibernate.event.PreUpdateEvent
-
+import org.hibernate.event.spi.PreDeleteEvent
+import org.hibernate.event.spi.PreInsertEvent
+import org.hibernate.event.spi.PreUpdateEvent
+import spock.lang.Specification
 import spock.lang.Unroll
 
 /**
  * @author Kim A. Betti
  */
-class TenantHibernateEventListenerSpec extends UnitSpec {
+class TenantHibernateEventListenerSpec extends Specification {
 
     TenantHibernateEventListener eventListener
 
@@ -53,7 +51,7 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         1 * eventListener.currentTenant.get() >> 123
 
         and: "mocked event state updater"
-        HibernateEventPropertyUpdater propertyUpdater = Mock()
+        HibernateEventPropertyUpdater propertyUpdater = Mock(HibernateEventPropertyUpdater)
         eventListener.hibernateEventPropertyUpdater = propertyUpdater
 
         when: "we invoke the event method"
@@ -66,7 +64,7 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         entity.tenantId == 123
 
         and: "we dont veto the event"
-        vetoInsert == false
+        !vetoInsert
     }
 
     @Unroll("Allow #currentTenantId to allow an entity owned by #entityTenantId, #message")
@@ -76,11 +74,11 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         eventListener.allowEntityLoad(currentTenantId, entity) == shouldAllow
 
         where:
-        currentTenantId   | entityTenantId  | shouldAllow   | message
-        null              | 123             | true          | "No tenant, no restriction"
-        123               | 123             | true          | "Must be able to load its own entities"
-        123               | 321             | false         | "Should not be allowed to load others"
-        123               | null            | false         | "We dont allow loading of entities without tenant id" // Can be discussed..
+        currentTenantId | entityTenantId | shouldAllow | message
+        null            | 123            | true        | "No tenant, no restriction"
+        123             | 123            | true        | "Must be able to load its own entities"
+        123             | 321            | false       | "Should not be allowed to load others"
+        123             | null           | false       | "We dont allow loading of entities without tenant id" // Can be discussed..
     }
 
     @Unroll("Tenant id #tenantId, current tenant #currentTenantId, belongs to current tenant #belongsToCurrent")
@@ -90,11 +88,11 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         eventListener.belongsToCurrentTenant(currentTenantId, entity) == belongsToCurrent
 
         where:
-        currentTenantId   | entityTenantId  | belongsToCurrent
-        123               | 123             | true
-        123               | null            | false
-        null              | 123             | false
-        null              | null            | false
+        currentTenantId | entityTenantId | belongsToCurrent
+        123             | 123            | true
+        123             | null           | false
+        null            | 123            | false
+        null            | null           | false
     }
 
     def "update without tenant id is allowed"() {
@@ -105,7 +103,7 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         expect: "the listener should not veto the event"
         def entity = new DummyEntity(tenantId: 123)
         def preUpdateEvent = new PreUpdateEvent(entity, null, null, null, null, null)
-        eventListener.onPreUpdate(preUpdateEvent) == false
+        !eventListener.onPreUpdate(preUpdateEvent)
     }
 
     def "delete without tenant id is allowed"() {
@@ -116,7 +114,7 @@ class TenantHibernateEventListenerSpec extends UnitSpec {
         expect: "the listener should not veto the event"
         def entity = new DummyEntity(tenantId: 123)
         def preUpdateEvent = new PreDeleteEvent(entity, null, null, null, null)
-        eventListener.onPreDelete(preUpdateEvent) == false
+        !eventListener.onPreDelete(preUpdateEvent)
     }
 
     def "attempts to update another tenants entity should throw an exception"() {

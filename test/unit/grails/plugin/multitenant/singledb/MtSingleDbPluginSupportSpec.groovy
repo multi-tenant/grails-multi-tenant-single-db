@@ -3,12 +3,12 @@ package grails.plugin.multitenant.singledb
 import grails.plugin.multitenant.core.MultiTenantService
 import grails.plugin.multitenant.core.Tenant
 import grails.plugin.multitenant.core.exception.TenantException
-import grails.plugin.spock.UnitSpec
+import spock.lang.Specification
 
 /**
  * @author Kim A. Betti
  */
-class MtSingleDbPluginSupportSpec extends UnitSpec {
+class MtSingleDbPluginSupportSpec extends Specification {
 
     def "add withTenantId method"() {
         given:
@@ -73,6 +73,7 @@ class MtSingleDbPluginSupportSpec extends UnitSpec {
     private class MetaTenant implements Tenant {
         Integer id
         Integer tenantId = 123
+
         Integer tenantId() { tenantId }
     }
 }

@@ -1,22 +1,20 @@
 package grails.plugin.multitenant.singledb.hibernate
 
 import grails.plugin.multitenant.core.CurrentTenant
-import grails.plugin.spock.UnitSpec
 import grails.plugins.hawkeventing.BaseEvent
 import grails.plugins.hawkeventing.Event
-
 import org.hibernate.Filter
-import org.hibernate.classic.Session
-import org.hibernate.engine.FilterDefinition
+import org.hibernate.Session
+import org.hibernate.engine.spi.FilterDefinition
+import spock.lang.Specification
 
 /**
  * @author Kim A. Betti
  */
-class TenantHibernateFilterEnablerUnitSpec extends UnitSpec {
+class TenantHibernateFilterEnablerUnitSpec extends Specification {
 
     TenantHibernateFilterEnabler filterEnabler
-    FilterDefinition filterDefinition = new FilterDefinition (
-        "multiTenantHibernateFilter", ":tenantId = tennatId", [ "tenantId": "java.lang.Integer" ])
+    FilterDefinition filterDefinition = new FilterDefinition("multiTenantHibernateFilter", ":tenantId = tennatId", ["tenantId": "java.lang.Integer"])
 
     def setup() {
         filterEnabler = new TenantHibernateFilterEnabler()
