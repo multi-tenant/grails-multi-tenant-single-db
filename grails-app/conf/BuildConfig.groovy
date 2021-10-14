@@ -12,8 +12,9 @@ grails.project.dependency.resolution = {
 	log 'warn'
 
 	repositories {
-		grailsCentral()
-                mavenLocal()
+		mavenRepo 'https://repo1.maven.org/maven2/'
+		mavenRepo 'https://grails.jfrog.io/grails/plugins'
+		mavenLocal()
 	}
 
 	dependencies {
@@ -34,13 +35,13 @@ grails.project.dependency.resolution = {
 
 		provided ':webxml:1.4.1'
 
-		compile(":hibernate:$grailsVersion") { export = false }
+		compile(":hibernate:3.6.10.16") // or ":hibernate4:4.3.5.4"
 
 		compile(':hawk-eventing:0.5.1') {
 			excludes 'svn'
 		}
 
-		compile(':hibernate-hijacker:0.8.2') {
+		compile(':hibernate-hijacker:0.9.0-SNAPSHOT') {
 			excludes 'svn'
 		}
 
