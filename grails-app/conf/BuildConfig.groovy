@@ -29,7 +29,7 @@ grails.project.dependency.resolution = {
 		password = mvnRepoPassword
 	}
 	plugins {
-		build ':release:2.2.1', ':rest-client-builder:1.0.3', {
+		build ':release:2.2.3-ZG', ':rest-client-builder:1.0.3', {
 			export = false
 		}
 
